@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/home"
+        android:enabled="true"
+        android:icon="@drawable/main_navi_home"
+        android:title="홈"
+        android:textSize="12sp"
+        android:iconTint="@color/navigation_item_icon_tint"
+        android:titleTextColor="@color/navigation_item_color"
+        android:background="@drawable/navigation_item_background"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/map"
+        android:enabled="true"
+        android:icon="@drawable/main_navi_icon"
+        android:title="지도"
+        android:textSize="12sp"
+        android:iconTint="@color/navigation_item_icon_tint"
+        android:titleTextColor="@color/navigation_item_color"
+        android:background="@drawable/navigation_item_background"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/history"
+        android:enabled="true"
+        android:icon="@drawable/navi_main_history"
+        android:title="기록"
+        android:textSize="12sp"
+        android:iconTint="@color/navigation_item_icon_tint"
+        android:titleTextColor="@color/navigation_item_color"
+        android:background="@drawable/navigation_item_background"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/user"
+        android:enabled="true"
+        android:icon="@drawable/frame"
+        android:title="프로필"
+        android:textSize="12sp"
+        android:iconTint="@color/navigation_item_icon_tint"
+        android:titleTextColor="@color/navigation_item_color"
+        android:background="@drawable/navigation_item_background"
+        app:showAsAction="always"/>
+</menu>
