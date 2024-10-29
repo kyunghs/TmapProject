@@ -10,7 +10,6 @@
     <string name="main_internet_search">인터넷 검색</string>
     <string name="main_phone_status">스마트폰 상태</string>
     <string name="main_author">저자 소개</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- 연락처 관리 -->
