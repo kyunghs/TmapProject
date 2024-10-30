@@ -16,7 +16,7 @@
   <tbody>
       <td align="center">
         <a href="https://github.com/kokohuhusave">
-            <img src="https://avatars.githubusercontent.com/u/76507017?v=4" width="200px;" height="200px;" alt="김준호"/>
+            <img src="https://avatars.githubusercontent.com/u/92168240?v=4" width="200px;" height="200px;" alt="김준호"/>
 <h3><b>김준호</b></h3></a></td>
         <td align="center">
         <a href="https://github.com/MINLEE-HO">
