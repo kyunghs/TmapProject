@@ -129,8 +129,8 @@ Team9-Podo-FE
 
 
 ## 🔗 링크 모음
-### 🎨 기획/디자인
-- [Figma](https://www.figma.com/design/tJnqWHKG1KCrNxWSPF2Kvg/Untitled?node-id=0-1&node-type=canvas&t=VmbrXZmhI6g2AOGG-0)
+### 🎨 디자인
+- **디자인**: [Figma](https://www.figma.com/design/tJnqWHKG1KCrNxWSPF2Kvg/Untitled?node-id=0-1&node-type=canvas&t=VmbrXZmhI6g2AOGG-0)
 
 
 ### 📄 발표 및 보고서
