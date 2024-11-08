@@ -138,7 +138,7 @@ Team9-Podo-FE
 - **관련 보고서**: [Google Docs](https://docs.google.com/document/d/1lCj0wN8wIg69uIxeoBo5pBCReKXNStDrfcdTOACjSys/edit?tab=t.0)
 
 ### 📊 데이터
-- **한국교통안전공단_주차정보 제공 API**: [Data Link]([https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15099883](https://data.seoul.go.kr/dataList/OA-13122/S/1/datasetView.do))
+- **서울특별시_주차정보 제공 API**: [Data Link](https://data.seoul.go.kr/dataList/OA-13122/S/1/datasetView.do)
 - **한국전력공사_전기차 충전소 운영정보**: [Data Link](https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=3068728)
 
   
