@@ -7,7 +7,6 @@ CREATE DATABASE navi_sir;
 -- 데이터베이스가 생성된 후에 이 스크립트를 실행합니다.
 
 CREATE TABLE parking_info (
-    num_of_index SERIAL PRIMARY KEY,
     pklt_cd VARCHAR(100) UNIQUE,
     pklt_nm VARCHAR(100),
     addr VARCHAR(255),
@@ -46,7 +45,6 @@ CREATE TABLE ch_pa_marker (
 );
 
 CREATE TABLE charge_info (
-    num_of_index SERIAL PRIMARY KEY,
     charger_code INT NOT NULL,
     charger_name VARCHAR(100),
     addr VARCHAR(255),
