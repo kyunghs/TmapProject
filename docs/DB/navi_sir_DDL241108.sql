@@ -44,6 +44,7 @@ CREATE TABLE ch_pa_marker (
     FOREIGN KEY (parking_code) REFERENCES parking_info(pklt_cd) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+
 CREATE TABLE charge_info (
     charger_code INT NOT NULL,
     charger_name VARCHAR(100),
