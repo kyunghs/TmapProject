@@ -1,0 +1,54 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@drawable/rounded_border">
+
+    <!-- 위치 정보 -->
+    <TextView
+        android:id="@+id/location_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="서울 공영 주차장"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#FF5E00"
+        android:drawableStart="@drawable/arrow"
+        android:drawablePadding="8dp" />
+
+    <!-- 현재 잔여석 -->
+    <TextView
+        android:id="@+id/current_seats_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location_text"
+        android:layout_marginTop="8dp"
+        android:text="현재 잔여석 9석"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#000000" />
+
+    <!-- 예상 잔여석 -->
+    <TextView
+        android:id="@+id/expected_seats_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/current_seats_text"
+        android:layout_marginTop="4dp"
+        android:text="예상 잔여석 7석"
+        android:textSize="16sp"
+        android:textColor="#FF5E00" />
+
+    <!-- 도착 시간 -->
+    <TextView
+        android:id="@+id/arrival_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/expected_seats_text"
+        android:layout_marginTop="8dp"
+        android:text="오후 8:53분 도착"
+        android:textSize="14sp"
+        android:textColor="#888888" />
+
+</RelativeLayout>

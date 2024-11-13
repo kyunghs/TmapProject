@@ -1,0 +1,155 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- 상단 로고 및 타이틀 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="16dp">
+
+            <!-- Navi'Sir 텍스트 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Navi'Sir"
+                android:textColor="#FF6F42"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp" />
+
+            <!-- 와 함께해요! 텍스트 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="와 함께해요!"
+                android:textColor="#666666"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- 프로필 편집 타이틀 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="프로필 편집"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 구분선 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 프로필 이미지 -->
+        <FrameLayout
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/karina"
+                android:background="@drawable/circle_background"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                android:contentDescription="프로필 이미지" />
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="bottom|end"
+                android:src="@drawable/profile_edit"
+                android:background="@drawable/circle_background"
+                android:elevation="4dp"
+                android:contentDescription="프로필 편집 아이콘" />
+        </FrameLayout>
+
+        <!-- 아이디 (이메일) -->
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="아이디 (이메일)"
+            android:inputType="textEmailAddress"
+            android:background="@drawable/input_background"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- 비밀번호 -->
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="비밀번호"
+            android:inputType="textPassword"
+            android:background="@drawable/input_background"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- 비밀번호 확인 -->
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="비밀번호 확인"
+            android:inputType="textPassword"
+            android:background="@drawable/input_background"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- 이름 -->
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="이름"
+            android:text="홍길동"
+            android:inputType="textPersonName"
+            android:background="@drawable/input_background"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- 전화번호 -->
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="전화번호"
+            android:inputType="phone"
+            android:background="@drawable/input_background"
+            android:padding="12dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- 저장 버튼 -->
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="변경사항 저장"
+            android:background="@drawable/button_border"
+            android:backgroundTint="#FF6F42"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- 취소 버튼 -->
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="편집 취소"
+            android:background="@drawable/button_border"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+    </LinearLayout>
+</ScrollView>
