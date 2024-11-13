@@ -127,7 +127,10 @@ Team9-Podo-FE
 ## 🗂️ Flow Chart
 ![fow](https://github.com/user-attachments/assets/fe9f6bef-5ea5-4f0e-9f4f-fa9c32a08632)
 
+## 🗂️ Architect Grad
+![fow](docs/architect_grad.PNG)
 
+docs/architect_grad.PNG
 ## 🔗 링크 모음
 ### 🎨 디자인
 - **디자인**: [Figma](https://www.figma.com/design/tJnqWHKG1KCrNxWSPF2Kvg/Untitled?node-id=0-1&node-type=canvas&t=VmbrXZmhI6g2AOGG-0)
