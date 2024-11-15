@@ -5,9 +5,9 @@ from datetime import datetime
 
 # 오늘 날짜 폴더 생성
 today_folder = datetime.now().strftime("%Y%m%d")  # 예: 20241109
-base_directory = os.path.join(rf"C:\grad\Reqest_parking_filterd\n_desired", today_folder)  # 상대 경로: n_desired/20241109
+base_directory = os.path.join("/Tmap_project_Data/desired", today_folder)
 print(base_directory)
-combined_directory = os.path.join("combined", today_folder)  # 상대 경로: combined/20241109
+combined_directory = os.path.join("/Tmap_project_Data/combined", today_folder)  # Windows 경로: C:\Tmap_project_Data\combined\20241109
 
 # 통합 파일 저장을 위한 디렉토리 생성
 if not os.path.exists(combined_directory):
@@ -18,6 +18,7 @@ current_time = datetime.now().strftime("%Y%m%d%H%M")
 
 # 기본 디렉토리의 모든 CSV 파일 검색
 csv_files = glob.glob(os.path.join(base_directory, "*.csv"))
+print("%%%%%%%%%%%%",csv_files)
 
 # CSV 파일이 존재하는지 확인
 if not csv_files:
@@ -71,10 +72,23 @@ else:
         print("\n")
 
         # 기존 개별 CSV 파일 삭제
+        deleted_files = []
+
         for file in csv_files:
             os.remove(file)
+            deleted_files.append(file)
             print("@@@")
             print(f"Deleted original file: {file}")
             print("\n")
+        
+        # 삭제된 파일 목록 기록
+        deleted_log_file = os.path.join(combined_directory, "deleted_files_log.txt")
+        with open(deleted_log_file, "w", encoding="utf-8") as log_file:
+            log_file.write("Deleted files:\n")
+            log_file.write("\n".join(deleted_files))
+
+        print("@@@")
+        print(f"Deleted files log saved to {deleted_log_file}")
+        print("\n")
     else:
         print("No data available to combine.")

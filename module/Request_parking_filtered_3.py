@@ -1,6 +1,7 @@
 # 실시간 주차장 정보를 요청하여 db에 넣는 코드
 # author : lmh
 
+#### 1학기에는 되었으나 필드명 바뀐이후로, 해당 url 범위 내에서 데이터가 없어서 안씀#### 
 import requests
 import pandas as pd
 from datetime import datetime
@@ -8,9 +9,10 @@ import os
 from sqlalchemy import create_engine , text
 
 # API 요청 URL
-url = "http://openapi.seoul.go.kr:8088/5a5261555272756439347555534747/json/GetParkingInfo/2001/3000/"
+url = "http://openapi.seoul.go.kr:8088/5a5261555272756439347555534747/json/GetParkingInfo/2001/2002/"
 response = requests.get(url)
 data = response.json()
+# print(data)
 
 # 데이터프레임으로 변환
 items = data['GetParkingInfo']['row']
@@ -39,7 +41,7 @@ if not os.path.exists(today_directory):
     os.makedirs(today_directory)
 
 current_time = datetime.now().strftime("%Y%m%d%H%M")
-filename = f"{current_time}_parking_info_filtered_3.csv"
+filename = f"{current_time}_parking_info_3_filtered.csv"
 full_path = os.path.join(today_directory, filename)
 
 # CSV로 저장
