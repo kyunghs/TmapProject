@@ -27,7 +27,7 @@ def checkLogin(id, password):
 
 #아이디 찾기
 def findUserId(name, user_tel, birthday):
-    conn = db_connection()
+    conn = dbConnection()
     cursor = conn.cursor()
     query = "SELECT id FROM user_info WHERE name = %s AND user_tel = %s AND birthday = %s"
     cursor.execute(query, (name, user_tel, birthday))
@@ -39,7 +39,7 @@ def findUserId(name, user_tel, birthday):
 
 #비밀번호 찾기
 def findPassword(name, id, user_tel):
-    conn = db_connection()
+    conn = dbConnection()
     cursor = conn.cursor()
     query = "SELECT password FROM user_info WHERE name = %s AND id = %s AND user_tel = %s"
     cursor.execute(query, (name, id, user_tel))
@@ -61,7 +61,7 @@ def getUserCustomInfo():
 
 #회원가입
 def register_user(id, password, name, user_tel, birthday):
-    conn = db_connection()
+    conn = dbConnection()
     cursor = conn.cursor()
     try:
         query = """

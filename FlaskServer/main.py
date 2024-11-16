@@ -45,6 +45,10 @@ scheduler.add_job(func=lambda: run_script("Delete_parking_info.py"),
 scheduler.add_job(func=lambda: run_script("all_filterd.py"),
                   trigger="cron", hour=0, id="all_filtered")  # 매ㅇㄹ 자정
 
+#인덱스 페이지
+@app.route('/', methods=['GET'])
+def index():
+    return "index page"
 
 # Flask 엔드포인트: 즉시 작업 실행
 @app.route('/run_scripts', methods=['POST'])
