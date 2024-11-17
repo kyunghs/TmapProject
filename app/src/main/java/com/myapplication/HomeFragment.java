@@ -1,36 +1,35 @@
 package com.myapplication;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 public class HomeFragment extends Fragment {
 
+    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        // "집으로" 카드 레이아웃 초기화
+        LinearLayout homeCardLayout = view.findViewById(R.id.home_card_layout);
 
-        LinearLayout cardLayout = view.findViewById(R.id.card_layout);
-        cardLayout.setClickable(true);
-        cardLayout.setFocusable(true);
-        cardLayout.setOnClickListener(new View.OnClickListener() {
+        // 클릭 이벤트 설정
+        homeCardLayout.setClickable(true);
+        homeCardLayout.setFocusable(true);
+        homeCardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // DriveActivity로 이동하는 코드
-                Intent intent = new Intent(getActivity(), DriveActivity.class);
-                startActivity(intent);
+                // BookmarkBottomSheetFragment 호출
+                BookmarkBottomSheetFragment bottomSheet = new BookmarkBottomSheetFragment();
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                bottomSheet.show(fragmentManager, bottomSheet.getTag());
             }
         });
 
