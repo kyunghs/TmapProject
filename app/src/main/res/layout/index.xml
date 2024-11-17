@@ -23,6 +23,7 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <!-- 로그인 버튼 -->
     <Button
         android:id="@+id/loginBtn"
         android:layout_width="300dp"
@@ -35,6 +36,7 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
+    <!-- 회원가입 버튼 -->
     <Button
         android:id="@+id/registerBtn"
         android:layout_width="300dp"
@@ -51,11 +53,4 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
-
-    <!-- 프래그먼트를 담을 컨테이너 -->
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
 </LinearLayout>

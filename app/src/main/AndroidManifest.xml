@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TmapProject">
 
+        <!-- IndexActivity: 앱 시작 화면 -->
         <activity
             android:name=".IndexActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -26,17 +27,61 @@
             </intent-filter>
         </activity>
 
+        <!-- MainActivity: 메인 화면 -->
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:exported="true"></activity>
+            android:exported="true" />
 
+        <!-- RegisterActivity: 회원가입 화면 -->
         <activity
             android:name=".RegisterActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:exported="true"></activity>
-        <activity android:name=".DriveActivity"></activity>
+            android:exported="true" />
+
+        <!-- DriveActivity: 운전 관련 화면 -->
+        <activity
+            android:name=".DriveActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true" />
+
+        <!-- LoginActivity: 로그인 화면 -->
+        <activity
+            android:name=".LoginActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true" />
+
+        <activity
+            android:name=".FindIDPWActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true" />
+
+        <activity
+            android:name=".IdRecoveryActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true" />
+
+        <activity
+            android:name=".IdNotFoundActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true" />
+
+        <activity
+            android:name=".PwRecoveryActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true" />
+
+        <activity
+            android:name=".PwNotFoundActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true" />
+
+        <activity
+            android:name=".UserEditActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.DayNight" />
+
+
 
     </application>
-
 </manifest>
