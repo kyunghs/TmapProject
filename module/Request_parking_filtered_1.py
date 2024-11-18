@@ -31,7 +31,7 @@ df_filtered = df_filtered.dropna(subset=['NOW_PRK_VHCL_CNT'])
 df_filtered = df_filtered[df_filtered['TPKCT'] > 0]
 
 # CSV 파일 저장 경로 설정
-base_directory = "n_desired/"
+base_directory = "/Tmap_project_Data/desired/"
 today_folder = datetime.now().strftime("%Y%m%d")
 today_directory = os.path.join(base_directory, today_folder)
 
@@ -42,7 +42,7 @@ current_time = datetime.now().strftime("%Y%m%d%H%M")
 filename = f"{current_time}_parking_info_filtered.csv"
 full_path = os.path.join(today_directory, filename)
 
-# CSV로 저장
+# csv 파일 nas에 저장
 df_filtered.to_csv(full_path, index=False, encoding='utf-8-sig')
 
 # DB 연결 설정

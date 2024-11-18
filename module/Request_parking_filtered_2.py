@@ -31,7 +31,7 @@ df_filtered = df_filtered.dropna(subset=['NOW_PRK_VHCL_CNT'])
 df_filtered = df_filtered[df_filtered['TPKCT'] > 0]
 
 # CSV 파일 저장 경로 설정
-base_directory = "n_desired/"
+base_directory = "/Tmap_project_Data/desired/"
 today_folder = datetime.now().strftime("%Y%m%d")
 today_directory = os.path.join(base_directory, today_folder)
 
