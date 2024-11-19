@@ -155,5 +155,35 @@ def predict_endpoint():
     result['date'] = date_str
     return jsonify(result)
 
+#주차장 정보 요청
+@app.route('/get/park/info', methods=['POST'])
+def getParkInfo():
+    lat = request.json.get('lat')
+    lot = request.json.get('lot')
+    parks = db_query.getParkInfo(lat, lot)
+    if parks:
+        return jsonify({"parks": parks}), 200
+    else:
+        return jsonify({"error": "잘못된 주차장 요청입니다."}), 404
+
+#아이디 찾기
+@app.route('/find/id', methods=['POST'])
+def find_id():
+    # 요청에서 JSON 데이터 가져오기
+    data = request.get_json()
+    name = data.get('name')
+    user_tel = data.get('user_tel')
+    birthday = data.get('birthday')
+
+    # 필요한 정보가 모두 제공되지 않으면 오류 반환
+    if not name or not user_tel or not birthday:
+        return jsonify({"error": "name, user_tel, and birthday are required"}), 400
+
+    # 조건에 맞는 아이디 찾기
+    id = db_query.findUserId(name, user_tel, birthday)
+    if id:
+        return jsonify({"id": id}), 200
+    else:
+        return jsonify({"error": "해당 정보로 등록된 아이디가 없습니다."}), 404
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8241, debug=True)
