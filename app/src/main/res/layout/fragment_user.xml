@@ -14,7 +14,7 @@
 
         <!-- 상단 배경 -->
         <View
-            android:layout_width="411dp"
+            android:layout_width="match_parent"
             android:layout_height="100dp"
             android:background="#FF6F42" />
 

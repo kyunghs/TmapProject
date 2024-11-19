@@ -11,8 +11,9 @@
         android:id="@+id/car_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/main_car"/>
+        android:src="@drawable/sub_car" />
 
     <TextView
         android:id="@+id/title_text"
@@ -43,7 +44,6 @@
         android:text="예"
         android:textStyle="bold"
         android:textColor="@android:color/white"
-        android:padding="10dp"
         android:background="@drawable/rounded_button_yes"/>
     <Button
         android:id="@+id/noBtn"
