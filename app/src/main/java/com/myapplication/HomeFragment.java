@@ -26,8 +26,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URLEncoder;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class HomeFragment extends Fragment {
@@ -99,6 +103,46 @@ public class HomeFragment extends Fragment {
                                                 JSONObject firstPoi = poiArray.getJSONObject(0);
                                                 String latitude = firstPoi.getString("frontLat");
                                                 String longitude = firstPoi.getString("frontLon");
+
+                                                // HTTP POST 요청으로 위도와 경도 전송
+                                                OkHttpClient client = new OkHttpClient();
+                                                String url = "http://220.116.209.226:8241/get/park/info";
+
+                                                JSONObject jsonBody = new JSONObject();
+                                                jsonBody.put("lat", latitude);
+                                                jsonBody.put("lot", longitude);
+
+                                                RequestBody body = RequestBody.create(
+                                                        jsonBody.toString(),
+                                                        MediaType.get("application/json; charset=utf-8")
+                                                );
+
+                                                Request request = new Request.Builder()
+                                                        .url(url)
+                                                        .post(body)
+                                                        .build();
+
+                                                // POST 요청 실행
+                                                client.newCall(request).enqueue(new Callback() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                                        Log.e("POST Request", "POST 요청 실패: " + e.getMessage());
+                                                    }
+
+                                                    @Override
+                                                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                                        if (response.isSuccessful()) {
+                                                            String responseData = response.body().string();
+                                                            Log.e("POST Response", "응답: " + responseData);
+                                                        } else {
+                                                            Log.e("POST Response", "POST 요청 실패 - 응답 코드: " + response.code());
+                                                        }
+                                                    }
+                                                });
+
+                                                // Toast 메시지로 출력
+                                                Toast.makeText(getActivity(), "위도: " + latitude + ", 경도: " + longitude, Toast.LENGTH_LONG).show();
+
 
                                                 // Toast 메시지로 출력
                                                 Toast.makeText(getActivity(), "위도: " + latitude + ", 경도: " + longitude, Toast.LENGTH_LONG).show();
