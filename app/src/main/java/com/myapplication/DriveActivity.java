@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -32,10 +34,15 @@ import com.skt.tmap.engine.navigation.route.RoutePlanType;
 import com.skt.tmap.engine.navigation.route.data.MapPoint;
 import com.skt.tmap.engine.navigation.route.data.WayPoint;
 import com.skt.tmap.vsm.coordinates.VSMCoordinates;
+import com.skt.tmap.vsm.data.VSMMapPoint;
+import com.skt.tmap.vsm.map.marker.MarkerImage;
+import com.skt.tmap.vsm.map.marker.VSMMarkerManager;
+import com.skt.tmap.vsm.map.marker.VSMMarkerPoint;
 import com.tmapmobility.tmap.tmapsdk.ui.data.CarOption;
 import com.tmapmobility.tmap.tmapsdk.ui.data.MapSetting;
 import com.tmapmobility.tmap.tmapsdk.ui.fragment.NavigationFragment;
 import com.tmapmobility.tmap.tmapsdk.ui.util.TmapUISDK;
+import com.tmapmobility.tmap.tmapsdk.ui.view.MapConstant;
 
 import java.util.ArrayList;
 
@@ -48,20 +55,25 @@ public class DriveActivity extends AppCompatActivity {
     private final static String DEVICE_KEY = "";
     boolean isEDC; // edc 수신 여부
 
-
     private NavigationFragment navigationFragment;
     private FragmentTransaction transaction;
     private FragmentManager fragmentManager;
-
+    private String latitude = "";
+    private String longitude = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drive);
+        Intent intent = getIntent();
+        if (intent != null) {
+            latitude = intent.getStringExtra("lat");
+            longitude = intent.getStringExtra("lot");
+        }
         checkPermission();
-        showPopup();
+        showPopup(latitude, longitude);
     }
 
-    private void showPopup() {
+    private void showPopup(String lat, String lot) {
         // Dialog 객체 생성 및 레이아웃 설정
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.park_popup);
@@ -73,7 +85,7 @@ public class DriveActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss(); // 팝업을 닫음
-                Test(); // Test() 메서드 호출
+                Test(lat, lot); // Test() 메서드 호출
             }
         });
 
@@ -90,6 +102,49 @@ public class DriveActivity extends AppCompatActivity {
                 finish(); // 현재 액티비티를 종료
             }
         });
+
+        Button test2 = findViewById(R.id.test2);
+        test2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String markerID = "TEST";
+                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.parking);
+                VSMMarkerPoint marker = new VSMMarkerPoint(markerID);
+
+                marker.setIcon(MarkerImage.fromBitmap(icon));
+                marker.setShowPriority(MapConstant.MarkerRenderingPriority.DEFAULT_PRIORITY);
+                marker.setText("TEST");
+
+                //현재 위치 보다 조금 옆에 마커를 찍는다.
+                VSMMapPoint position = new VSMMapPoint(127.0456768, 37.6523704);
+                marker.setPosition(position);
+
+                VSMMarkerManager markerManager = navigationFragment.getMapView().getMarkerManager();
+                if (markerManager == null) {
+                    Log.e(TAG, "마커 매니저 NULL");
+                    return;
+                }
+                markerManager.addMarker(marker);
+            }
+        });
+
+        Button test3 = findViewById(R.id.test3);
+        test3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigationFragment.stopDrive();
+            }
+        });
+
+        Button test4 = findViewById(R.id.test4);
+        test4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigationFragment.stopDrive();
+            }
+        });
+
+
 
         // 팝업 표시
         dialog.show();
@@ -478,7 +533,7 @@ public class DriveActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void Test(){
+    private void Test(String lat, String lot){
 
 
         //현재 위치
@@ -488,8 +543,15 @@ public class DriveActivity extends AppCompatActivity {
 
         WayPoint startPoint = new WayPoint(currentName, new MapPoint(currentLocation.getLongitude(), currentLocation.getLatitude()));
 
-        //목적지
-        WayPoint endPoint = new WayPoint("아마존카", new MapPoint(126.916895169744, 37.5278708587376));
+        // `lat`과 `lot`을 double로 변환
+        double latitude = Double.parseDouble(lat);
+        double longitude = Double.parseDouble(lot);
+
+        // 목적지
+        WayPoint endPoint = new WayPoint(
+                "아마존카",
+                new MapPoint(longitude, latitude)
+        );
 
 
         ArrayList<RoutePlanType> planTypeList = new ArrayList<>();
