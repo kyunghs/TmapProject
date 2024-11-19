@@ -110,11 +110,13 @@ def get_parking_by_time_range(start_time, end_time):
 
 # 사용자 요청 위도, 사용자 요청 경도 , 사용자 요청 위도 순
 # 원하는 목적지 위도 경도에 가까운 순으로 5개 조회
-def get_parking_by_location(u_lat, u_lot, u_lat_2):
+def getParkInfo(u_lat, u_lot):
     conn = dbConnection()
     cursor = conn.cursor()
-    query = "SELECT pklt_nm, lat, lot,ROUND(6371000 * acos(cos(radians(%s)) * cos(radians(lat)) * cos(radians(lot) - radians(%s)) + sin(radians(%s)) * sin(radians(lat)))) AS distance FROM parking_info pi2 ORDER BY distance LMIT 5"
-    cursor.execute(query, (u_lat,u_lot))
+    query = ("SELECT pklt_nm, lat, lot, ROUND(6371000 * acos(cos(radians(%s)) * cos(radians(lat)) * cos(radians(lot) - radians(%s)) + sin(radians(%s)) * sin(radians(lat)))) AS distance "
+             "FROM parking_info pi2 "
+             "ORDER BY distance LMIT 5")
+    cursor.execute(query, (u_lot, u_lat, u_lot))
     result = cursor.fetchall()
     conn.close()
 
