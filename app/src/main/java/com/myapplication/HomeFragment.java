@@ -1,5 +1,6 @@
 package com.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -17,6 +18,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -83,8 +88,28 @@ public class HomeFragment extends Fragment {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Log.e("Response", responseBody);
-                                            Toast.makeText(getActivity(), "Response: " + responseBody, Toast.LENGTH_SHORT).show();
+                                            try {
+                                                // JSON 파싱
+                                                JSONObject rootObject = new JSONObject(responseBody);
+                                                JSONObject searchPoiInfo = rootObject.getJSONObject("searchPoiInfo");
+                                                JSONObject pois = searchPoiInfo.getJSONObject("pois");
+                                                JSONArray poiArray = pois.getJSONArray("poi");
+
+                                                // 첫 번째 POI의 위도와 경도 추출
+                                                JSONObject firstPoi = poiArray.getJSONObject(0);
+                                                String latitude = firstPoi.getString("frontLat");
+                                                String longitude = firstPoi.getString("frontLon");
+
+                                                // Toast 메시지로 출력
+                                                Toast.makeText(getActivity(), "위도: " + latitude + ", 경도: " + longitude, Toast.LENGTH_LONG).show();
+                                                Intent intent = new Intent(requireContext(), DriveActivity.class);
+                                                intent.putExtra("lat", latitude);
+                                                intent.putExtra("lot", longitude);
+                                                startActivity(intent);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                                Toast.makeText(getActivity(), "JSON 파싱 오류", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
                                     });
                                 } catch (IOException e) {
