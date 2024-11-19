@@ -63,7 +63,7 @@ public class MapFragment extends Fragment {
     private final static String API_KEY = "qfhtGmuYyk3bKgfAwRxra5UIpzImSFxU9Wg1uWlp";
     private final static String USER_KEY = "";
     private final static String DEVICE_KEY = "";
-
+    private boolean isDrivingModeOn = false;
     private NavigationFragment navigationFragment;
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
@@ -86,8 +86,17 @@ public class MapFragment extends Fragment {
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isDrivingModeOn = !isDrivingModeOn;
+                if (isDrivingModeOn) {
+                    navigationFragment.startSafeDrive();
+                    testbtn.setText("안심주행 종료"); // 토글 ON
+                } else {
+                    navigationFragment.stopDrive();
+                    testbtn.setText("안심주행 시작"); // 토글 OFF
+                }
                 // 버튼 클릭 시 실행될 코드 작성
-                navigationFragment.startSafeDrive();
+
+
             }
         });
 

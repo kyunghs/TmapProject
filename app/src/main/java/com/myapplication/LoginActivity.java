@@ -3,6 +3,7 @@ package com.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +16,15 @@ public class LoginActivity extends AppCompatActivity {
         // 회원가입 텍스트 초기화
         TextView registerText = findViewById(R.id.register_text);
         TextView findIdPw = findViewById(R.id.find_id_pw);
+        Button test = findViewById(R.id.test);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // FindIDPWActivity로 이동
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // 회원가입 클릭 이벤트 추가
         registerText.setOnClickListener(new View.OnClickListener() {
