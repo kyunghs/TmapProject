@@ -133,6 +133,7 @@
 
         <!-- 저장 버튼 -->
         <Button
+            android:id="@+id/save_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="변경사항 저장"
@@ -144,6 +145,7 @@
 
         <!-- 취소 버튼 -->
         <Button
+            android:id="@+id/cancel_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="편집 취소"

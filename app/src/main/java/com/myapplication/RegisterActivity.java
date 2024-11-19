@@ -14,15 +14,17 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        // "내비서 시작하기" 버튼 초기화
         Button registBtn = findViewById(R.id.registBtn);
 
+        // 클릭 이벤트 추가
         registBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // MainActivity로 이동
                 Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
-
     }
 }
