@@ -78,9 +78,12 @@
                         android:layout_toLeftOf="@id/clear_icon"
                         android:layout_toEndOf="@id/search_icon"
                         android:background="@drawable/rounded_edittext_background"
-                        android:hint="서울특별시청"
+                        android:hint="목적지 입력"
                         android:padding="8dp"
-                        android:paddingStart="48dp" />
+                        android:paddingStart="48dp"
+                        android:singleLine="true"
+                        android:imeOptions="actionDone"
+                        android:inputType="text" />
 
                     <ImageView
                         android:id="@+id/clear_icon"
