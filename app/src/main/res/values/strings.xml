@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">NaviSir</string>
+
+    <string name="login_button_text">로그인</string>
+    <string name="signup_button_text">계정 만들기</string>
+
+    <!-- 메인 화면 -->
+    <string name="main_title">Personal diary</string>
+    <string name="main_phone_number_manage">연락처 관리</string>
+    <string name="main_internet_search">인터넷 검색</string>
+    <string name="main_phone_status">스마트폰 상태</string>
+    <string name="main_author">저자 소개</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- 연락처 관리 -->
+    <string name="contact_list_title">연락처 관리</string>
+    <string name="contact_add_title">연락처 추가</string>
+    <string name="contact_detail_title">연락처 정보</string>
+
+    <!-- 연락처 추가 -->
+    <string name="name">성명</string>
+    <string name="phone_number">전화번호( - 를 제외한 숫자만 입력해주세요)</string>
+    <string name="email">이메일</string>
+    <string name="work_place">직장</string>
+    <string name="title">직함</string>
+    <string name="save">저장</string>
+    <string name="cancel">취소</string>
+    <string name="cancel_check_massage">취소하시면 입력하신 모든 내용이 초기화 됩니다. \n\n취소하시겠습니까?</string>
+    <string name="cancel_check_title">취소 안내</string>
+
+    <string name="name_input_alert">이름을 입력해 주세요.</string>
+    <string name="email_input_alert">이메일을 입력해 주세요.</string>
+    <string name="phone_input_alert">전화번호를 입력해 주세요.</string>
+    <string name="workplace_input_alert">직장을 입력해 주세요.</string>
+    <string name="title_input_alert">직함을 입력해 주세요.</string>
+    <string name="email_valid_input_alert">올바른 이메일 형식이 아닙니다.</string>
+
+    <!-- 연락처 상세 정보 -->
+    <string name="delete">삭제</string>
+    <string name="share">공유</string>
+    <string name="update_success">연락처 변경에 성공하였습니다.</string>
+    <string name="update_fail">연락처 변경에 실패하였습니다.</string>
+    <string name="delete_success">연락처 삭제에 성공하였습니다.</string>
+    <string name="delete_fail">연락처 삭제에 실패하였습니다.</string>
+    <string name="delete_check_message">연락처 삭제를 하게 되면 해당 연락처는 다시 확인 할 수 없습니다. \n\n연락처를 삭제하시겠습니까?</string>
+    <string name="delete_check_title">"연락처 삭제"</string>
+</resources>

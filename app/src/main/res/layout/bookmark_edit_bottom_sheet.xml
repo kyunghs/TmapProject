@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/rounded_bottom_sheet"
+    android:layout_gravity="bottom"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".BookmarkList"
+    android:padding="16dp">
+
+    <!-- 별명 설정 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_gravity="center"
+            android:src="@drawable/bookmark_icon" />
+
+        <EditText
+            android:id="@+id/editTextNickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="위치를 검색 해주세요."
+            android:padding="12dp"
+            android:textColorHint="#F9C1AC"
+            android:drawableRight="@drawable/clear_button" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="최근 검색어"
+        android:layout_margin="12dp"
+        android:textColor="#F9C1AC"
+        />
+
+    <ListView
+        android:id="@+id/bookmark_list"
+        android:layout_width="match_parent"
+        android:layout_height="320dp" />
+</LinearLayout>
