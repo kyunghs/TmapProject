@@ -15,6 +15,7 @@ import threading
 import subprocess
 import time
 import logging
+import db_query
 
 # 로그 설정
 logging.basicConfig(level=logging.INFO)
@@ -81,6 +82,18 @@ def run_script_endpoint():
         return jsonify({"error": "script_name is required"}), 400
     run_script(script_name)
     return jsonify({"message": f"Script {script_name} executed"}), 200
+
+
+#주차장 정보 요청
+@app.route('/get/park/info', methods=['POST'])
+def getParkInfo():
+    lat = request.json.get('lat')
+    lot = request.json.get('lot')
+    parks = db_query.getParkInfo(lat, lot)
+    if parks:
+        return jsonify({"parks": parks}), 200
+    else:
+        return jsonify({"error": "잘못된 주차장 요청입니다."}), 404
 
 
 # 학습 실행 함수
