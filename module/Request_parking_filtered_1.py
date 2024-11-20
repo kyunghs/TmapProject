@@ -11,6 +11,7 @@ from sqlalchemy import create_engine , text
 url = "http://openapi.seoul.go.kr:8088/5a5261555272756439347555534747/json/GetParkingInfo/1/1000/"
 response = requests.get(url)
 data = response.json()
+# print(data)
 
 # 데이터프레임으로 변환
 items = data['GetParkingInfo']['row']

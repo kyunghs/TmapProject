@@ -159,7 +159,7 @@ docs/architect_grad.PNG
 - **관련 보고서**: [Google Docs](https://docs.google.com/document/d/1lCj0wN8wIg69uIxeoBo5pBCReKXNStDrfcdTOACjSys/edit?tab=t.0)
 - **계획서**: [notion](https://pyrite-lemon-590.notion.site/13cccc75e2ec80e08156f9df4b534bd6)
 ### 📊 데이터
-- **서울특별시_주차정보 제공 API**: [Data Link](https://data.seoul.go.kr/dataList/OA-13122/S/1/datasetView.do)
+- **서울특별시_시영_주차정보 제공 API**: [Data Link](https://data.seoul.go.kr/dataList/OA-21709/S/1/datasetView.do)
 - **한국전력공사_전기차 충전소 운영정보**: [Data Link](https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=3068728)
 
 test

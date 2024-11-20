@@ -2,7 +2,6 @@
 # made 경혁수
 # author 이민호
 
-
 import pandas as pd
 import glob
 import os
@@ -11,61 +10,70 @@ import pickle
 from datetime import datetime
 from flask import Flask, request, jsonify
 from statsmodels.tsa.arima.model import ARIMA
-import db_query
 from apscheduler.schedulers.background import BackgroundScheduler
+import threading
 import subprocess
-import os
-import datetime
+import time
+import logging
+import db_query
+
+# 로그 설정
+logging.basicConfig(level=logging.INFO)
+logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
 app = Flask(__name__)
+
 
 # 스크립트 실행 함수
 def run_script(script_name):
     try:
-        print(f"[{datetime.datetime.now()}] Running script: {script_name}")
-        script_path = os.path.join("scripts", script_name)
+        script_path = os.path.abspath(os.path.join("scripts", script_name))
+        if not os.path.isfile(script_path):
+            raise FileNotFoundError(f"Script {script_name} not found at {script_path}")
         result = subprocess.run(["python", script_path], capture_output=True, text=True)
-        print(f"[{datetime.datetime.now()}] Script output:\n{result.stdout}")
+        logging.info(f"Running script: {script_name}")
+        logging.info(f"Output: {result.stdout}")
         if result.stderr:
-            print(f"[{datetime.datetime.now()}] Script error:\n{result.stderr}")
+            logging.error(f"Error: {result.stderr}")
     except Exception as e:
-        print(f"Error while running script {script_name}: {e}")
+        logging.error(f"Exception while running script {script_name}: {e}")
 
 # 스케줄러 초기화
 scheduler = BackgroundScheduler()
 
-
-# 개별 스케줄링
-scheduler.add_job(func=lambda: run_script("Request_parking_filtered_1.py"),
-                  trigger="cron", minute=4, second=50, id="collect_1")  # 매시간 4분 50초
-scheduler.add_job(func=lambda: run_script("Request_parking_filtered_2.py"),
-                  trigger="cron", minute=4, second=55, id="collect_2")  # 매시간 4분 55초
+# Delete 실행: 매 5분마다 실행
 scheduler.add_job(func=lambda: run_script("Delete_parking_info.py"),
-                  trigger="cron", minute=5, second=0, id="delete_parking_info")  # 매시간 5분
-scheduler.add_job(func=lambda: run_script("all_filterd.py"),
-                  trigger="cron", hour=0, id="all_filtered")  # 매ㅇㄹ 자정
+                  trigger="cron", minute="*/5", id="delete_parking_info")
 
-#인덱스 페이지
+# Request 1 실행: Delete 실행 후 10초 대기 후 실행
+scheduler.add_job(func=lambda: [
+    time.sleep(10),
+    run_script("Request_parking_filtered_1.py")
+], trigger="cron", minute="*/5", id="request_parking_1")
+
+# Request 2 실행: Request 1 실행 후 10초 대기 후 실행
+scheduler.add_job(func=lambda: [
+    time.sleep(20),
+    run_script("Request_parking_filtered_2.py")
+], trigger="cron", minute="*/5", id="request_parking_2")
+
+# 자정에 all_filtered 실행
+scheduler.add_job(func=lambda: run_script("all_filterd.py"),
+                  trigger="cron", hour=0, minute=0, id="all_filtered")
+
+# 자정에 모델 학습
+# scheduler.add_job(func=lambda: run_train_model(),
+#                   trigger="cron", hour=1, minute=10, id="train_model_scheduler")
+
+# 스케줄러 스레드 시작
+def start_scheduler():
+    scheduler.start()
+
+# Flask 엔드포인트
 @app.route('/', methods=['GET'])
 def index():
-    return "index page"
+    return "Index Page - Parking Scheduler"
 
-# Flask 엔드포인트: 즉시 작업 실행
-@app.route('/run_scripts', methods=['POST'])
-def run_scripts():
-    scripts_to_run = [
-        "Request_parking_filtered_1.py",
-        "Request_parking_filtered_2.py",
-        "Request_parking_filtered_3.py",
-        "all_filterd.py",
-        "Delete_parking_info.py"
-    ]
-    for script in scripts_to_run:
-        run_script(script)
-    return jsonify({"message": "Scripts executed manually"}), 200
-
-
-# Flask 엔드포인트: 특정 스크립트 실행
 @app.route('/run_script', methods=['POST'])
 def run_script_endpoint():
     data = request.get_json()
@@ -75,85 +83,6 @@ def run_script_endpoint():
     run_script(script_name)
     return jsonify({"message": f"Script {script_name} executed"}), 200
 
-
-# 모델 학습 함수
-def train_model(base_directory, model_directory="models"):
-    # CSV 파일 전체 데이터를 준비
-    csv_files = glob.glob(os.path.join(base_directory, "*.csv"))
-    data_list = []
-
-    for file in csv_files:
-        df = pd.read_csv(file)
-        df_selected = df[['PARKING_NAME', 'CUR_PARKING', 'CUR_PARKING_TIME']].copy()
-        df_selected.loc[:, 'CUR_PARKING_TIME'] = pd.to_datetime(df_selected['CUR_PARKING_TIME'])
-        data_list.append(df_selected)
-
-    df_combined = pd.concat(data_list, ignore_index=True)
-    df_combined = df_combined.sort_values('CUR_PARKING_TIME')
-    df_combined.set_index('CUR_PARKING_TIME', inplace=True)
-
-    # 모델 저장 디렉토리가 없다면 생성
-    os.makedirs(model_directory, exist_ok=True)
-
-    # 오늘 날짜로 모델 파일명 생성
-    date_str = datetime.now().strftime('%Y%m%d')
-    model_filename = f'arima_parking_model_{date_str}.pkl'
-    model_filepath = os.path.join(model_directory, model_filename)
-
-    # ARIMA 모델 학습 및 저장
-    model = ARIMA(df_combined['CUR_PARKING'], order=(5, 1, 0))
-    model_fit = model.fit()
-    with open(model_filepath, 'wb') as file:
-        pickle.dump(model_fit, file)
-
-    return model_filepath  # 저장된 모델 파일 경로 반환
-
-# 예측 함수
-def predict_parking(model_fit, parking_name, df_combined):
-    df_specific = df_combined[df_combined['PARKING_NAME'] == parking_name]
-    if df_specific.empty:
-        return {"error": f"No data found for parking name '{parking_name}'"}
-
-    forecast_steps = 24
-    forecast = model_fit.forecast(steps=forecast_steps)
-    average_forecast = int(forecast.mean())
-    result = {
-        'parking_name': parking_name,
-        'predicted_cur_parking': average_forecast
-    }
-    return result
-
-# 모델 학습 엔드포인트
-@app.route('/train_model', methods=['POST'])
-def train_model_endpoint():
-    base_directory = request.json.get('base_directory', "/Tmap_project_Data/combined/")
-    model_filepath = train_model(base_directory)
-    return jsonify({"message": "Model trained and saved successfully", "model_path": model_filepath}), 200
-
-# 예측 엔드포인트
-@app.route('/predict', methods=['POST'])
-def predict_endpoint():
-    data = request.get_json()
-    date_str = data.get('date', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-    parking_name = data.get('parking_name')
-    
-    if not parking_name:
-        return jsonify({"error": "parking_name parameter is required"}), 400
-
-    model_directory = "models"
-    latest_model_file = sorted(glob.glob(os.path.join(model_directory, 'arima_parking_model_*.pkl')))[-1]
-    try:
-        with open(latest_model_file, 'rb') as file:
-            loaded_model = pickle.load(file)
-    except FileNotFoundError:
-        return jsonify({"error": "Model not found. Please train the model first."}), 500
-
-    base_directory = "/Users/kyung/PycharmProjects/FlaskServer/수집데이터_1"
-    df_combined = train_model(base_directory)  # 데이터를 다시 준비
-
-    result = predict_parking(loaded_model, parking_name, df_combined)
-    result['date'] = date_str
-    return jsonify(result)
 
 #주차장 정보 요청
 @app.route('/get/park/info', methods=['POST'])
@@ -166,24 +95,193 @@ def getParkInfo():
     else:
         return jsonify({"error": "잘못된 주차장 요청입니다."}), 404
 
-#아이디 찾기
-@app.route('/find/id', methods=['POST'])
-def find_id():
-    # 요청에서 JSON 데이터 가져오기
-    data = request.get_json()
-    name = data.get('name')
-    user_tel = data.get('user_tel')
-    birthday = data.get('birthday')
 
-    # 필요한 정보가 모두 제공되지 않으면 오류 반환
-    if not name or not user_tel or not birthday:
-        return jsonify({"error": "name, user_tel, and birthday are required"}), 400
+# 학습 실행 함수
+def run_train_model():
+    try:
+        logging.info("Running scheduled training...")
+        base_directory = "/Tmap_project_Data/combined/"
+        train_model(base_directory)
+        logging.info("Scheduled training completed successfully.")
+    except Exception as e:
+        logging.error(f"Scheduled training failed: {e}")
 
-    # 조건에 맞는 아이디 찾기
-    id = db_query.findUserId(name, user_tel, birthday)
-    if id:
-        return jsonify({"id": id}), 200
-    else:
-        return jsonify({"error": "해당 정보로 등록된 아이디가 없습니다."}), 404
+# 하위 디렉토리 포함 모든 .csv 파일 검색
+def get_all_csv_files(base_directory):
+    return glob.glob(os.path.join(base_directory, "**", "*.csv"), recursive=True)
+
+
+# ARIMA 모델 학습 함수
+def train_model(base_directory, model_directory="/Tmap_project_Data/models"):
+    try:
+        csv_files = glob.glob(os.path.join(base_directory, "**", "*.csv"), recursive=True)
+        logging.info(f"Found CSV files: {csv_files}")
+        if not csv_files:
+            raise FileNotFoundError(f"No CSV files found in directory {base_directory}")
+
+        data_list = []
+        for file in csv_files:
+            try:
+                df = pd.read_csv(file)
+                df_selected = df[['PKLT_CD', 'NOW_PRK_VHCL_CNT', 'NOW_PRK_VHCL_UPDT_TM']].copy()
+                df_selected['NOW_PRK_VHCL_UPDT_TM'] = pd.to_datetime(df_selected['NOW_PRK_VHCL_UPDT_TM'])
+                df_selected.dropna(subset=['NOW_PRK_VHCL_CNT'], inplace=True)  # 결측값 제거
+                data_list.append(df_selected)
+            except Exception as e:
+                logging.error(f"Error reading file {file}: {e}")
+                continue
+
+        if not data_list:
+            raise ValueError("No valid data found for training.")
+
+        df_combined = pd.concat(data_list, ignore_index=True)
+        df_combined = df_combined.sort_values('NOW_PRK_VHCL_UPDT_TM')
+        df_combined.set_index('NOW_PRK_VHCL_UPDT_TM', inplace=True)
+
+        os.makedirs(model_directory, exist_ok=True)
+
+        models = {}
+        for pklt_cd, group in df_combined.groupby('PKLT_CD'):
+            # 데이터 검증 제거: 데이터 부족 시에도 학습 시도
+            try:
+                model = ARIMA(group['NOW_PRK_VHCL_CNT'], order=(5, 1, 0))
+                model_fit = model.fit()
+                models[pklt_cd] = model_fit
+                logging.info(f"Trained ARIMA model for parking lot {pklt_cd}")
+            except Exception as e:
+                logging.error(f"Error training ARIMA model for {pklt_cd}: {e}")
+                continue
+
+        if not models:
+            raise ValueError("No models were trained.")
+
+        date_str = datetime.now().strftime('%Y%m%d')
+        model_filepath = os.path.join(model_directory, f'arima_parking_model_{date_str}.pkl')
+        with open(model_filepath, 'wb') as file:
+            pickle.dump(models, file)
+
+        logging.info(f"Model training completed. Models saved at: {model_filepath}")
+        return model_filepath
+    except Exception as e:
+        logging.error(f"Training failed: {e}")
+        raise
+
+
+@app.route('/train_model', methods=['POST'])
+def train_model_endpoint():
+    try:
+        base_directory = request.json.get('base_directory', r"C:\Tmap_project_Data\combined")
+        base_directory = os.path.abspath(base_directory)  # 절대 경로로 변환
+
+        print(f"Checking directory: {base_directory}")
+        if not os.path.exists(base_directory):
+            print("Directory does not exist!")
+            logging.error(f"Provided directory does not exist: {base_directory}")
+            return jsonify({"error": f"Provided directory does not exist: {base_directory}"}), 400
+        else:
+            print("Directory exists!")
+            files = get_all_csv_files(base_directory)
+            print(f"Found files: {files}")
+            if not files:
+                logging.error(f"No CSV files found in directory: {base_directory}")
+                return jsonify({"error": f"No CSV files found in directory: {base_directory}"}), 400
+
+        model_filepath = train_model(base_directory)
+        return jsonify({"message": "Model trained and saved successfully", "model_path": model_filepath}), 200
+    except Exception as e:
+        logging.error(f"Error during training: {e}")
+        return jsonify({"error": str(e)}), 500
+
+def predict_parking(models, parking_code, df_combined, steps):
+    # 모델 확인
+    if parking_code not in models:
+        return {"error": f"No model found for parking code '{parking_code}'"}
+
+    # 예측 데이터 준비
+    if parking_code not in df_combined['PKLT_CD'].values:
+        return {"error": f"No data found for parking code '{parking_code}'"}
+
+    # 해당 주차장 코드의 데이터 필터링
+    df_specific = df_combined[df_combined['PKLT_CD'] == parking_code]
+
+    # 예측
+    model_fit = models[parking_code]
+    forecast = model_fit.forecast(steps=steps)
+    predicted_value = int(forecast[-1])  # 마지막 예측 값
+
+    return {
+        'parking_code': parking_code,
+        'predicted_parking_count': predicted_value
+    }
+
+
+@app.route('/predict', methods=['POST'])
+def predict_endpoint():
+    try:
+        data = request.get_json()
+
+        # 파라미터 추출
+        parking_code = data.get('pklt_cd')
+        target_time = data.get('target_time')  # 예측 대상 시간 (ISO 8601 형식)
+
+        if not parking_code:
+            return jsonify({"error": "parking_code parameter is required"}), 400
+        if not target_time:
+            return jsonify({"error": "target_time parameter is required"}), 400
+
+        # 시간 파싱
+        try:
+            target_time = pd.to_datetime(target_time)
+        except Exception:
+            return jsonify({"error": "Invalid target_time format. Use ISO 8601 format (e.g., 2024-11-20T12:00:00)"}), 400
+
+        # 모델 로드
+        model_directory = "/Tmap_project_Data/models"
+        latest_model_file = sorted(glob.glob(os.path.join(model_directory, 'arima_parking_model_*.pkl')))[-1]
+        logging.info(f"Loading model from file: {latest_model_file}")
+        with open(latest_model_file, 'rb') as file:
+            models = pickle.load(file)
+
+        # 데이터 로드 및 정렬
+        base_directory = "/Tmap_project_Data/combined/"
+        csv_files = glob.glob(os.path.join(base_directory, "**", "*.csv"), recursive=True)
+        data_list = []
+        for file in csv_files:
+            try:
+                df = pd.read_csv(file)
+                if 'PKLT_CD' not in df or 'NOW_PRK_VHCL_CNT' not in df or 'NOW_PRK_VHCL_UPDT_TM' not in df:
+                    logging.warning(f"File {file} is missing required columns.")
+                    continue
+
+                df_selected = df[['PKLT_CD', 'NOW_PRK_VHCL_CNT', 'NOW_PRK_VHCL_UPDT_TM']].copy()
+                df_selected['NOW_PRK_VHCL_UPDT_TM'] = pd.to_datetime(df_selected['NOW_PRK_VHCL_UPDT_TM'], errors='coerce')
+                df_selected.dropna(subset=['NOW_PRK_VHCL_CNT', 'NOW_PRK_VHCL_UPDT_TM'], inplace=True)
+                data_list.append(df_selected)
+            except Exception as e:
+                logging.error(f"Error reading file {file}: {e}")
+                continue
+
+        if not data_list:
+            raise ValueError("No valid data found for prediction. Please check your input files.")
+
+        df_combined = pd.concat(data_list, ignore_index=True)
+        df_combined = df_combined.sort_values('NOW_PRK_VHCL_UPDT_TM')
+
+        # 현재 시간과 대상 시간 차이 계산
+        now = pd.Timestamp.now()
+        steps = max(1, int((target_time - now).total_seconds() / 3600))  # 시간 단위로 steps 계산
+
+        # 예측 수행
+        result = predict_parking(models, parking_code, df_combined, steps)
+        result['date'] = now.strftime('%Y-%m-%d %H:%M:%S')
+        result['target_time'] = target_time.strftime('%Y-%m-%d %H:%M:%S')
+        return jsonify(result)
+    except Exception as e:
+        logging.error(f"Error during prediction: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8241, debug=True)
+    scheduler_thread = threading.Thread(target=start_scheduler, daemon=True)
+    scheduler_thread.start()
+    app.run(host='0.0.0.0', port=8241, debug=False) # 스케쥴러와 debug 모드가 충돌날 것을 대비하여 debug false, 별도 쓰레드 동작으로 변경

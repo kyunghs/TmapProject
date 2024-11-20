@@ -1,0 +1,5 @@
+Deleted files:
+/Tmap_project_Data/desired\20241115\202411151654_filtered_202411151645_parking_info_filtered.csv
+/Tmap_project_Data/desired\20241115\202411151654_filtered_202411151645_parking_info_filtered_2.csv
+/Tmap_project_Data/desired\20241115\202411151723_parking_info_filtered.csv
+/Tmap_project_Data/desired\20241115\202411151723_parking_info_filtered_2.csv
