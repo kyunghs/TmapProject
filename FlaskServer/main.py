@@ -89,6 +89,8 @@ def run_script_endpoint():
 def getParkInfo():
     lat = request.json.get('lat')
     lot = request.json.get('lot')
+    print("!!"+lat)
+    print("!!" + lot)
     parks = db_query.getParkInfo(lat, lot)
     if parks:
         return jsonify({"parks": parks}), 200

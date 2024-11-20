@@ -4,7 +4,7 @@ from flask import jsonify
 # PostgreSQL 데이터베이스 연결 함수
 def dbConnection():
     conn = psycopg2.connect(
-        host="220.116.209.226",
+        host="localhost",
         port="5432",
         database="postgres",
         user="postgres",
@@ -119,7 +119,7 @@ def getParkInfo(u_lat, u_lot):
     cursor = conn.cursor()
     query = ("SELECT pklt_nm, lat, lot, ROUND(6371000 * acos(cos(radians(%s)) * cos(radians(lat)) * cos(radians(lot) - radians(%s)) + sin(radians(%s)) * sin(radians(lat)))) AS distance "
              "FROM parking_info pi2 "
-             "ORDER BY distance LMIT 5")
+             "ORDER BY distance LIMIT 5")
     cursor.execute(query, (u_lat, u_lot, u_lat))
     result = cursor.fetchall()
     conn.close()
