@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <!-- 필터 라벨 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:weightSum="3">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="주차 시간"
+            android:textSize="14sp"
+            android:textColor="#808080" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="할인 조건"
+            android:textSize="14sp"
+            android:textColor="#808080" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="정렬 기준"
+            android:textSize="14sp"
+            android:textColor="#808080" />
+    </LinearLayout>
+
+    <!-- 필터 선택 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp"
+        android:weightSum="3">
+
+        <!-- 주차 시간 버튼 -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="2시간 00분"
+            android:background="@drawable/filter_background"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="8dp"
+            android:textSize="14sp"
+            android:textColor="#000000" />
+
+        <!-- 할인 조건 버튼 -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="장애인 외2"
+            android:background="@drawable/filter_background"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="8dp"
+            android:textSize="14sp"
+            android:textColor="#000000" />
+
+        <!-- 정렬 기준 버튼 -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="가격순"
+            android:background="@drawable/filter_background"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="8dp"
+            android:textSize="14sp"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <!-- 주차장 리스트 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/parkingRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>
