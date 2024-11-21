@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/park_item_background"
+    android:padding="16dp"
+    android:layout_marginBottom="8dp">
+
+    <!-- 아이콘 -->
+    <ImageView
+        android:id="@+id/parkingIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_location_pin"
+        app:tint="#FF6F00" />
+
+    <!-- 주차장 정보 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/parkingName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="주차장_1"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/parkingPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="예상 금액: 6,000원"
+            android:textSize="14sp"
+            android:textColor="#FF6F00" />
+
+        <TextView
+            android:id="@+id/parkingAvailability"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="남은 자리: 5석"
+            android:textSize="14sp"
+            android:textColor="#007BFF" />
+
+        <TextView
+            android:id="@+id/parkingExpectedAvailability"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="예상 자리: 3석"
+            android:textSize="14sp"
+            android:textColor="#808080" />
+    </LinearLayout>
+
+    <!-- 거리 정보 -->
+    <TextView
+        android:id="@+id/parkingDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="50m"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="#FF6F00" />
+</LinearLayout>
