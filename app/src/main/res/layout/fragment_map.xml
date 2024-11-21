@@ -1,0 +1,109 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <!-- 헤더 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/rounded_bottom_border">
+
+        <!-- 앱 이름과 토글 스위치 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="  Navi'Sir"
+                android:textColor="#FFFFFF"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
+            <Switch
+                android:layout_width="68dp"
+                android:layout_height="48dp"
+                android:padding="8dp"
+                android:scaleX="1.2"
+                android:scaleY="1.2"
+                android:textColor="#FFFFFF"
+                android:thumb="@drawable/switch_thumb"
+                android:track="@drawable/switch_track" />
+        </LinearLayout>
+
+        <!-- 검색 바 -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:layout_marginTop="8dp">
+
+            <ImageView
+                android:id="@+id/search_icon"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@android:drawable/ic_menu_search"
+                app:tint="#FFFFFF"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp" />
+
+            <EditText
+                android:id="@+id/search_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/clear_icon"
+                android:layout_toEndOf="@id/search_icon"
+                android:background="@drawable/rounded_edittext_background"
+                android:hint="서울특별시청"
+                android:padding="8dp"
+                android:paddingStart="48dp" />
+
+            <ImageView
+                android:id="@+id/clear_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                app:tint="#FF7F50"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:padding="8dp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!-- 지도와 버튼을 감싸는 FrameLayout -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"> <!-- 헤더 아래, 화면의 나머지를 차지 -->
+
+        <!-- 지도 뷰 -->
+        <FrameLayout
+            android:id="@+id/tmapUILayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- 버튼 -->
+        <Button
+            android:id="@+id/testbtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="#FF7F50"
+            android:text="안심주행 시작"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+    </FrameLayout>
+</LinearLayout>
