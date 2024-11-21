@@ -55,7 +55,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@android:drawable/ic_menu_search"
-                app:tint="#FFFFFF"
+                android:tint="#FFFFFF"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="8dp" />
@@ -105,5 +105,15 @@
             android:text="안심주행 시작"
             android:textStyle="bold"
             android:textSize="16sp" />
+
     </FrameLayout>
+
+    <!-- BottomSheetFragment를 위한 컨테이너 -->
+    <FrameLayout
+        android:id="@+id/mapBottomContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" />
+
+
 </LinearLayout>

@@ -3,6 +3,10 @@ package com.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
+
+import com.myapplication.adapters.BookmarkAdapter;
+import com.myapplication.models.Bookmark;
+
 import java.util.ArrayList;
 
 public class BookmarkList extends AppCompatActivity {

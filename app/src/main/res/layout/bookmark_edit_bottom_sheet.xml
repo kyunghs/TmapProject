@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:background="@drawable/rounded_bottom_sheet"
     android:layout_gravity="bottom"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".BookmarkList"
     android:padding="16dp">

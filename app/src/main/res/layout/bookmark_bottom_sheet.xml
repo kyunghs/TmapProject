@@ -67,11 +67,14 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/editIcon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="40dp"
+                android:layout_marginStart="16dp"
                 android:src="@drawable/edit_pen_icon" />
+
+
         </LinearLayout>
     </LinearLayout>
 
@@ -94,7 +97,7 @@
             android:background="@drawable/login_button_background" />
 
         <Button
-            android:id="@+id/btnSave"
+            android:id="@+id/bookmark_save"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
