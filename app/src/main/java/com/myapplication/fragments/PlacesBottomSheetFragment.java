@@ -52,7 +52,10 @@ public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
 
         // "예" 버튼 클릭 이벤트
         dialog.findViewById(R.id.yesBtn).setOnClickListener(v -> {
-            // "예" 버튼 작업
+            // park_list.xml을 표시하는 ParkListBottomSheetFragment 호출
+            ParkListBottomSheetFragment parkListBottomSheet = new ParkListBottomSheetFragment();
+            parkListBottomSheet.show(getParentFragmentManager(), "ParkListBottomSheetFragment");
+
             dialog.dismiss(); // 다이얼로그 닫기
         });
 
@@ -62,8 +65,7 @@ public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
             PathSelectBottomSheetFragment pathSelectBottomSheetFragment = new PathSelectBottomSheetFragment();
             pathSelectBottomSheetFragment.show(getParentFragmentManager(), "PathSelectBottomSheetFragment");
 
-            // 현재 다이얼로그 닫기
-            dialog.dismiss();
+            dialog.dismiss(); // 현재 다이얼로그 닫기
         });
 
         dialog.show();
