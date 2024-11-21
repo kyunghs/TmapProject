@@ -1,0 +1,48 @@
+[33mcommit a7bbf65e4145ecc521be308c14e79c100790c502[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mnew-branch[m[33m, [m[1;31morigin/new-branch[m[33m)[m
+Merge: fdb7071 6e0391f
+Author: kokohuhusave <zhfxms12@gmail.com>
+Date:   Thu Nov 21 15:34:31 2024 +0900
+
+    Resolve merge conflicts automatically
+
+[33mcommit 6e0391fbd788a0859f5480b886c079a87ddc1157[m
+Author: 김준호 <92168240+kokohuhusave@users.noreply.github.com>
+Date:   Thu Nov 21 11:28:26 2024 +0900
+
+    Add files via upload
+
+[33mcommit 7bd70bda12e1d807ed320e78dd02a2ac790aafd3[m
+Author: 김준호 <92168240+kokohuhusave@users.noreply.github.com>
+Date:   Thu Nov 21 11:27:56 2024 +0900
+
+    Add files via upload
+
+[33mcommit 81cf86c33fc4c3508a78ea11dfa76b1f14d27c6f[m
+Author: 김준호 <92168240+kokohuhusave@users.noreply.github.com>
+Date:   Thu Nov 21 11:26:55 2024 +0900
+
+    Add files via upload
+
+[33mcommit 02340c66d52d7e9e1812b589bf208db8fdd4e3dc[m
+Author: 김준호 <92168240+kokohuhusave@users.noreply.github.com>
+Date:   Thu Nov 21 11:26:01 2024 +0900
+
+    Add files via upload
+
+[33mcommit e1fd2761496ec5fc6adfee346cfe142da6e21da2[m
+Author: 김준호 <92168240+kokohuhusave@users.noreply.github.com>
+Date:   Thu Nov 21 11:25:27 2024 +0900
+
+    Add files via upload
+
+[33mcommit fdb7071163c203e23fcafe2e9b43efd5780cda48[m
+Author: kokohuhusave <zhfxms12@gmail.com>
+Date:   Thu Nov 21 11:13:27 2024 +0900
+
+    추차장 리스트 구현
+
+[33mcommit 5d700455b9e179029d1f0808a9d37633da7cee07[m[33m ([m[1;32mmain[m[33m)[m
+Author: kokohuhusave <zhfxms12@gmail.com>
+Date:   Wed Nov 20 16:10:43 2024 +0900
+
+    즐겨찾기 리스트, 경로선택, 길안내 하단 시트, 길안내 종료 액티비티 완료
