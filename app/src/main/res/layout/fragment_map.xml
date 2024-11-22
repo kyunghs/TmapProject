@@ -9,7 +9,7 @@
     <!-- 헤더 -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="130dp"
         android:orientation="vertical"
         android:padding="16dp"
         android:background="@drawable/rounded_bottom_border">
@@ -18,16 +18,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp">
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="  Navi'Sir"
+                android:text="Navi'Sir"
                 android:textColor="#FFFFFF"
                 android:textSize="36sp"
                 android:textStyle="bold" />
@@ -46,30 +46,25 @@
         <!-- 검색 바 -->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:layout_marginTop="8dp">
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:padding="8dp" >
 
-            <ImageView
-                android:id="@+id/search_icon"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:src="@android:drawable/ic_menu_search"
-                android:tint="#FFFFFF"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="8dp" />
 
             <EditText
                 android:id="@+id/search_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/clear_icon"
-                android:layout_toEndOf="@id/search_icon"
+                android:layout_marginStart="0dp"
                 android:background="@drawable/rounded_edittext_background"
-                android:hint="서울특별시청"
+                android:drawableStart="@drawable/search_icon"
+                android:hint="  목적지를 입력하세요."
                 android:padding="8dp"
-                android:paddingStart="48dp" />
+                android:textColorHint="#F9C1AC"
+                android:textSize="14dp"
+                android:singleLine="true"
+                android:imeOptions="actionDone"
+                android:inputType="text" />
 
             <ImageView
                 android:id="@+id/clear_icon"
@@ -93,18 +88,21 @@
         <FrameLayout
             android:id="@+id/tmapUILayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent" >
+
+            <Button
+                android:id="@+id/testbtn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:background="#FF8B61"
+                android:text="안심주행 시작"
+                android:textColor="#ffffff"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </FrameLayout>
 
         <!-- 버튼 -->
-        <Button
-            android:id="@+id/testbtn"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="#FF7F50"
-            android:text="안심주행 시작"
-            android:textStyle="bold"
-            android:textSize="16sp" />
 
     </FrameLayout>
 

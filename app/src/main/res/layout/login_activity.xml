@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7F8F9"
+    android:background="#ffffff"
     android:padding="16dp">
 
     <LinearLayout
@@ -12,22 +12,27 @@
         android:gravity="center_horizontal">
 
         <!-- 상단 타이틀 -->
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Navi'Sir"
-            android:textColor="#FF6F42"
-            android:textSize="36sp"
-            android:textStyle="bold"
-            android:layout_marginTop="32dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="와 함께 달려볼까요?"
-            android:textSize="14sp"
-            android:textColor="#666666"
-            android:layout_marginTop="4dp" />
+            android:orientation="horizontal"
+            android:gravity="center" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Navi'Sir"
+                android:textColor="#FF6F42"
+                android:textSize="36dp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="8dp"
+                android:text="와 함께 달려볼까요?"
+                android:textSize="14dp"
+                android:textColor="#000000" />
+        </LinearLayout>
 
         <!-- 제목 -->
         <TextView
@@ -39,11 +44,25 @@
             android:textStyle="bold"
             android:layout_marginTop="24dp" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="10dp" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="20dp"
+            android:background="#CCCCCC" />
+
         <!-- 입력 필드 -->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="이메일을 입력하세요"
+            android:textColorHint="#B7B7B7"
+            android:textSize="16sp"
             android:background="@drawable/input_background"
             android:padding="12dp"
             android:layout_marginTop="16dp" />
@@ -52,6 +71,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="비밀번호를 입력하세요"
+            android:textColorHint="#B7B7B7"
+            android:textSize="16sp"
             android:background="@drawable/input_background"
             android:padding="12dp"
             android:layout_marginTop="8dp" />
@@ -61,6 +82,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="10dp"
             android:gravity="center_vertical">
 
             <CheckBox
@@ -78,7 +100,7 @@
                 android:text="아이디 · 비밀번호 찾기"
                 android:textColor="#FF6F42"
                 android:textSize="14sp"
-                android:layout_marginStart="120dp" />
+                android:layout_marginStart="90dp" />
 
         </LinearLayout>
 
@@ -91,7 +113,7 @@
             android:text="이메일로 로그인"
             android:background="@drawable/button_border"
             android:textColor="#FFFFFF"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="60dp"
             android:padding="12dp" />
 
         <!-- 회원가입 링크 -->
@@ -103,15 +125,17 @@
             android:textSize="14sp"
             android:textColor="#FF6F42"
             android:layout_marginTop="16dp"
-            android:gravity="center" />
+            android:layout_gravity="center" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#CCCCCC"
-            android:layout_marginVertical="16dp" />
+            android:layout_marginVertical="60dp"
+            android:background="#8C8C8C" />
 
         <!-- 카카오 로그인 -->
+
+        </LinearLayout>
 
 
     </LinearLayout>
