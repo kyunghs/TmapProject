@@ -42,12 +42,14 @@
 
 ### Development
 ![Java](https://img.shields.io/badge/Java-007396?style=flat&logo=OpenJDK&logoColor=white)
-![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=flat&logo=mariadb&logoColor=white)
+![Postgresql](https://img.shields.io/badge/postgresql-%234169E1?style=flat&logoColor=white)
 
-
+### Model
+![Arima](https://img.shields.io/badge/ARIMA-117ACA?style=flat&logoColor=white)
 
 ### IDEs/Editors
 ![Android Studio](https://img.shields.io/badge/android%20studio-346ac1?style=for-the-badge&logo=android%20studio&logoColor=white)
+![VScode](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=flat&logoColor=white)
 
 ### Deploy
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
