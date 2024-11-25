@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NaviSir</string>
+    <string name="app_name">NaviSir_test</string>
 
     <string name="login_button_text">로그인</string>
     <string name="signup_button_text">계정 만들기</string>

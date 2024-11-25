@@ -1,240 +1,255 @@
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#F7F8F9"
-    android:fillViewport="true">
+    android:layout_height="wrap_content"
+    android:background="#FF8B61">
 
-    <LinearLayout
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+            <!-- 흰색 레이아웃 -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="16dp">
+        >
+            <LinearLayout
+                android:id="@+id/white_layout"
+                android:layout_width="match_parent"
+                android:layout_height="680dp"
+                android:orientation="vertical"
+                android:layout_gravity="bottom"
+                android:background="@drawable/rounded_bottom_sheet">
 
-        <!-- 상단 배경 -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="#FF6F42" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="카리나"
+                    android:textColor="#000000"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="60dp"
+                    android:layout_gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="katarinabluu@gmail.com"
+                    android:layout_gravity="center"
+                    android:textColor="#B7B7B7"
+                    android:layout_marginTop="5dp" />
+
+                <Button
+                    android:id="@+id/edit_profile_button"
+                    android:layout_width="145dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="32dp"
+                    android:background="@drawable/profile_edit_button"
+                    android:paddingHorizontal="36dp"
+                    android:text="프로필 편집"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF" />
+
+                <!-- 추후에 내용 추가 (빈 공간) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp" />
 
 
-        <!-- 프로필 이미지 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="주차 요금 감면 해당 사항"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginBottom="15dp"
+                    android:textColor="#000000"
+                    android:textSize="24dp"
+                    android:textStyle="bold" />
+
+                <GridLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:layout_gravity="center"
+                    android:alignmentMode="alignMargins"
+                    android:columnCount="4">
+
+                    <!-- 항목 장애인 -->
+                    <LinearLayout
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/border"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="30dp"
+                            android:contentDescription="장애인"
+                            android:src="@drawable/user_1" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="장애인"
+                            android:textColor="#000000"
+                            android:layout_marginTop="4dp"
+                            android:textSize="9sp" />
+                    </LinearLayout>
+
+                    <!-- 항목 다자녀 -->
+                    <LinearLayout
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/border"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="30dp"
+                            android:contentDescription="다자녀"
+                            android:src="@drawable/user_2" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="다자녀"
+                            android:textColor="#000000"
+                            android:layout_marginTop="4dp"
+                            android:textSize="9sp" />
+                    </LinearLayout>
+
+                    <!-- 항목 저공해 차량 -->
+                    <LinearLayout
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/border"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="32dp"
+                            android:contentDescription="저공해 차량"
+                            android:src="@drawable/user_3" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="저공해 차량"
+                            android:textColor="#000000"
+                            android:layout_marginTop="4dp"
+                            android:textSize="9sp" />
+                    </LinearLayout>
+
+                    <!-- 항목 국가 유공자 -->
+                    <LinearLayout
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/border"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="30dp"
+                            android:contentDescription="국가유공자"
+                            android:src="@drawable/national_merit_icon" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="국가유공자"
+                            android:textColor="#000000"
+                            android:layout_marginTop="4dp"
+                            android:textSize="9sp" />
+                    </LinearLayout>
+
+                    <!-- 항목 모범 납세자 -->
+                    <LinearLayout
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/border"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="30dp"
+                            android:contentDescription="모범 납세자"
+                            android:src="@drawable/user_4" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="모범 납세자"
+                            android:textColor="#000000"
+                            android:layout_marginTop="4dp"
+                            android:textSize="9sp"  />
+                    </LinearLayout>
+
+                    <!-- 항목 한부모 가정 -->
+                    <LinearLayout
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/border"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="30dp"
+                            android:contentDescription="한부모 가정"
+                            android:src="@drawable/user_5" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="한부모 가정"
+                            android:textColor="#000000"
+                            android:layout_marginTop="4dp"
+                            android:textSize="9sp" />
+                    </LinearLayout>
+            </GridLayout>
+
+
+
+        </LinearLayout>
+
+        <!-- 이미지뷰 -->
         <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:src="@drawable/karina"
-
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="66dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="640dp"
+            android:contentDescription="프로필 이미지"
             android:clipToOutline="true"
             android:elevation="4dp"
-            android:scaleType="centerCrop"
-            android:layout_marginTop="-60dp"
-            android:layout_marginBottom="16dp"
-            android:contentDescription="프로필 이미지" />
+            android:src="@drawable/karina" />
+    </FrameLayout>
+    </ScrollView>
 
-        <!-- 이름 -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="karina"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:layout_marginBottom="8dp" />
-
-        <!-- 이메일 -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="karina@Gmail.com"
-            android:textSize="16sp"
-            android:textColor="#666666"
-            android:layout_marginBottom="16dp" />
-
-        <!-- 프로필 편집 버튼 -->
-        <Button
-            android:id="@+id/edit_profile_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="프로필 편집"
-            android:background="@drawable/button_border"
-            android:textColor="#FFFFFF"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:layout_marginBottom="32dp"
-            android:elevation="4dp" />
-
-        <!-- 주차 요금 감면 타이틀 -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="주차 요금 감면 해당 사항"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:layout_marginBottom="16dp" />
-
-        <!-- 감면 항목 -->
-        <!-- 감면 항목 -->
-        <GridLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:columnCount="3"
-            android:alignmentMode="alignMargins"
-            android:layout_marginBottom="32dp">
-
-            <!-- 항목 1 -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_margin="8dp"
-                android:padding="8dp"
-                android:background="@drawable/border">
-
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/user_1"
-                    android:contentDescription="장애인" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="장애인"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:gravity="center" />
-            </LinearLayout>
-
-            <!-- 항목 2 -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_margin="8dp"
-                android:padding="8dp"
-                android:background="@drawable/border">
-
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/user_2"
-                    android:contentDescription="다자녀" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="다자녀"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:gravity="center" />
-            </LinearLayout>
-
-            <!-- 항목 3 -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_margin="8dp"
-                android:padding="8dp"
-                android:background="@drawable/border">
-
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/user_3"
-                    android:contentDescription="저공해 차량" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="저공해 차량"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:gravity="center" />
-            </LinearLayout>
-
-            <!-- 항목 4 -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_margin="8dp"
-                android:padding="8dp"
-                android:background="@drawable/border">
-
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/user_1"
-                    android:contentDescription="국가유공자" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="국가유공자"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:gravity="center" />
-            </LinearLayout>
-
-            <!-- 항목 5 -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_margin="8dp"
-                android:padding="8dp"
-                android:background="@drawable/border">
-
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/user_4"
-                    android:contentDescription="모범 납세자" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="모범 납세자"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:gravity="center" />
-            </LinearLayout>
-
-            <!-- 항목 6 -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_margin="8dp"
-                android:padding="8dp"
-                android:background="@drawable/border">
-
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/user_5"
-                    android:contentDescription="한부모 가정" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="한부모 가정"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:gravity="center" />
-            </LinearLayout>
-        </GridLayout>
-
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>

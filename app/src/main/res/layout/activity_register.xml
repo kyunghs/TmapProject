@@ -3,6 +3,9 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -230,5 +233,7 @@
             android:textSize="18sp"
             android:textStyle="bold" />
         </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>
