@@ -48,7 +48,6 @@ public class HomeFragment extends Fragment {
         // "집으로" 카드 레이아웃 초기화
         LinearLayout homeCardLayout = view.findViewById(R.id.home_card_layout);
         EditText search_edit_text = view.findViewById(R.id.search_edit_text);
-        ImageView search_icon = view.findViewById(R.id.search_icon);
 
         // 클릭 이벤트 설정
         homeCardLayout.setClickable(true);

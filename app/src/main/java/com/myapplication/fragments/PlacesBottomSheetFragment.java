@@ -23,7 +23,7 @@ public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bottom_sheet_places, container, false);
+        View view = inflater.inflate(R.layout.places_list, container, false);
 
         // RecyclerView 초기화
         RecyclerView placesRecyclerView = view.findViewById(R.id.placesRecyclerView);
