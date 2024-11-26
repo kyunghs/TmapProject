@@ -16,6 +16,7 @@ import subprocess
 import time
 import logging
 import db_query
+from concurrent.futures import ThreadPoolExecutor
 
 # 로그 설정
 logging.basicConfig(level=logging.INFO)
@@ -45,17 +46,16 @@ scheduler = BackgroundScheduler()
 scheduler.add_job(func=lambda: run_script("Delete_parking_info.py"),
                   trigger="cron", minute="*/5", id="delete_parking_info")
 
+# TIME.SLEEP 사용 시 충돌 문제 발생하여 비동기로 처리
+executor = ThreadPoolExecutor()
+
 # Request 1 실행: Delete 실행 후 10초 대기 후 실행
-scheduler.add_job(func=lambda: [
-    time.sleep(10),
-    run_script("Request_parking_filtered_1.py")
-], trigger="cron", minute="*/5", id="request_parking_1")
+scheduler.add_job(func=lambda: executor.submit(run_script, "Request_parking_filtered_1.py"),
+                  trigger="cron", minute="*/5", id="request_parking_1")
 
 # Request 2 실행: Request 1 실행 후 10초 대기 후 실행
-scheduler.add_job(func=lambda: [
-    time.sleep(20),
-    run_script("Request_parking_filtered_2.py")
-], trigger="cron", minute="*/5", id="request_parking_2")
+scheduler.add_job(func=lambda: executor.submit(run_script, "Request_parking_filtered_2.py"),
+                  trigger="cron", minute="*/5", id="request_parking_2")
 
 # 자정에 all_filtered 실행
 scheduler.add_job(func=lambda: run_script("all_filterd.py"),
@@ -84,18 +84,24 @@ def run_script_endpoint():
     return jsonify({"message": f"Script {script_name} executed"}), 200
 
 
-#주차장 정보 요청
 @app.route('/get/park/info', methods=['POST'])
 def getParkInfo():
-    lat = request.json.get('lat')
-    lot = request.json.get('lot')
-    print("!!"+lat)
-    print("!!" + lot)
-    parks = db_query.getParkInfo(lat, lot)
-    if parks:
-        return jsonify({"parks": parks}), 200
-    else:
-        return jsonify({"error": "잘못된 주차장 요청입니다."}), 404
+    try:
+        data = request.json
+        print("Received data:", data)
+        lat = data.get('lat')
+        lot = data.get('lot')
+        print(f"Latitude: {lat}, Longitude: {lot}")
+
+        # Your DB query logic
+        parks = db_query.getParkInfo(lat, lot)
+        if parks:
+            return jsonify({"parks": parks}), 200
+        else:
+            return jsonify({"error": "잘못된 주차장 요청입니다."}), 404
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": "서버 오류"}), 500
 
 
 # 학습 실행 함수
