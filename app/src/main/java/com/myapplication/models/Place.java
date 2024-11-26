@@ -1,10 +1,10 @@
 package com.myapplication.models;
 
 public class Place {
-    private String name;
-    private String address;
-    private String latitude;
-    private String longitude;
+    private final String name;
+    private final String address;
+    private final String latitude;
+    private final String longitude;
 
     public Place(String name, String address, String latitude, String longitude) {
         this.name = name;
