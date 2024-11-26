@@ -50,9 +50,8 @@
                     android:layout_marginTop="8dp"
                     android:padding="8dp">
 
-
                     <EditText
-                        android:id="@+id/search_edit_text"
+                        android:id="@+id/search_home"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="0dp"

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -28,7 +29,9 @@ import androidx.lifecycle.Observer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.myapplication.R;
 import com.myapplication.TestWayPoint;
+import android.view.inputmethod.EditorInfo;
 import com.myapplication.fragments.PlacesBottomSheetFragment;
+import com.myapplication.utils.HttpSearchUtils;
 import com.skt.tmap.engine.navigation.SDKManager;
 import com.skt.tmap.engine.navigation.livedata.ObservableRouteProgressData;
 import com.skt.tmap.engine.navigation.network.ndds.CarOilType;
@@ -68,35 +71,24 @@ public class MapFragment extends Fragment {
     private final static String DEVICE_KEY = "";
     private boolean isDrivingModeOn = false;
     private NavigationFragment navigationFragment;
-    private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
 
     boolean isEDC; // edc 수신 여부
     boolean isRoute; // route data 수신 여부;
 
-    private Button testbtn;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
+        // 검색 EditText 초기화
+        EditText searchMap = view.findViewById(R.id.searchMap);
+
         // "안심주행 시작/종료" 버튼
         Button testbtn = view.findViewById(R.id.testbtn);
-        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_navigation_view); // 하단 네비게이션 뷰
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_navigation_view); // 하단 내비게이션 뷰
         FrameLayout mapBottomContainer = requireActivity().findViewById(R.id.mapBottomContainer); // map_bottom.xml 및 path_select_sheet.xml을 표시할 컨테이너
-
-        // 검색 아이콘 클릭 이벤트 설정
-        ImageView searchIcon = view.findViewById(R.id.search_icon);
-        if (searchIcon != null) {
-            Log.d(TAG, "search_icon initialized successfully.");
-            searchIcon.setOnClickListener(v -> {
-                Log.d(TAG, "search_icon clicked.");
-                showPlacesBottomSheet(); // BottomSheetFragment 열기
-            });
-        } else {
-            Log.e(TAG, "search_icon is null. Check XML ID or layout.");
-        }
 
         // "안심주행 시작/종료" 버튼 클릭 이벤트 설정
         testbtn.setOnClickListener(v -> {
@@ -117,60 +109,62 @@ public class MapFragment extends Fragment {
         });
 
         // path_select_sheet.xml 표시 및 "안내 시작" 버튼 설정
-        if (mapBottomContainer != null) {
-            mapBottomContainer.removeAllViews(); // 이전 뷰 제거
-            View pathSelectView = inflater.inflate(R.layout.path_select_sheet, mapBottomContainer, false);
-            mapBottomContainer.addView(pathSelectView);
+        mapBottomContainer.removeAllViews(); // 이전 뷰 제거
+        View pathSelectView = inflater.inflate(R.layout.path_select_sheet, mapBottomContainer, false);
+        mapBottomContainer.addView(pathSelectView);
 
-            Button guideStartButton = pathSelectView.findViewById(R.id.btnSave); // "안내 시작" 버튼
-            if (guideStartButton != null) {
-                guideStartButton.setOnClickListener(v -> {
-                    // BottomNavigationView 숨기기
-                    if (bottomNavigationView != null) {
-                        Log.d(TAG, "Hiding BottomNavigationView.");
-                        bottomNavigationView.setVisibility(View.GONE);
-                    }
+        Button guideStartButton = pathSelectView.findViewById(R.id.btnSave); // "안내 시작" 버튼
+        guideStartButton.setOnClickListener(v -> {
+            // BottomNavigationView 숨기기
+            if (bottomNavigationView != null) {
+                Log.d(TAG, "Hiding BottomNavigationView.");
+                bottomNavigationView.setVisibility(View.GONE);
+            }
 
-                    // map_bottom.xml 표시
-                    mapBottomContainer.removeAllViews(); // 이전 path_select_sheet.xml 제거
-                    View mapBottomView = inflater.inflate(R.layout.map_bottom, mapBottomContainer, false);
-                    mapBottomContainer.addView(mapBottomView);
-                    mapBottomContainer.setVisibility(View.VISIBLE);
+            // map_bottom.xml 표시
+            mapBottomContainer.removeAllViews(); // 이전 path_select_sheet.xml 제거
+            View mapBottomView = inflater.inflate(R.layout.map_bottom, mapBottomContainer, false);
+            mapBottomContainer.addView(mapBottomView);
+            mapBottomContainer.setVisibility(View.VISIBLE);
 
-                    // map_bottom.xml 내부 아이템 설정
-                    ImageView refreshIcon = mapBottomView.findViewById(R.id.refresh_icon);
-                    if (refreshIcon != null) {
-                        refreshIcon.setOnClickListener(refreshView -> {
-                            Toast.makeText(requireContext(), "새로고침 클릭됨", Toast.LENGTH_SHORT).show();
-                        });
-                    } else {
-                        Log.e(TAG, "refresh_icon is null. Check XML ID or layout.");
-                    }
-
-                    // "닫기" 버튼 설정
-                    ImageView closeButton = mapBottomView.findViewById(R.id.more_icon); // 닫기 버튼
-                    if (closeButton != null) {
-                        closeButton.setOnClickListener(closeView -> {
-                            if (bottomNavigationView != null) {
-                                Log.d(TAG, "Showing BottomNavigationView.");
-                                bottomNavigationView.setVisibility(View.VISIBLE);
-                            }
-
-                            // mapBottomContainer 초기화 및 숨기기
-                            mapBottomContainer.removeAllViews();
-                            mapBottomContainer.setVisibility(View.GONE);
-                            Log.d(TAG, "map_bottom.xml removed.");
-                        });
-                    } else {
-                        Log.e(TAG, "more_icon is null. Check XML ID or layout.");
-                    }
+            // map_bottom.xml 내부 아이템 설정
+            ImageView refreshIcon = mapBottomView.findViewById(R.id.refresh_icon);
+            if (refreshIcon != null) {
+                refreshIcon.setOnClickListener(refreshView -> {
+                    Toast.makeText(requireContext(), "새로고침 클릭됨", Toast.LENGTH_SHORT).show();
                 });
             } else {
-                Log.e(TAG, "guideStartButton is null. Check XML ID or layout.");
+                Log.e(TAG, "refresh_icon is null. Check XML ID or layout.");
             }
-        } else {
-            Log.e(TAG, "mapBottomContainer is null. Check XML ID or layout.");
-        }
+
+            // "닫기" 버튼 설정
+            ImageView closeButton = mapBottomView.findViewById(R.id.more_icon); // 닫기 버튼
+            if (closeButton != null) {
+                closeButton.setOnClickListener(closeView -> {
+                    if (bottomNavigationView != null) {
+                        Log.d(TAG, "Showing BottomNavigationView.");
+                        bottomNavigationView.setVisibility(View.VISIBLE);
+                    }
+
+                    // mapBottomContainer 초기화 및 숨기기
+                    mapBottomContainer.removeAllViews();
+                    mapBottomContainer.setVisibility(View.GONE);
+                    Log.d(TAG, "map_bottom.xml removed.");
+                });
+            } else {
+                Log.e(TAG, "more_icon is null. Check XML ID or layout.");
+            }
+        });
+
+        //목적지 검색 시
+        searchMap.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                String inputText = searchMap.getText().toString();
+                HttpSearchUtils.performSearch(inputText, requireContext(), getParentFragmentManager());
+                return true;
+            }
+            return false;
+        });
 
         // 다른 초기화 코드
         checkPermission();
@@ -178,11 +172,6 @@ public class MapFragment extends Fragment {
         return view;
     }
 
-
-    private void showPlacesBottomSheet() {
-        PlacesBottomSheetFragment placesBottomSheet = new PlacesBottomSheetFragment();
-        placesBottomSheet.show(getParentFragmentManager(), "PlacesBottomSheetFragment");
-    }
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -212,7 +201,6 @@ public class MapFragment extends Fragment {
     private void initUI(View view) {
         MapSetting d = new MapSetting();
         d.setShowClosedPopup(false);
-        fragmentManager = getFragmentManager();
 
         navigationFragment = TmapUISDK.Companion.getFragment();
 

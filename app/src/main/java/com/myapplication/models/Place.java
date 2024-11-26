@@ -1,19 +1,31 @@
 package com.myapplication.models;
+
 public class Place {
     private String name;
+    private String address;
+    private String latitude;
+    private String longitude;
 
-    // 생성자
-    public Place(String name) {
+    public Place(String name, String address, String latitude, String longitude) {
         this.name = name;
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    // getter
     public String getName() {
         return name;
     }
 
-    // setter (필요하면 사용)
-    public void setName(String name) {
-        this.name = name;
+    public String getAddress() {
+        return address;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
     }
 }
