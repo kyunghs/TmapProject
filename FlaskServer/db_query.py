@@ -4,7 +4,7 @@ from flask import jsonify
 # PostgreSQL 데이터베이스 연결 함수
 def dbConnection():
     conn = psycopg2.connect(
-        host="220.116.209.226",  # 실제 서버 IP로 변경
+        host="localhost",  # 실제 서버 IP로 변경
         port="5432",
         database="postgres",
         user="postgres",
