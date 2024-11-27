@@ -23,7 +23,11 @@ def git_webhook():
         return jsonify({"error": "No data received"}), 400
 
     def handle_git_pull():
-        subprocess.run(['git', 'pull', 'origin', 'main'], cwd="/path/to/your/project")
+        try:
+            project_dir = r"C:\TmapProject"  # Git 프로젝트의 실제 경로
+            subprocess.run(['git', 'pull', 'origin', 'main'], cwd=project_dir, check=True)
+        except Exception as e:
+            app.logger.error(f"Git pull failed: {e}")
 
     # Git Pull을 별도의 스레드에서 실행
     threading.Thread(target=handle_git_pull).start()
