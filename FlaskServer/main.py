@@ -23,6 +23,12 @@ from concurrent.futures import ThreadPoolExecutor
 logging.basicConfig(level=logging.INFO)
 logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
+logging.basicConfig(
+    filename='app.log',
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
 app = Flask(__name__)
 
 #GIT에서 소스가 push될 때마다 WEBHOOK을 이용해 자동으로 PULL 받고 서버 RELOAD
@@ -45,7 +51,8 @@ def git_webhook():
 
             # 서버 리로드 (현재 Flask 프로세스를 재시작)
             logging.info("Restarting Flask server...")
-            os.execv(__file__, ['python'] + sys.argv)
+            subprocess.Popen(["python", os.path.abspath(__file__)])
+            sys.exit(0)
 
         return jsonify({"message": "Webhook processed successfully"}), 200
     except Exception as e:
@@ -71,8 +78,13 @@ def run_script(script_name):
 scheduler = BackgroundScheduler()
 
 # Delete 실행: 매 5분마다 실행
-scheduler.add_job(func=lambda: run_script("Delete_parking_info.py"),
-                  trigger="cron", minute="*/5", id="delete_parking_info")
+scheduler.add_job(
+    func=lambda: run_script("Delete_parking_info.py"),
+    trigger="cron",
+    minute="*/5",
+    id="delete_parking_info",
+    misfire_grace_time=300  # 5분 안에 누락된 작업 실행 허용
+)
 
 # TIME.SLEEP 사용 시 충돌 문제 발생하여 비동기로 처리
 executor = ThreadPoolExecutor()
@@ -339,10 +351,7 @@ def predict_endpoint():
         logging.error(f"Error during prediction: {e}")
         return jsonify({"error": str(e)}), 500
 
-if __name__ == '__main__':
-    if not os.getenv("WERKZEUG_RUN_MAIN"):  # Flask 재시작 감지
-        if not scheduler.running:
-            logging.info("Starting BackgroundScheduler...")
-            scheduler_thread = threading.Thread(target=start_scheduler, daemon=True)
-            scheduler_thread.start()
-    app.run(host='0.0.0.0', port=8241, debug=True) # 스케쥴러와 debug 모드가 충돌날 것을 대비하여 debug false, 별도 쓰레드 동작으로 변경
+if __name__ == "__main__":
+    scheduler_thread = threading.Thread(target=start_scheduler, daemon=True)
+    scheduler_thread.start()
+    app.run(host='0.0.0.0', port=8241, debug=False)
