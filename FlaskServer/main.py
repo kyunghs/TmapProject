@@ -26,24 +26,22 @@ def git_webhook():
         if not data:
             return jsonify({"error": "No data received"}), 400
 
-        # Webhook 데이터 로그 출력 (디버깅용)
-        logging.info(f"Received Webhook data: {data}")
+        # Webhook 데이터 로그 출력
+        app.logger.info(f"Received Webhook data: {data}")
 
         # Push 이벤트 처리
         if 'ref' in data and 'refs/heads/main' in data['ref']:
-            logging.info("Push event detected. Pulling changes...")
+            app.logger.info("Push event detected. Pulling changes...")
 
             # Git Pull 명령 실행
             subprocess.run(['git', 'pull', 'origin', 'main'], cwd=os.path.dirname(os.path.abspath(__file__)))
 
-            # 서버 리로드 (현재 Flask 프로세스를 재시작)
-            logging.info("Restarting Flask server...")
-            subprocess.Popen(["python", os.path.abspath(__file__)])
-            sys.exit(0)
+            # Flask 서버를 재시작하도록 로깅
+            app.logger.info("Code updated. Please restart the server manually in production.")
 
         return jsonify({"message": "Webhook processed successfully"}), 200
     except Exception as e:
-        logging.error(f"Error processing webhook: {e}")
+        app.logger.error(f"Error processing webhook: {e}")
         return jsonify({"error": str(e)}), 500
 
 # Flask 엔드포인트
@@ -116,4 +114,4 @@ def login():
         return jsonify({"success": False, "message": "서버 오류 발생"}), 500
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8241, debug=False)
+    app.run(host='0.0.0.0', port=8241, debug=True)
