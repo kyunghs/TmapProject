@@ -48,7 +48,7 @@ df_filtered.to_csv(full_path, index=False, encoding='utf-8-sig')
 # DB 연결 설정
 db_user = 'postgres'
 db_password = 'gurtn123'
-db_host = '220.116.209.226'
+db_host = 'localhost'
 db_name = 'postgres'
 
 try:
