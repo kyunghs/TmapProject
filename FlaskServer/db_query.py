@@ -4,7 +4,7 @@ from flask import jsonify
 # PostgreSQL 데이터베이스 연결 함수
 def dbConnection():
     conn = psycopg2.connect(
-        host="localhost",
+        host="220.116.209.226",  # 실제 서버 IP로 변경
         port="5432",
         database="postgres",
         user="postgres",
@@ -13,17 +13,22 @@ def dbConnection():
     return conn
 
 
+
 # 아이디와 비밀번호를 검증하는 함수
 def checkLogin(id, password):
-    conn = dbConnection()
-    cursor = conn.cursor()
-    query = "SELECT * FROM user_info WHERE id = %s AND password = %s"
-    cursor.execute(query, (id, password))
-    user = cursor.fetchone()
-    conn.close()
+    try:
+        conn = dbConnection()
+        cursor = conn.cursor()
+        query = "SELECT * FROM user_info WHERE id = %s AND password = %s"
+        cursor.execute(query, (id, password))
+        user = cursor.fetchone()
+        print(f"checkLogin result for id={id}: {user}")  # 추가 로그
+        conn.close()
+        return user is not None
+    except Exception as e:
+        print(f"Error during checkLogin: {e}")
+        return False
 
-    # 사용자가 있으면 True, 없으면 False 반환
-    return user is not None
 
 #아이디 찾기
 def findUserId(name, user_tel, birthday):
