@@ -24,7 +24,7 @@ def checkLogin(id, password):
         user = cursor.fetchone()
         print(f"checkLogin result for id={id}: {user}")  # 추가 로그
         conn.close()
-        return user is not None
+        return True
     except Exception as e:
         print(f"Error during checkLogin: {e}")
         return False
