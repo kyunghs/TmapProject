@@ -339,8 +339,10 @@ def predict_endpoint():
         logging.error(f"Error during prediction: {e}")
         return jsonify({"error": str(e)}), 500
 
-
 if __name__ == '__main__':
-    scheduler_thread = threading.Thread(target=start_scheduler, daemon=True)
-    scheduler_thread.start()
-    app.run(host='0.0.0.0', port=8241, debug=False) # 스케쥴러와 debug 모드가 충돌날 것을 대비하여 debug false, 별도 쓰레드 동작으로 변경
+    if not os.getenv("WERKZEUG_RUN_MAIN"):  # Flask 재시작 감지
+        if not scheduler.running:
+            logging.info("Starting BackgroundScheduler...")
+            scheduler_thread = threading.Thread(target=start_scheduler, daemon=True)
+            scheduler_thread.start()
+    app.run(host='0.0.0.0', port=8241, debug=True) # 스케쥴러와 debug 모드가 충돌날 것을 대비하여 debug false, 별도 쓰레드 동작으로 변경
