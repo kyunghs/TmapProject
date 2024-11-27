@@ -1,9 +1,6 @@
-import sys
-import pandas as pd
-import glob
+import threading
+
 import os
-import pickle
-from datetime import datetime
 from flask import Flask, request, jsonify
 import subprocess
 import logging
@@ -21,28 +18,17 @@ app = Flask(__name__)
 # GIT에서 소스가 push될 때마다 WEBHOOK을 이용해 자동으로 PULL 받고 서버 RELOAD
 @app.route('/webhook', methods=['POST'])
 def git_webhook():
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({"error": "No data received"}), 400
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No data received"}), 400
 
-        # Webhook 데이터 로그 출력
-        app.logger.info(f"Received Webhook data: {data}")
+    def handle_git_pull():
+        subprocess.run(['git', 'pull', 'origin', 'main'], cwd="/path/to/your/project")
 
-        # Push 이벤트 처리
-        if 'ref' in data and 'refs/heads/main' in data['ref']:
-            app.logger.info("Push event detected. Pulling changes...")
+    # Git Pull을 별도의 스레드에서 실행
+    threading.Thread(target=handle_git_pull).start()
 
-            # Git Pull 명령 실행
-            subprocess.run(['git', 'pull', 'origin', 'main'], cwd=os.path.dirname(os.path.abspath(__file__)))
-
-            # Flask 서버를 재시작하도록 로깅
-            app.logger.info("Code updated. Please restart the server manually in production.")
-
-        return jsonify({"message": "Webhook processed successfully"}), 200
-    except Exception as e:
-        app.logger.error(f"Error processing webhook: {e}")
-        return jsonify({"error": str(e)}), 500
+    return jsonify({"message": "Webhook processed successfully"}), 200
 
 # Flask 엔드포인트
 @app.route('/', methods=['GET'])
