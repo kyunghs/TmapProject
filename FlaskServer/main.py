@@ -116,4 +116,4 @@ def login():
         return jsonify({"success": False, "message": "서버 오류 발생"}), 500
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8241, debug=False)
+    app.run(host='0.0.0.0', port=8241, debug=True)
