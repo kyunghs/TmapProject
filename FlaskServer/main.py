@@ -19,6 +19,7 @@ import logging
 import db_query
 from concurrent.futures import ThreadPoolExecutor
 
+
 # 로그 설정
 logging.basicConfig(level=logging.INFO)
 logging.getLogger('apscheduler').setLevel(logging.DEBUG)
