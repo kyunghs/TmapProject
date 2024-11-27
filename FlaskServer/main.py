@@ -1,6 +1,7 @@
 # api 제어 및 스크립트 제어 중앙컨트롤기 = 넥서스
 # made 경혁수
 # author 이민호
+import sys
 
 import pandas as pd
 import glob
@@ -23,6 +24,33 @@ logging.basicConfig(level=logging.INFO)
 logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
 app = Flask(__name__)
+
+#GIT에서 소스가 push될 때마다 WEBHOOK을 이용해 자동으로 PULL 받고 서버 RELOAD
+@app.route('/webhook', methods=['POST'])
+def git_webhook():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data received"}), 400
+
+        # Webhook 데이터 로그 출력 (디버깅용)
+        logging.info(f"Received Webhook data: {data}")
+
+        # Push 이벤트 처리
+        if 'ref' in data and 'refs/heads/main' in data['ref']:
+            logging.info("Push event detected. Pulling changes...")
+
+            # Git Pull 명령 실행
+            subprocess.run(['git', 'pull', 'origin', 'main'], cwd=os.path.dirname(os.path.abspath(__file__)))
+
+            # 서버 리로드 (현재 Flask 프로세스를 재시작)
+            logging.info("Restarting Flask server...")
+            os.execv(__file__, ['python'] + sys.argv)
+
+        return jsonify({"message": "Webhook processed successfully"}), 200
+    except Exception as e:
+        logging.error(f"Error processing webhook: {e}")
+        return jsonify({"error": str(e)}), 500
 
 
 # 스크립트 실행 함수
