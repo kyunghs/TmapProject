@@ -154,13 +154,14 @@ docs/architect_grad.PNG
 ## 🔗 링크 모음
 ### 🎨 디자인
 - **디자인**: [Figma](https://www.figma.com/design/tJnqWHKG1KCrNxWSPF2Kvg/Untitled?node-id=0-1&node-type=canvas&t=VmbrXZmhI6g2AOGG-0)
-
+- **초기디자인**: [Wihimsical](https://whimsical.com/examples-3sdG1dCAhozQVkLvy4ixLC)
 
 ### 📄 발표 및 보고서
 - **발표 PPT**: [Canva](https://www.canva.com/design/DAGC6RP3n74/A05HBoB3-GgFyGaFeOPc5Q/edit)
 - **관련 보고서**: [Google Docs](https://docs.google.com/document/d/1lCj0wN8wIg69uIxeoBo5pBCReKXNStDrfcdTOACjSys/edit?tab=t.0)
 - **계획서**: [notion](https://pyrite-lemon-590.notion.site/13cccc75e2ec80e08156f9df4b534bd6)
 - **작품설명서**: [Canva](https://www.canva.com/design/DAGXlp6Aqkc/MF3wOdzFyTE4wtwzdKvHXA/edit?utm_content=DAGXlp6Aqkc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
 ### 📊 데이터
 - **서울특별시_시영_주차정보 제공 API**: [Data Link](https://data.seoul.go.kr/dataList/OA-21709/S/1/datasetView.do)
 - **한국전력공사_전기차 충전소 운영정보**: [Data Link](https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=3068728)
