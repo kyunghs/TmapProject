@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 public class IdPwChActivity extends AppCompatActivity {
 
+
     private static final String TAG = "IdPwChActivity";
 
     private TextView tabFindId, tabFindPw;

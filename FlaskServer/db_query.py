@@ -44,13 +44,15 @@ def findUserId(name, phone):
 def findPassword(name, user_id, user_tel):
     conn = dbConnection()
     cursor = conn.cursor()
+
     query = "SELECT password FROM user_info WHERE name = %s AND id = %s AND user_tel = %s"
     cursor.execute(query, (name, user_id, user_tel))
-    user = cursor.fetchone()
+    user = cursor.fetchone()  # 튜플로 반환됨
     conn.close()
 
-    # 조건에 맞는 사용자가 있으면 비밀번호 반환, 없으면 None 반환
-    return user['password'] if user else None
+    # 튜플에서 첫 번째 값(비밀번호)을 반환하거나, 없으면 None 반환
+    return user[0] if user else None
+
 
 # 특정 주차장의 현재 주차량 조회
 def getUserCustomInfo():
