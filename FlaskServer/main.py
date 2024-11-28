@@ -243,6 +243,7 @@ def find_user_id():
             return jsonify({"success": False, "message": "조건에 맞는 사용자를 찾을 수 없습니다."}), 404
     except Exception as e:
         return jsonify({"success": False, "message": "서버 오류: " + str(e)}), 500
+    
 
 @app.route('/train_model', methods=['POST'])
 def train_model_endpoint():
