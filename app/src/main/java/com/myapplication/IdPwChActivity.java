@@ -139,7 +139,7 @@ public class IdPwChActivity extends AppCompatActivity {
             return;
         }
 
-        HttpUtils.sendJsonToServer(requestData, "/findPassword", new HttpUtils.HttpResponseCallback() {
+        HttpUtils.sendJsonToServer(requestData, "/findUserPw", new HttpUtils.HttpResponseCallback() {
             @Override
             public void onSuccess(JSONObject responseData) {
                 runOnUiThread(() -> {

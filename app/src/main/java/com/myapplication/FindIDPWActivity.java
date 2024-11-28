@@ -7,7 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.myapplication.utils.HttpUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class FindIDPWActivity extends AppCompatActivity {
     private TextView tabFindId, tabFindPw;
@@ -78,26 +84,77 @@ public class FindIDPWActivity extends AppCompatActivity {
     private void handleFindId() {
         String name = inputName.getText().toString().trim();
         String phone = inputPhone.getText().toString().trim();
+
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(phone)) {
-            Intent intent = new Intent(FindIDPWActivity.this, IdNotFoundActivity.class);
-            startActivity(intent);
-        } else {
-            Intent intent = new Intent(FindIDPWActivity.this, IdRecoveryActivity.class);
-            startActivity(intent);
+            Toast.makeText(this, "이름과 전화번호를 입력하세요.", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        // TODO: 아이디 찾기 로직을 구현하거나 API를 호출하세요.
+        Toast.makeText(this, "아이디 찾기 기능 구현 필요", Toast.LENGTH_SHORT).show();
     }
 
     // 비밀번호 찾기 로직
     private void handleFindPw() {
+        String name = inputName.getText().toString().trim();
+        String phone = inputPhone.getText().toString().trim();
         String email = inputEmail.getText().toString().trim();
-        if (TextUtils.isEmpty(email)) {
-            // 입력 값이 없을 경우 password_not_found.xml로 이동
-            Intent intent = new Intent(FindIDPWActivity.this, PwNotFoundActivity.class);
-            startActivity(intent);
-        } else {
-            // 입력 값이 있을 경우 password_recovery.xml로 이동
-            Intent intent = new Intent(FindIDPWActivity.this, PwRecoveryActivity.class);
-            startActivity(intent);
+
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(email)) {
+            Toast.makeText(this, "모든 필드를 입력하세요.", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        // 요청 데이터 생성
+        JSONObject requestData = new JSONObject();
+        try {
+            requestData.put("name", name);
+            requestData.put("id", email); // 이메일을 id로 사용
+            requestData.put("user_tel", phone);
+        } catch (JSONException e) {
+            Toast.makeText(this, "요청 데이터 생성 오류", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // API 호출
+        HttpUtils.sendJsonToServer(requestData, "/findUserPw", new HttpUtils.HttpResponseCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                runOnUiThread(() -> {
+                    try {
+                        boolean success = response.getBoolean("success");
+                        if (success) {
+                            String password = response.getString("password");
+                            navigateToPwRecoveryScreen(password);
+                        } else {
+                            String message = response.optString("message", "비밀번호를 찾을 수 없습니다.");
+                            navigateToPwNotFoundScreen(message);
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(FindIDPWActivity.this, "응답 처리 오류", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                runOnUiThread(() -> Toast.makeText(FindIDPWActivity.this, "요청 실패: " + errorMessage, Toast.LENGTH_SHORT).show());
+            }
+        });
+    }
+
+
+    // 성공적으로 비밀번호를 찾았을 때
+    private void navigateToPwRecoveryScreen(String password) {
+        Intent intent = new Intent(this, PwRecoveryActivity.class);
+        intent.putExtra("password", password);
+        startActivity(intent);
+    }
+
+    // 비밀번호를 찾지 못했을 때
+    private void navigateToPwNotFoundScreen(String message) {
+        Intent intent = new Intent(this, PwNotFoundActivity.class);
+        intent.putExtra("errorMessage", message);
+        startActivity(intent);
     }
 }

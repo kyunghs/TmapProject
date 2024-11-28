@@ -52,14 +52,20 @@ public class HttpUtils {
                     Log.d(TAG, "응답: " + responseData);
                     JSONObject jsonResponse = new JSONObject(responseData);
                     callback.onSuccess(jsonResponse); // 성공 콜백 호출
+                    Log.d("HttpUtils", "요청 URL: " + url);
+                    Log.d("HttpUtils", "요청 데이터: " + jsonData.toString());
                 } else {
                     Log.e(TAG, "응답 실패 - 코드: " + response.code());
                     callback.onFailure("응답 실패 - 코드: " + response.code());
+                    Log.d("HttpUtils", "요청 URL: " + url);
+                    Log.d("HttpUtils", "요청 데이터: " + jsonData.toString());
                 }
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
                 Log.e(TAG, "네트워크 요청 실패: " + e.getMessage());
                 callback.onFailure("네트워크 요청 실패: " + e.getMessage());
+                Log.d("HttpUtils", "요청 URL: " + url);
+                Log.d("HttpUtils", "요청 데이터: " + jsonData.toString());
             }
         }).start();
     }
