@@ -146,10 +146,10 @@ public class IdPwChActivity extends AppCompatActivity {
                         boolean success = responseData.getBoolean("success");
                         if (success) {
                             String password = responseData.getString("password");
-                            Toast.makeText(IdPwChActivity.this, "비밀번호: " + password, Toast.LENGTH_LONG).show();
+                            navigateToPwRecoveryScreen(password);
                         } else {
                             String message = responseData.optString("message", "비밀번호를 찾을 수 없습니다.");
-                            Toast.makeText(IdPwChActivity.this, message, Toast.LENGTH_SHORT).show();
+                            navigateToPwNotFoundScreen(message);
                         }
                     } catch (JSONException e) {
                         Log.e(TAG, "응답 파싱 오류: " + e.getMessage());
@@ -163,6 +163,18 @@ public class IdPwChActivity extends AppCompatActivity {
                 runOnUiThread(() -> Toast.makeText(IdPwChActivity.this, "요청 실패: " + errorMessage, Toast.LENGTH_SHORT).show());
             }
         });
+    }
+
+    private void navigateToPwRecoveryScreen(String password) {
+        Intent intent = new Intent(this, PwRecoveryActivity.class);
+        intent.putExtra("password", password);
+        startActivity(intent);
+    }
+
+    private void navigateToPwNotFoundScreen(String message) {
+        Intent intent = new Intent(this, PwNotFoundActivity.class);
+        intent.putExtra("errorMessage", message);
+        startActivity(intent);
     }
 
     private void navigateToIdRecoveryScreen(String userId) {
