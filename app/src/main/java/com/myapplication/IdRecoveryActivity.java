@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class IdRecoveryActivity extends AppCompatActivity {
@@ -11,6 +13,11 @@ public class IdRecoveryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.id_recovery);
+
+        // 전달받은 userId 설정
+        String userId = getIntent().getStringExtra("userId");
+        TextView userIdTextView = findViewById(R.id.text_user_id);
+        userIdTextView.setText(userId);
 
         // 로그인 버튼 초기화
         Button loginButton = findViewById(R.id.login_button);
