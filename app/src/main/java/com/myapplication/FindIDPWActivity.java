@@ -109,8 +109,8 @@ public class FindIDPWActivity extends AppCompatActivity {
         JSONObject requestData = new JSONObject();
         try {
             requestData.put("name", name);
-            requestData.put("id", email); // 이메일을 id로 사용
-            requestData.put("user_tel", phone);
+            requestData.put("id", email);       // 서버에서 "id"를 기대
+            requestData.put("user_tel", phone); // 서버에서 "user_tel"을 기대
         } catch (JSONException e) {
             Toast.makeText(this, "요청 데이터 생성 오류", Toast.LENGTH_SHORT).show();
             return;
@@ -142,6 +142,7 @@ public class FindIDPWActivity extends AppCompatActivity {
             }
         });
     }
+
 
 
     // 성공적으로 비밀번호를 찾았을 때

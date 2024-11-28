@@ -130,9 +130,9 @@ public class IdPwChActivity extends AppCompatActivity {
 
         JSONObject requestData = new JSONObject();
         try {
-            requestData.put("name", name);
-            requestData.put("phone", phone);
-            requestData.put("email", email);
+            requestData.put("name", name);          // 이름
+            requestData.put("id", email);           // 서버가 요구하는 ID 필드
+            requestData.put("user_tel", phone);
         } catch (JSONException e) {
             Log.e(TAG, "JSON 생성 오류: " + e.getMessage());
             Toast.makeText(this, "요청 데이터 생성 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
