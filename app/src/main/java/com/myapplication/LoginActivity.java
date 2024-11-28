@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         EditText editTextId = findViewById(R.id.editTextId);
         EditText editTextPassword = findViewById(R.id.editTextPassword);
         Button loginButton = findViewById(R.id.test);
+        TextView findIdPw = findViewById(R.id.find_id_pw);
 
         // 로그인 버튼 클릭 이벤트
         loginButton.setOnClickListener(v -> {
@@ -80,6 +82,12 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
 
+        });
+
+        // "아이디 · 비밀번호 찾기" 버튼 클릭 이벤트
+        findIdPw.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, IdPwChActivity.class);
+            startActivity(intent); // id_pw_change.xml 화면으로 이동
         });
     }
 }
