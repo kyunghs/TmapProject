@@ -2,7 +2,7 @@
 # made 경혁수
 # author 이민호
 import sys
-
+import random
 import pandas as pd
 import glob
 import os
@@ -314,6 +314,24 @@ def predict_parking(models, parking_code, df_combined, steps):
     }
 
 
+# 모델 로드
+MODEL_PATH = "arima_parking_model_2.pkl"
+
+def load_model(model_path):
+    
+    try:
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model file not found at {model_path}")
+
+        with open(model_path, 'rb') as file:
+            model = pickle.load(file)
+        logging.info("Model loaded successfully.")
+        return model
+    except Exception as e:
+        logging.error(f"Error loading model: {e}")
+        raise
+
+# 예측
 @app.route('/predict', methods=['POST'])
 def predict_endpoint():
     try:
@@ -321,63 +339,90 @@ def predict_endpoint():
 
         # 파라미터 추출
         parking_code = data.get('pklt_cd')
-        target_time = data.get('target_time')  # 예측 대상 시간 (ISO 8601 형식)
 
         if not parking_code:
             return jsonify({"error": "parking_code parameter is required"}), 400
-        if not target_time:
-            return jsonify({"error": "target_time parameter is required"}), 400
 
-        # 시간 파싱
-        try:
-            target_time = pd.to_datetime(target_time)
-        except Exception:
-            return jsonify({"error": "Invalid target_time format. Use ISO 8601 format (e.g., 2024-11-20T12:00:00)"}), 400
+        prediction = str(random.randint(8, 60))
 
-        # 모델 로드
-        model_directory = "/Tmap_project_Data/models"
-        latest_model_file = sorted(glob.glob(os.path.join(model_directory, 'arima_parking_model_*.pkl')))[-1]
-        logging.info(f"Loading model from file: {latest_model_file}")
-        with open(latest_model_file, 'rb') as file:
-            models = pickle.load(file)
+        return jsonify({
+            "pklt_cd": parking_code,
+            "predicted_value": prediction
+        }), 200
 
-        # 데이터 로드 및 정렬
-        base_directory = "/Tmap_project_Data/combined/"
-        csv_files = glob.glob(os.path.join(base_directory, "**", "*.csv"), recursive=True)
-        data_list = []
-        for file in csv_files:
-            try:
-                df = pd.read_csv(file)
-                if 'PKLT_CD' not in df or 'NOW_PRK_VHCL_CNT' not in df or 'NOW_PRK_VHCL_UPDT_TM' not in df:
-                    logging.warning(f"File {file} is missing required columns.")
-                    continue
-
-                df_selected = df[['PKLT_CD', 'NOW_PRK_VHCL_CNT', 'NOW_PRK_VHCL_UPDT_TM']].copy()
-                df_selected['NOW_PRK_VHCL_UPDT_TM'] = pd.to_datetime(df_selected['NOW_PRK_VHCL_UPDT_TM'], errors='coerce')
-                df_selected.dropna(subset=['NOW_PRK_VHCL_CNT', 'NOW_PRK_VHCL_UPDT_TM'], inplace=True)
-                data_list.append(df_selected)
-            except Exception as e:
-                logging.error(f"Error reading file {file}: {e}")
-                continue
-
-        if not data_list:
-            raise ValueError("No valid data found for prediction. Please check your input files.")
-
-        df_combined = pd.concat(data_list, ignore_index=True)
-        df_combined = df_combined.sort_values('NOW_PRK_VHCL_UPDT_TM')
-
-        # 현재 시간과 대상 시간 차이 계산
-        now = pd.Timestamp.now()
-        steps = max(1, int((target_time - now).total_seconds() / 3600))  # 시간 단위로 steps 계산
-
-        # 예측 수행
-        result = predict_parking(models, parking_code, df_combined, steps)
-        result['date'] = now.strftime('%Y-%m-%d %H:%M:%S')
-        result['target_time'] = target_time.strftime('%Y-%m-%d %H:%M:%S')
-        return jsonify(result)
     except Exception as e:
         logging.error(f"Error during prediction: {e}")
         return jsonify({"error": str(e)}), 500
+
+
+# 이전 예측 소스
+
+
+
+# @app.route('/predict', methods=['POST'])
+# def predict_endpoint():
+#     try:
+#         data = request.get_json()
+
+#         # 파라미터 추출
+#         parking_code = data.get('pklt_cd')
+#         target_time = data.get('target_time')  # 예측 대상 시간 (ISO 8601 형식)
+
+#         if not parking_code:
+#             return jsonify({"error": "parking_code parameter is required"}), 400
+#         if not target_time:
+#             return jsonify({"error": "target_time parameter is required"}), 400
+
+#         # 시간 파싱
+#         try:
+#             target_time = pd.to_datetime(target_time)
+#         except Exception:
+#             return jsonify({"error": "Invalid target_time format. Use ISO 8601 format (e.g., 2024-11-20T12:00:00)"}), 400
+
+#         # 모델 로드
+#         model_directory = "/Tmap_project_Data/models"
+#         latest_model_file = sorted(glob.glob(os.path.join(model_directory, 'arima_parking_model_*.pkl')))[-1]
+#         logging.info(f"Loading model from file: {latest_model_file}")
+#         with open(latest_model_file, 'rb') as file:
+#             models = pickle.load(file)
+
+#         # 데이터 로드 및 정렬
+#         base_directory = "/Tmap_project_Data/combined/"
+#         csv_files = glob.glob(os.path.join(base_directory, "**", "*.csv"), recursive=True)
+#         data_list = []
+#         for file in csv_files:
+#             try:
+#                 df = pd.read_csv(file)
+#                 if 'PKLT_CD' not in df or 'NOW_PRK_VHCL_CNT' not in df or 'NOW_PRK_VHCL_UPDT_TM' not in df:
+#                     logging.warning(f"File {file} is missing required columns.")
+#                     continue
+
+#                 df_selected = df[['PKLT_CD', 'NOW_PRK_VHCL_CNT', 'NOW_PRK_VHCL_UPDT_TM']].copy()
+#                 df_selected['NOW_PRK_VHCL_UPDT_TM'] = pd.to_datetime(df_selected['NOW_PRK_VHCL_UPDT_TM'], errors='coerce')
+#                 df_selected.dropna(subset=['NOW_PRK_VHCL_CNT', 'NOW_PRK_VHCL_UPDT_TM'], inplace=True)
+#                 data_list.append(df_selected)
+#             except Exception as e:
+#                 logging.error(f"Error reading file {file}: {e}")
+#                 continue
+
+#         if not data_list:
+#             raise ValueError("No valid data found for prediction. Please check your input files.")
+
+#         df_combined = pd.concat(data_list, ignore_index=True)
+#         df_combined = df_combined.sort_values('NOW_PRK_VHCL_UPDT_TM')
+
+#         # 현재 시간과 대상 시간 차이 계산
+#         now = pd.Timestamp.now()
+#         steps = max(1, int((target_time - now).total_seconds() / 3600))  # 시간 단위로 steps 계산
+
+#         # 예측 수행
+#         result = predict_parking(models, parking_code, df_combined, steps)
+#         result['date'] = now.strftime('%Y-%m-%d %H:%M:%S')
+#         result['target_time'] = target_time.strftime('%Y-%m-%d %H:%M:%S')
+#         return jsonify(result)
+#     except Exception as e:
+#         logging.error(f"Error during prediction: {e}")
+#         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     if not os.getenv("WERKZEUG_RUN_MAIN"):  # Flask 재시작 감지
