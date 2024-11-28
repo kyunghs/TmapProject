@@ -263,6 +263,29 @@ def find_password():
         return jsonify({"success": False, "message": "사용자를 찾을 수 없습니다."}), 404
 
 
+@app.route('/register', methods=['POST'])
+def register():
+    try:
+        data = request.get_json()
+        id = data.get('id')
+        password = data.get('password')
+        name = data.get('name')
+        user_tel = data.get('user_tel')
+        birthday = data.get('birthday')
+
+        if not (id and password and name and user_tel and birthday):
+            return jsonify({"success": False, "message": "모든 필드를 입력하세요."}), 400
+
+        success = db_query.register_user(id, password, name, user_tel, birthday)
+
+        if success:
+            return jsonify({"success": True, "message": "회원가입 성공!"}), 200
+        else:
+            return jsonify({"success": False, "message": "회원가입 실패. 서버 오류 발생."}), 500
+    except Exception as e:
+        print("Error in /register endpoint:", e)
+        return jsonify({"success": False, "message": f"서버 오류: {str(e)}"}), 500
+
 
 
 
