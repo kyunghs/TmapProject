@@ -244,6 +244,24 @@ def find_user_id():
     except Exception as e:
         return jsonify({"success": False, "message": "서버 오류: " + str(e)}), 500
     
+@app.route('/findUserPw', methods=['POST'])
+def find_password():
+    data = request.get_json()
+    name = data.get('name')
+    user_id = data.get('id')
+    user_tel = data.get('user_tel')
+
+    if not (name and user_id and user_tel):
+        return jsonify({"success": False, "message": "필수 항목을 모두 입력하세요."}), 400
+
+    user_password = db_query.findPassword(name, user_id, user_tel)
+    if user_password:
+        return jsonify({"success": True, "password": user_password})
+    else:
+        return jsonify({"success": False, "message": "사용자를 찾을 수 없습니다."}), 404
+
+
+
 
 @app.route('/train_model', methods=['POST'])
 def train_model_endpoint():

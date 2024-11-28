@@ -46,7 +46,7 @@ def findPassword(name, id, user_tel):
     conn = dbConnection()
     cursor = conn.cursor()
     query = "SELECT password FROM user_info WHERE name = %s AND id = %s AND user_tel = %s"
-    cursor.execute(query, (name, id, user_tel))
+    cursor.execute(query, (name, user_id, user_tel))
     user = cursor.fetchone()
     conn.close()
 
