@@ -247,18 +247,21 @@ def find_user_id():
 @app.route('/findUserPw', methods=['POST'])
 def find_password():
     data = request.get_json()
-    name = data.get('name')
-    user_id = data.get('id')
-    user_tel = data.get('user_tel')
+    name = data.get('name')  # POST 데이터에서 name 가져오기
+    user_id = data.get('id')  # POST 데이터에서 id 가져오기
+    user_tel = data.get('user_tel')  # POST 데이터에서 user_tel 가져오기
 
+    # 필수 입력 데이터 검증
     if not (name and user_id and user_tel):
         return jsonify({"success": False, "message": "필수 항목을 모두 입력하세요."}), 400
 
+    # 비밀번호 찾기 함수 호출
     user_password = db_query.findPassword(name, user_id, user_tel)
     if user_password:
         return jsonify({"success": True, "password": user_password})
     else:
         return jsonify({"success": False, "message": "사용자를 찾을 수 없습니다."}), 404
+
 
 
 

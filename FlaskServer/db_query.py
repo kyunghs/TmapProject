@@ -41,8 +41,7 @@ def findUserId(name, phone):
 
     return user[0] if user else None
 
-#비밀번호 찾기
-def findPassword(name, id, user_tel):
+def findPassword(name, user_id, user_tel):
     conn = dbConnection()
     cursor = conn.cursor()
     query = "SELECT password FROM user_info WHERE name = %s AND id = %s AND user_tel = %s"
@@ -51,7 +50,7 @@ def findPassword(name, id, user_tel):
     conn.close()
 
     # 조건에 맞는 사용자가 있으면 비밀번호 반환, 없으면 None 반환
-    return user['PASSWORD'] if user else None
+    return user['password'] if user else None
 
 # 특정 주차장의 현재 주차량 조회
 def getUserCustomInfo():
