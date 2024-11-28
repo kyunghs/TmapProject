@@ -100,7 +100,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                         if (success) {
                             Toast.makeText(RegisterActivity.this, "회원가입 성공!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                            // LoginActivity로 이동
+                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(intent);
                             finish();
                         } else {
@@ -118,4 +119,5 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
 }
