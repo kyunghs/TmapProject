@@ -145,7 +145,7 @@ Team9-Podo-FE
 ![시퀀스 다이어그램](https://github.com/user-attachments/assets/2fe12dc9-ffc9-4b59-82ff-702999658ae2)
 
 ## 🗂️ Flow Chart
-![fow](https://github.com/user-attachments/assets/fe9f6bef-5ea5-4f0e-9f4f-fa9c32a08632)
+![image](https://github.com/user-attachments/assets/6d6b0bdb-5600-41d8-ab55-e56c7fb18a12)
 
 ## 🗂️ Architect Grad
 ![fow](docs/architect_grad.PNG)
