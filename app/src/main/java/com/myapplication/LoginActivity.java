@@ -41,6 +41,11 @@ public class LoginActivity extends AppCompatActivity {
             String id = editTextId.getText().toString().trim();
             String password = editTextPassword.getText().toString().trim();
 
+            if (!isNetworkAvailable()) {
+                Toast.makeText(LoginActivity.this, "네트워크 연결을 확인하세요.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             // 입력값 검증
             if (id.isEmpty() || password.isEmpty()) {
                 Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show();
