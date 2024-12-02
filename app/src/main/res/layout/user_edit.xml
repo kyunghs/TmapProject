@@ -105,6 +105,7 @@
 
         <!-- 아이디 (이메일) -->
         <EditText
+            android:id="@+id/email_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="아이디 (이메일)"
@@ -133,6 +134,7 @@
 
         <!-- 비밀번호 -->
         <EditText
+            android:id="@+id/password_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="비밀번호"
@@ -161,6 +163,7 @@
 
         <!-- 비밀번호 확인 -->
         <EditText
+            android:id="@+id/confirm_password_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="비밀번호 확인"
@@ -189,6 +192,7 @@
 
         <!-- 이름 -->
         <EditText
+            android:id="@+id/name_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="이름"
@@ -217,6 +221,7 @@
 
         <!-- 전화번호 -->
         <EditText
+            android:id="@+id/phone_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="전화번호"

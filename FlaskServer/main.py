@@ -20,7 +20,6 @@ import db_query
 from concurrent.futures import ThreadPoolExecutor
 import jwt
 from functools import wraps
-from datetime import timedelta
 
 # Flask 비밀 키 설정
 SECRET_KEY = "tlqkf" 
@@ -31,6 +30,37 @@ logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
 app = Flask(__name__)
 
+# JWT 발급 함수
+def create_jwt(payload, expiration_minutes=120):
+    payload['exp'] = datetime.utcnow() + timedelta(minutes=expiration_minutes)
+    return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+
+# JWT 검증 함수
+def verify_jwt(token):
+    try:
+        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        return decoded_token
+    except jwt.ExpiredSignatureError:
+        return {"error": "Token expired"}
+    except jwt.InvalidTokenError:
+        return {"error": "Invalid token"}
+
+# JWT 보호를 위한 데코레이터
+def jwt_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        token = request.headers.get("Authorization")
+        if not token:
+            return jsonify({"success": False, "message": "토큰이 없습니다."}), 401
+        try:
+            token = token.split(" ")[1]  # Bearer <token>
+            decoded_token = verify_jwt(token)
+            if "error" in decoded_token:
+                return jsonify({"success": False, "message": decoded_token["error"]}), 401
+        except Exception as e:
+            return jsonify({"success": False, "message": "유효하지 않은 요청"}), 401
+        return f(*args, **kwargs, user=decoded_token)
+    return decorated_function
 
 #GIT에서 소스가 push될 때마다 WEBHOOK을 이용해 자동으로 PULL 받고 서버 RELOAD
 @app.route('/webhook', methods=['POST'])
@@ -226,7 +256,7 @@ def login():
 
         if is_valid:
             # JWT 토큰 생성
-            token = db_query.create_jwt({"id": id})
+            token = create_jwt({"id": id})
             return jsonify({"success": True, "message": "로그인 성공", "token": token}), 200
         else:
             return jsonify({"success": False, "message": "아이디 또는 비밀번호가 잘못되었습니다."}), 401
