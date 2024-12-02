@@ -1,5 +1,56 @@
 import psycopg2
 from flask import jsonify
+import jwt
+from functools import wraps
+from datetime import timedelta
+from datetime import datetime
+from flask import Flask, request, jsonify
+
+# Flask 비밀 키 설정
+SECRET_KEY = "tlqkf" 
+
+
+# JWT 발급 함수
+def create_jwt(payload, expiration_minutes=120):
+    try:
+        payload['exp'] = datetime.utcnow() + timedelta(minutes=expiration_minutes)  # timedelta 정의 문제 해결
+        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+        print(f"JWT 생성 성공: {token}")
+        return token
+    except Exception as e:
+        print(f"JWT 생성 실패: {e}")
+        raise
+
+# JWT 검증 함수
+def verify_jwt(token):
+    try:
+        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        print(f"JWT 검증 성공: {decoded_token}")
+        return decoded_token
+    except jwt.ExpiredSignatureError:
+        print("JWT 만료")
+        return {"error": "Token expired"}
+    except jwt.InvalidTokenError as e:
+        print(f"JWT 유효하지 않음: {e}")
+        return {"error": "Invalid token"}
+
+
+# JWT 보호를 위한 데코레이터
+def jwt_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        token = request.headers.get("Authorization")
+        if not token:
+            return jsonify({"success": False, "message": "토큰이 없습니다."}), 401
+        try:
+            token = token.split(" ")[1]  # Bearer <token>
+            decoded_token = verify_jwt(token)
+            if "error" in decoded_token:
+                return jsonify({"success": False, "message": decoded_token["error"]}), 401
+        except Exception as e:
+            return jsonify({"success": False, "message": "유효하지 않은 요청"}), 401
+        return f(*args, **kwargs, user=decoded_token)
+    return decorated_function
 
 # PostgreSQL 데이터베이스 연결 함수
 def dbConnection():

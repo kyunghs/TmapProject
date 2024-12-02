@@ -1,9 +1,11 @@
 package com.myapplication;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,12 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
+            // 로딩 표시
+            progressDialog = new ProgressDialog(LoginActivity.this);
+            progressDialog.setMessage("로그인 중...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
             // JSON 데이터 생성
             JSONObject loginData = new JSONObject();
             try {
@@ -51,18 +60,22 @@ public class LoginActivity extends AppCompatActivity {
                 loginData.put("password", password);
             } catch (JSONException e) {
                 Log.e(TAG, "JSON 생성 오류: " + e.getMessage());
+                progressDialog.dismiss();
                 Toast.makeText(LoginActivity.this, "로그인 요청 생성 중 오류 발생", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // 서버 요청
             HttpUtils.sendJsonToServer(loginData, "/Login", new HttpUtils.HttpResponseCallback() {
-
-            @Override
+                @Override
                 public void onSuccess(JSONObject responseData) {
+                    progressDialog.dismiss();
                     try {
                         boolean loginSuccess = responseData.getBoolean("success");
                         if (loginSuccess) {
+                            String token = responseData.getString("token");
+                            saveToken(token);
+
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -78,11 +91,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(String errorMessage) {
+                    progressDialog.dismiss();
                     Log.e(TAG, "로그인 실패: " + errorMessage);
                     runOnUiThread(() -> Toast.makeText(LoginActivity.this, "서버 요청 중 오류 발생: " + errorMessage, Toast.LENGTH_SHORT).show());
                 }
             });
-
         });
 
         // "아이디 · 비밀번호 찾기" 버튼 클릭 이벤트
@@ -96,5 +109,20 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent); // 회원가입 화면으로 이동
         });
+    }
+
+    // 토큰 저장 함수
+    private void saveToken(String token) {
+        getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                .edit()
+                .putString("JWT_TOKEN", token)
+                .apply();
+    }
+
+    // 네트워크 상태 확인 함수
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnected();
     }
 }
