@@ -20,6 +20,7 @@ import db_query
 from concurrent.futures import ThreadPoolExecutor
 import jwt
 from functools import wraps
+from datetime import timedelta
 
 # Flask 비밀 키 설정
 SECRET_KEY = "tlqkf" 
@@ -32,18 +33,28 @@ app = Flask(__name__)
 
 # JWT 발급 함수
 def create_jwt(payload, expiration_minutes=120):
-    payload['exp'] = datetime.utcnow() + timedelta(minutes=expiration_minutes)
-    return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+    try:
+        payload['exp'] = datetime.utcnow() + timedelta(minutes=expiration_minutes)  # timedelta 정의 문제 해결
+        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+        print(f"JWT 생성 성공: {token}")
+        return token
+    except Exception as e:
+        print(f"JWT 생성 실패: {e}")
+        raise
 
 # JWT 검증 함수
 def verify_jwt(token):
     try:
         decoded_token = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        print(f"JWT 검증 성공: {decoded_token}")
         return decoded_token
     except jwt.ExpiredSignatureError:
+        print("JWT 만료")
         return {"error": "Token expired"}
-    except jwt.InvalidTokenError:
+    except jwt.InvalidTokenError as e:
+        print(f"JWT 유효하지 않음: {e}")
         return {"error": "Invalid token"}
+
 
 # JWT 보호를 위한 데코레이터
 def jwt_required(f):

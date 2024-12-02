@@ -134,4 +134,3 @@ def getParkInfo(u_lat, u_lot):
         for row in result
     ]
     return parking_list
-
