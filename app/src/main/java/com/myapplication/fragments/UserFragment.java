@@ -48,21 +48,18 @@ public class UserFragment extends Fragment {
     }
 
     private void fetchUserInfo() {
-        // SharedPreferences에서 토큰 가져오기
-        String token = getActivity()
+        String token = "Bearer " + getActivity()
                 .getSharedPreferences("AuthPrefs", Context.MODE_PRIVATE)
                 .getString("auth_token", "");
 
-        if (token == null || token.isEmpty()) {
+        if (token.isEmpty()) {
             Log.e("UserFragment", "토큰이 없습니다. 로그인을 확인하세요.");
             Toast.makeText(getActivity(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        token = "Bearer " + token;
-        Log.d("UserFragment", "토큰: " + token);
-
-        HttpUtils.sendJsonToServerWithAuth(null, "/getUserInfo", token, new HttpUtils.HttpResponseCallback() {
+        // GET 요청으로 사용자 정보 가져오기
+        HttpUtils.sendGetRequestWithAuth("/getUserInfo", token, new HttpUtils.HttpResponseCallback() {
             @Override
             public void onSuccess(JSONObject responseData) {
                 getActivity().runOnUiThread(() -> {
@@ -73,11 +70,11 @@ public class UserFragment extends Fragment {
                             JSONObject userData = responseData.optJSONObject("data");
                             if (userData != null) {
                                 String name = userData.optString("name", "알 수 없음");
-                                //String phone = userData.optString("user_tel", "알 수 없음");
+                                //String user_tel = userData.optString("user_tel", "알 수 없음");
 
                                 // UI 업데이트
                                 nameText.setText(name);
-                                //phoneText.setText(phone);
+                                //phoneText.setText(user_tel);
 
                                 Log.d("UserFragment", "UI 업데이트 완료 - 이름: " + name);
                             } else {
@@ -103,4 +100,5 @@ public class UserFragment extends Fragment {
             }
         });
     }
+
 }

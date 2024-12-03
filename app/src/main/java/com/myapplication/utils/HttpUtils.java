@@ -76,4 +76,40 @@ public class HttpUtils {
             }
         }).start();
     }
+
+    // HttpUtils 클래스에 GET 요청 메서드 추가
+    public static void sendGetRequestWithAuth(String endpoint, String token, HttpResponseCallback callback) {
+        OkHttpClient client = new OkHttpClient();
+        String url = SERVER_URL + endpoint;
+
+        // 요청 생성
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Authorization", token)
+                .build();
+
+        new Thread(() -> {
+            try {
+                Log.d(TAG, "요청 URL: " + url);
+
+                Response response = client.newCall(request).execute();
+
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseData = response.body().string();
+                    Log.d(TAG, "응답 성공: " + responseData);
+
+                    JSONObject jsonResponse = new JSONObject(responseData);
+                    new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(jsonResponse));
+                } else {
+                    Log.e(TAG, "응답 실패 - 코드: " + response.code());
+                    new Handler(Looper.getMainLooper()).post(() -> callback.onFailure("응답 실패 - 코드: " + response.code()));
+                }
+            } catch (IOException | JSONException e) {
+                Log.e(TAG, "네트워크 요청 실패: " + e.getMessage());
+                new Handler(Looper.getMainLooper()).post(() -> callback.onFailure("네트워크 요청 실패: " + e.getMessage()));
+            }
+        }).start();
+    }
+
 }
