@@ -348,25 +348,30 @@ def register():
 # 사용자 정보 가져오기
 @app.route('/getUserInfo', methods=['GET'])
 @jwt_required
-def get_user_info():
+def get_user_info(user=None):  # jwt_required 데코레이터에서 전달된 'user'를 인수로 받음
     try:
-        # 사용자 ID를 JWT에서 가져옴
-        user_id = request.user['id']
+        # JWT 데코레이터에서 전달된 'user' 사용
+        if not user or 'id' not in user:
+            return jsonify({"success": False, "message": "유효하지 않은 사용자 정보입니다."}), 400
+
+        user_id = user['id']  # JWT에서 가져온 사용자 ID
+
         # DB에서 사용자 정보 조회
-        user = db_query.get_user_info_by_id(user_id)  # 사용자 정보 가져오는 쿼리
-        if user:
+        user_data = db_query.get_user_info_by_id(user_id)  # 사용자 정보를 가져오는 쿼리 함수
+        if user_data:
             return jsonify({
                 "success": True,
                 "data": {
-                    "name": user['name'],
-                    "phone": user['phone'],
-                    "email": user.get('email', ''),  # email이 존재하지 않을 경우 빈 값
+                    "name": user_data['name'],
+                    "phone": user_data['phone'],
+                    "email": user_data.get('email', ''),  # email이 존재하지 않을 경우 빈 값
                 }
             }), 200
         else:
             return jsonify({"success": False, "message": "사용자를 찾을 수 없습니다."}), 404
     except Exception as e:
         return jsonify({"success": False, "message": f"서버 오류: {str(e)}"}), 500
+
 
 @app.route('/updateUserInfo', methods=['POST'])
 @jwt_required
