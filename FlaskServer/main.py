@@ -91,83 +91,83 @@ def git_webhook():
 
 
 # 스크립트 실행 함수 (수정된 부분)
-def run_script(script_name):
-    try:
-        script_path = os.path.abspath(os.path.join("scripts", script_name))
-        if not os.path.isfile(script_path):
-            raise FileNotFoundError(f"Script {script_name} not found at {script_path}")
+# def run_script(script_name):
+#     try:
+#         script_path = os.path.abspath(os.path.join("scripts", script_name))
+#         if not os.path.isfile(script_path):
+#             raise FileNotFoundError(f"Script {script_name} not found at {script_path}")
 
-        # 스크립트 실행
-        result = subprocess.run(
-            ["python", script_path], capture_output=True, text=True
-        )
+#         # 스크립트 실행
+#         result = subprocess.run(
+#             ["python", script_path], capture_output=True, text=True
+#         )
 
-        # 로그 기록
-        logging.info(f"Running script: {script_name}")
-        logging.info(f"Output: {result.stdout}")
+#         # 로그 기록
+#         logging.info(f"Running script: {script_name}")
+#         logging.info(f"Output: {result.stdout}")
 
-        # 에러 처리
-        if result.stderr:
-            logging.error(f"Error in script {script_name}: {result.stderr}")
-            return {"success": False, "error": result.stderr.strip()}
+#         # 에러 처리
+#         if result.stderr:
+#             logging.error(f"Error in script {script_name}: {result.stderr}")
+#             return {"success": False, "error": result.stderr.strip()}
 
-        # 성공 응답
-        return {"success": True, "output": result.stdout.strip()}
-    except Exception as e:
-        logging.error(f"Exception while running script {script_name}: {e}")
-        return {"success": False, "error": str(e)}
+#         # 성공 응답
+#         return {"success": True, "output": result.stdout.strip()}
+#     except Exception as e:
+#         logging.error(f"Exception while running script {script_name}: {e}")
+#         return {"success": False, "error": str(e)}
 
-# 스케줄러 초기화
-scheduler = BackgroundScheduler()
+# # 스케줄러 초기화
+# scheduler = BackgroundScheduler()
 
-# Delete 실행: 매 5분마다 실행
-scheduler.add_job(func=lambda: run_script("Delete_parking_info.py"),
-                  trigger="cron", minute="*/5", id="delete_parking_info")
-# 커밋 테스트 이거야
-# 커밋 테스트 이거야
-# 커밋 테스트 이거야
-# TIME.SLEEP 사용 시 충돌 문제 발생하여 비동기로 처리
-executor = ThreadPoolExecutor()
+# # Delete 실행: 매 5분마다 실행
+# scheduler.add_job(func=lambda: run_script("Delete_parking_info.py"),
+#                   trigger="cron", minute="*/5", id="delete_parking_info")
+# # 커밋 테스트 이거야
+# # 커밋 테스트 이거야
+# # 커밋 테스트 이거야
+# # TIME.SLEEP 사용 시 충돌 문제 발생하여 비동기로 처리
+# executor = ThreadPoolExecutor()
 
-# Request 1 실행: Delete 실행 후 10초 대기 후 실행
-scheduler.add_job(func=lambda: executor.submit(run_script, "Request_parking_filtered_1.py"),
-                  trigger="cron", minute="*/5", id="request_parking_1")
+# # Request 1 실행: Delete 실행 후 10초 대기 후 실행
+# scheduler.add_job(func=lambda: executor.submit(run_script, "Request_parking_filtered_1.py"),
+#                   trigger="cron", minute="*/5", id="request_parking_1")
 
-# Request 2 실행: Request 1 실행 후 10초 대기 후 실행
-scheduler.add_job(func=lambda: executor.submit(run_script, "Request_parking_filtered_2.py"),
-                  trigger="cron", minute="*/5", id="request_parking_2")
+# # Request 2 실행: Request 1 실행 후 10초 대기 후 실행
+# scheduler.add_job(func=lambda: executor.submit(run_script, "Request_parking_filtered_2.py"),
+#                   trigger="cron", minute="*/5", id="request_parking_2")
 
-# 자정에 all_filtered 실행
-scheduler.add_job(func=lambda: run_script("all_filterd.py"),
-                  trigger="cron", hour=0, minute=0, id="all_filtered")
+# # 자정에 all_filtered 실행
+# scheduler.add_job(func=lambda: run_script("all_filterd.py"),
+#                   trigger="cron", hour=0, minute=0, id="all_filtered")
 
-# 자정에 모델 학습
-# scheduler.add_job(func=lambda: run_train_model(),
-#                   trigger="cron", hour=1, minute=10, id="train_model_scheduler")
+# # 자정에 모델 학습
+# # scheduler.add_job(func=lambda: run_train_model(),
+# #                   trigger="cron", hour=1, minute=10, id="train_model_scheduler")
 
-# 스케줄러 스레드 시작
-def start_scheduler():
-    scheduler.start()
+# # 스케줄러 스레드 시작
+# def start_scheduler():
+#     scheduler.start()
 
-# Flask 엔드포인트
-@app.route('/', methods=['GET'])
-def index():
-    return "Index Page - Parking Scheduler"
+# # Flask 엔드포인트
+# @app.route('/', methods=['GET'])
+# def index():
+#     return "Index Page - Parking Scheduler"
 
-# Flask 엔드포인트에서 스크립트 실행 함수 호출 시 수정
-@app.route('/run_script', methods=['POST'])
-def run_script_endpoint():
-    data = request.get_json()
-    script_name = data.get('script_name')
-    if not script_name:
-        return jsonify({"success": False, "message": "script_name is required"}), 400
+# # Flask 엔드포인트에서 스크립트 실행 함수 호출 시 수정
+# @app.route('/run_script', methods=['POST'])
+# def run_script_endpoint():
+#     data = request.get_json()
+#     script_name = data.get('script_name')
+#     if not script_name:
+#         return jsonify({"success": False, "message": "script_name is required"}), 400
 
-    # 결과 반환
-    result = run_script(script_name)
-    if result.get("success"):
-        return jsonify({"message": f"Script {script_name} executed successfully", "output": result.get("output")}), 200
-    else:
-        return jsonify({"error": result.get("error")}), 500
+#     # 결과 반환
+#     result = run_script(script_name)
+#     if result.get("success"):
+#         return jsonify({"message": f"Script {script_name} executed successfully", "output": result.get("output")}), 200
+#     else:
+#         return jsonify({"error": result.get("error")}), 500
 
 
 @app.route('/get/park/info', methods=['POST'])
