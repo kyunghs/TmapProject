@@ -1,7 +1,6 @@
 package com.myapplication.fragments;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,10 +18,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 
@@ -30,7 +27,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.myapplication.R;
 import com.myapplication.TestWayPoint;
 import android.view.inputmethod.EditorInfo;
-import com.myapplication.fragments.PlacesBottomSheetFragment;
 import com.myapplication.utils.HttpSearchUtils;
 import com.skt.tmap.engine.navigation.SDKManager;
 import com.skt.tmap.engine.navigation.livedata.ObservableRouteProgressData;
@@ -65,10 +61,6 @@ public class MapFragment extends Fragment {
 
     private static final String TAG = "Develop";
 
-    private final static String CLIENT_ID = "";
-    private final static String API_KEY = "qfhtGmuYyk3bKgfAwRxra5UIpzImSFxU9Wg1uWlp";
-    private final static String USER_KEY = "";
-    private final static String DEVICE_KEY = "";
     private boolean isDrivingModeOn = false;
     private NavigationFragment navigationFragment;
     private FragmentTransaction transaction;
