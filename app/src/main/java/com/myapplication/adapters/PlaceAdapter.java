@@ -35,6 +35,8 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
     public void onBindViewHolder(@NonNull PlaceViewHolder holder, int position) {
         Place place = placeList.get(position);
         holder.placeName.setText(place.getName());
+        holder.addrName.setText(place.getAddress());
+        holder.distName.setText(place.getDistance());
         holder.itemView.setOnClickListener(v -> listener.onPlaceClick(place));
     }
 
@@ -49,10 +51,14 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
 
     public static class PlaceViewHolder extends RecyclerView.ViewHolder {
         TextView placeName;
+        TextView addrName;
+        TextView distName;
 
         public PlaceViewHolder(@NonNull View itemView) {
             super(itemView);
             placeName = itemView.findViewById(R.id.placeName);
+            addrName = itemView.findViewById(R.id.addrName);
+            distName = itemView.findViewById(R.id.distName);
         }
     }
 }
