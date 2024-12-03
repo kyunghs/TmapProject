@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import com.myapplication.R;
 import com.myapplication.utils.HttpSearchUtils;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class HomeFragment extends Fragment {
 
@@ -32,8 +33,12 @@ public class HomeFragment extends Fragment {
         homeCardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // BookmarkBottomSheetFragment 호출
+                // BookmarkBottomSheetFragment 호출 및 스타일 지정
                 BookmarkBottomSheetFragment bottomSheet = new BookmarkBottomSheetFragment();
+                bottomSheet.setStyle(
+                        BottomSheetDialogFragment.STYLE_NORMAL,
+                        R.style.AppBottomSheetDialogBorder20WhiteTheme
+                );
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 bottomSheet.show(fragmentManager, bottomSheet.getTag());
             }

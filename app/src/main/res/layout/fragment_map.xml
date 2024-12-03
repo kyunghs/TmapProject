@@ -56,8 +56,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
+                android:drawableStart="@drawable/search_icon"
                 android:background="@drawable/rounded_edittext_background"
-                android:hint="          목적지를 입력하세요."
+                android:hint=" 목적지를 입력하세요."
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:padding="8dp"
@@ -65,15 +66,15 @@
                 android:textColorHint="#F9C1AC"
                 android:textSize="14dp" />
 
-            <ImageView
-                android:id="@+id/search_icon"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:src="@android:drawable/ic_menu_search"
-                app:tint="#FF7F50"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="4dp" />
+<!--            <ImageView-->
+<!--                android:id="@+id/search_icon"-->
+<!--                android:layout_width="35dp"-->
+<!--                android:layout_height="35dp"-->
+<!--                android:src="@android:drawable/ic_menu_search"-->
+<!--                app:tint="#FF7F50"-->
+<!--                android:layout_alignParentStart="true"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:layout_marginStart="4dp" />-->
 
             <ImageView
                 android:id="@+id/clear_icon"

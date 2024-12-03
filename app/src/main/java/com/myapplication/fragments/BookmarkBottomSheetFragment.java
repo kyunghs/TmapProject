@@ -24,6 +24,10 @@ public class BookmarkBottomSheetFragment extends BottomSheetDialogFragment {
             // BookmarkEditBottomSheetFragment 표시
             FragmentManager fragmentManager = getParentFragmentManager();
             BookmarkEditBottomSheetFragment editBottomSheet = new BookmarkEditBottomSheetFragment();
+            editBottomSheet.setStyle(
+                    BottomSheetDialogFragment.STYLE_NORMAL,
+                    R.style.AppBottomSheetDialogBorder20WhiteTheme
+            );
             editBottomSheet.show(fragmentManager, editBottomSheet.getTag());
         });
 

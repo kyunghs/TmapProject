@@ -3,15 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/rounded_bottom_sheet_background">
+    android:layout_gravity="bottom" >
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="장소 목록"
+        android:text="목적지 선택"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:background="@drawable/rounded_bottom_sheet"
         android:gravity="center"
         android:padding="16dp" />
 
