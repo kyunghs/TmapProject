@@ -20,6 +20,7 @@ import db_query
 from concurrent.futures import ThreadPoolExecutor
 import jwt
 from functools import wraps
+from datetime import datetime, timedelta
 
 # Flask 비밀 키 설정
 SECRET_KEY = "tlqkf" 
