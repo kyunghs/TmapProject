@@ -123,7 +123,7 @@ scheduler = BackgroundScheduler()
 # Delete 실행: 매 5분마다 실행
 scheduler.add_job(func=lambda: run_script("Delete_parking_info.py"),
                   trigger="cron", minute="*/5", id="delete_parking_info")
-
+# W주석 테스트
 # TIME.SLEEP 사용 시 충돌 문제 발생하여 비동기로 처리
 executor = ThreadPoolExecutor()
 
