@@ -8,7 +8,6 @@ import glob
 import os
 import re
 import pickle
-from datetime import datetime
 from flask import Flask, request, jsonify
 from statsmodels.tsa.arima.model import ARIMA
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -91,19 +90,32 @@ def git_webhook():
         return jsonify({"error": str(e)}), 500
 
 
-# 스크립트 실행 함수
+# 스크립트 실행 함수 (수정된 부분)
 def run_script(script_name):
     try:
         script_path = os.path.abspath(os.path.join("scripts", script_name))
         if not os.path.isfile(script_path):
             raise FileNotFoundError(f"Script {script_name} not found at {script_path}")
-        result = subprocess.run(["python", script_path], capture_output=True, text=True)
+
+        # 스크립트 실행
+        result = subprocess.run(
+            ["python", script_path], capture_output=True, text=True
+        )
+
+        # 로그 기록
         logging.info(f"Running script: {script_name}")
         logging.info(f"Output: {result.stdout}")
+
+        # 에러 처리
         if result.stderr:
-            logging.error(f"Error: {result.stderr}")
+            logging.error(f"Error in script {script_name}: {result.stderr}")
+            return {"success": False, "error": result.stderr.strip()}
+
+        # 성공 응답
+        return {"success": True, "output": result.stdout.strip()}
     except Exception as e:
         logging.error(f"Exception while running script {script_name}: {e}")
+        return {"success": False, "error": str(e)}
 
 # 스케줄러 초기화
 scheduler = BackgroundScheduler()
@@ -140,14 +152,20 @@ def start_scheduler():
 def index():
     return "Index Page - Parking Scheduler"
 
+# Flask 엔드포인트에서 스크립트 실행 함수 호출 시 수정
 @app.route('/run_script', methods=['POST'])
 def run_script_endpoint():
     data = request.get_json()
     script_name = data.get('script_name')
     if not script_name:
-        return jsonify({"error": "script_name is required"}), 400
-    run_script(script_name)
-    return jsonify({"message": f"Script {script_name} executed"}), 200
+        return jsonify({"success": False, "message": "script_name is required"}), 400
+
+    # 결과 반환
+    result = run_script(script_name)
+    if result.get("success"):
+        return jsonify({"message": f"Script {script_name} executed successfully", "output": result.get("output")}), 200
+    else:
+        return jsonify({"error": result.get("error")}), 500
 
 
 @app.route('/get/park/info', methods=['POST'])
