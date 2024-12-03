@@ -1,7 +1,9 @@
 package com.myapplication.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +31,8 @@ public class UserFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_user, container, false);
 
         // UI 요소 초기화
-        nameText = view.findViewById(R.id.name_text); // 이름 텍스트
-        //phoneText = view.findViewById(R.id.phone_text); // 전화번호 텍스트
+        nameText = view.findViewById(R.id.name_text);
+        //phoneText = view.findViewById(R.id.phone_text);
         Button editProfileButton = view.findViewById(R.id.edit_profile_button);
 
         // 유저 정보 로드
@@ -46,31 +48,58 @@ public class UserFragment extends Fragment {
     }
 
     private void fetchUserInfo() {
-        HttpUtils.sendJsonToServer(null, "/getUserInfo", new HttpUtils.HttpResponseCallback() {
+        // SharedPreferences에서 토큰 가져오기
+        String token = getActivity()
+                .getSharedPreferences("AuthPrefs", Context.MODE_PRIVATE)
+                .getString("auth_token", "");
+
+        if (token == null || token.isEmpty()) {
+            Log.e("UserFragment", "토큰이 없습니다. 로그인을 확인하세요.");
+            Toast.makeText(getActivity(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        token = "Bearer " + token;
+        Log.d("UserFragment", "토큰: " + token);
+
+        HttpUtils.sendJsonToServerWithAuth(null, "/getUserInfo", token, new HttpUtils.HttpResponseCallback() {
             @Override
             public void onSuccess(JSONObject responseData) {
                 getActivity().runOnUiThread(() -> {
                     try {
-                        if (responseData.getBoolean("success")) {
-                            JSONObject userData = responseData.getJSONObject("data");
-                            String name = userData.getString("name");
-                            //String phone = userData.getString("phone");
+                        Log.d("UserFragment", "서버 응답: " + responseData.toString());
 
-                            // UI 업데이트
-                            nameText.setText(name);
-                            //phoneText.setText(phone);
+                        if (responseData.getBoolean("success")) {
+                            JSONObject userData = responseData.optJSONObject("data");
+                            if (userData != null) {
+                                String name = userData.optString("name", "알 수 없음");
+                                //String phone = userData.optString("user_tel", "알 수 없음");
+
+                                // UI 업데이트
+                                nameText.setText(name);
+                                //phoneText.setText(phone);
+
+                                Log.d("UserFragment", "UI 업데이트 완료 - 이름: " + name);
+                            } else {
+                                Toast.makeText(getActivity(), "유효한 사용자 데이터를 받을 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
-                            Toast.makeText(getActivity(), "유저 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            String message = responseData.optString("message", "오류 발생");
+                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
-                        Toast.makeText(getActivity(), "데이터 처리 오류", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "데이터 처리 오류: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.e("UserFragment", "JSONException", e);
                     }
                 });
             }
 
             @Override
             public void onFailure(String errorMessage) {
-                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "오류: " + errorMessage, Toast.LENGTH_SHORT).show());
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getActivity(), "서버 요청 실패: " + errorMessage, Toast.LENGTH_SHORT).show();
+                    Log.e("UserFragment", "요청 실패: " + errorMessage);
+                });
             }
         });
     }
