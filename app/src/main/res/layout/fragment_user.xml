@@ -23,6 +23,7 @@
                 android:background="@drawable/rounded_bottom_sheet">
 
                 <TextView
+                    android:id="@+id/name_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="카리나"

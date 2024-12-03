@@ -345,6 +345,44 @@ def register():
         return jsonify({"success": False, "message": f"서버 오류: {str(e)}"}), 500
 
 
+# 사용자 정보 가져오기
+@app.route('/getUserInfo', methods=['GET'])
+@jwt_required
+def get_user_info():
+    try:
+        # 사용자 ID를 JWT에서 가져옴
+        user_id = request.user['id']
+        # DB에서 사용자 정보 조회
+        user = db_query.get_user_info_by_id(user_id)  # 사용자 정보 가져오는 쿼리
+        if user:
+            return jsonify({
+                "success": True,
+                "data": {
+                    "name": user['name'],
+                    "phone": user['phone'],
+                    "email": user.get('email', ''),  # email이 존재하지 않을 경우 빈 값
+                }
+            }), 200
+        else:
+            return jsonify({"success": False, "message": "사용자를 찾을 수 없습니다."}), 404
+    except Exception as e:
+        return jsonify({"success": False, "message": f"서버 오류: {str(e)}"}), 500
+
+@app.route('/updateUserInfo', methods=['POST'])
+@jwt_required
+def update_user_info(user):
+    try:
+        user_id = user.get("id")
+        data = request.json
+
+        # 유저 정보 업데이트
+        success = db_query.update_user_info(user_id, data)
+        if success:
+            return jsonify({"message": "유저 정보가 업데이트되었습니다."}), 200
+        else:
+            return jsonify({"message": "업데이트 실패"}), 400
+    except Exception as e:
+        return jsonify({"message": "서버 오류"}), 500
 
 
 @app.route('/train_model', methods=['POST'])

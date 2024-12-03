@@ -45,12 +45,13 @@ def jwt_required(f):
             return jsonify({"success": False, "message": "토큰이 없습니다."}), 401
         try:
             token = token.split(" ")[1]  # Bearer <token>
-            decoded_token = verify_jwt(token)
-            if "error" in decoded_token:
-                return jsonify({"success": False, "message": decoded_token["error"]}), 401
-        except Exception as e:
-            return jsonify({"success": False, "message": "유효하지 않은 요청"}), 401
-        return f(*args, **kwargs, user=decoded_token)
+            decoded_token = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            request.user = decoded_token  # decoded_token에 사용자 정보 저장
+        except jwt.ExpiredSignatureError:
+            return jsonify({"success": False, "message": "토큰이 만료되었습니다."}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({"success": False, "message": "유효하지 않은 토큰입니다."}), 401
+        return f(*args, **kwargs)
     return decorated_function
 
 # PostgreSQL 데이터베이스 연결 함수
@@ -63,8 +64,6 @@ def dbConnection():
         password="gurtn123"
     )
     return conn
-
-
 
 # 아이디와 비밀번호를 검증하는 함수
 def checkLogin(id, password):
