@@ -362,7 +362,7 @@ def get_user_info(user=None):  # JWT 데코레이터로부터 전달된 사용�
                 "success": True,
                 "data": {
                     "name": user_data['name'],
-                    "phone": user_data['phone'],
+                    "user_tel": user_data['phone'],
                     "email": user_data.get('email', ''),  # 이메일이 없으면 빈 값
                 }
             }), 200

@@ -88,7 +88,7 @@ def get_user_info_by_id(user_id):
     try:
         # 사용자 정보를 가져오는 SQL 쿼리
         query = """
-        SELECT id, name, phone, email
+        SELECT id, name, user_tel
         FROM user_info
         WHERE id = %s
         """
@@ -100,8 +100,8 @@ def get_user_info_by_id(user_id):
             return {
                 "id": result[0],
                 "name": result[1],
-                "phone": result[2],
-                "email": result[3] if len(result) > 3 else None
+                "user_tel": result[2],
+                
             }
         else:
             return None
