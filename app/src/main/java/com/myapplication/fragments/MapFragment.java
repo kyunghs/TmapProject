@@ -176,25 +176,9 @@ public class MapFragment extends Fragment {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             initUI(getView());
-            initUISDK();
         } else {
             String[] permissionArr = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
             requestPermissions(permissionArr, 100);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == 100
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-            initUI(getView());
-            initUISDK();
-        } else {
-            Toast.makeText(getActivity(), "위치 권한이 없습니다.", Toast.LENGTH_SHORT).show();
-            getActivity().finish();
         }
     }
 
@@ -786,7 +770,7 @@ public class MapFragment extends Fragment {
         }
     }
 
-    private void initUISDK() {
+    /*private void initUISDK() {
         TmapUISDK.Companion.initialize(getActivity(), CLIENT_ID, API_KEY, USER_KEY, DEVICE_KEY, new TmapUISDK.InitializeListener() {
             @Override
             public void onSuccess() {
@@ -807,9 +791,9 @@ public class MapFragment extends Fragment {
                 }
             }
         });
-    }
+    }*/
 
-    private void showDialogContinueRoute(String dest) {
+    /*private void showDialogContinueRoute(String dest) {
         String message = dest + "(으)로 경로 안내를 이어서 안내 받으시겠습니까?";
         new AlertDialog.Builder(getActivity())
                 .setMessage(message)
@@ -821,8 +805,8 @@ public class MapFragment extends Fragment {
                             @Override
                             public void onSuccess() {
                                 Log.e("MapFragment", "경로 계속 운행 성공");
-/*                                buttonLayout.setVisibility(View.GONE);
-                                stopButton.setVisibility(View.VISIBLE);*/
+*//*                                buttonLayout.setVisibility(View.GONE);
+                                stopButton.setVisibility(View.VISIBLE);*//*
                             }
 
                             @Override
@@ -839,5 +823,5 @@ public class MapFragment extends Fragment {
                     }
                 })
                 .show();
-    }
+    }*/
 }
