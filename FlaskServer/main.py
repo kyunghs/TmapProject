@@ -376,7 +376,6 @@ def get_user_info(user=None):  # JWT 데코레이터로부터 전달된 사용�
 
 
 
-
 @app.route('/updateUserInfo', methods=['POST'])
 @jwt_required
 def update_user_info(user):
@@ -384,14 +383,20 @@ def update_user_info(user):
         user_id = user.get("id")
         data = request.json
 
+        # 입력 데이터 유효성 검사
+        if not data or 'name' not in data or 'user_tel' not in data or 'password' not in data:
+            return jsonify({"message": "잘못된 요청 데이터입니다."}), 400
+
         # 유저 정보 업데이트
         success = db_query.update_user_info(user_id, data)
         if success:
-            return jsonify({"message": "유저 정보가 업데이트되었습니다."}), 200
+            return jsonify({"message": "유저 정보가 업데이트되었습니다.", "success": True}), 200
         else:
-            return jsonify({"message": "업데이트 실패"}), 400
+            return jsonify({"message": "업데이트 실패", "success": False}), 400
     except Exception as e:
-        return jsonify({"message": "서버 오류"}), 500
+        print(f"Error in update_user_info: {e}")
+        return jsonify({"message": "서버 오류", "success": False}), 500
+
 
 
 @app.route('/train_model', methods=['POST'])

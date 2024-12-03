@@ -112,7 +112,26 @@ def get_user_info_by_id(user_id):
         if conn:
             conn.close()
 
-
+# 회원정보 수정
+def update_user_info(user_id, data):
+    try:
+        conn = dbConnection()
+        cursor = conn.cursor()
+        
+        query = """
+        UPDATE user_info
+        SET name = %s, user_tel = %s, password = %s
+        WHERE id = %s
+        """
+        cursor.execute(query, (data['name'], data['user_tel'], data['password'], user_id))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error updating user info: {e}")
+        conn.rollback()
+        return False
+    finally:
+        conn.close()
 
 
 #아이디 찾기
