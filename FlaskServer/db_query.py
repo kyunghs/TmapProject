@@ -82,11 +82,10 @@ def checkLogin(id, password):
 
 # 사용자 정보를 ID를 기반으로 가져오는 함수
 def get_user_info_by_id(user_id):
-    conn = dbConnection()  # 데이터베이스 연결
-    cursor = conn.cursor()
-
     try:
-        # 사용자 정보를 가져오는 SQL 쿼리
+        conn = dbConnection()  # 데이터베이스 연결
+        cursor = conn.cursor()
+
         query = """
         SELECT id, name, user_tel
         FROM user_info
@@ -95,21 +94,24 @@ def get_user_info_by_id(user_id):
         cursor.execute(query, (user_id,))
         result = cursor.fetchone()
 
-        # 결과 처리
         if result:
             return {
                 "id": result[0],
                 "name": result[1],
                 "user_tel": result[2],
-                
             }
         else:
             return None
+    except psycopg2.Error as db_err:
+        print(f"Database error: {db_err}")
+        return None
     except Exception as e:
-        print(f"Error in get_user_info_by_id: {e}")
+        print(f"Unexpected error: {e}")
         return None
     finally:
-        conn.close()
+        if conn:
+            conn.close()
+
 
 
 

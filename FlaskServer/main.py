@@ -350,26 +350,29 @@ def register():
 @jwt_required
 def get_user_info(user=None):  # JWT 데코레이터로부터 전달된 사용자 정보
     try:
+        print(f"JWT 디코딩 결과: {user}")  # 디버깅 로그 추가
+
         if not user or 'id' not in user:
             return jsonify({"success": False, "message": "유효하지 않은 사용자 정보입니다."}), 400
 
         user_id = user['id']
-
-        # DB에서 사용자 정보 조회
         user_data = db_query.get_user_info_by_id(user_id)
+        print(f"DB 조회 결과: {user_data}")  # 디버깅 로그 추가
+
         if user_data:
             return jsonify({
                 "success": True,
                 "data": {
                     "name": user_data['name'],
-                    "user_tel": user_data['phone'],
-                    "email": user_data.get('email', ''),  # 이메일이 없으면 빈 값
+                    "user_tel": user_data['user_tel'],  # 'phone' 대신 'user_tel'로 수정
                 }
             }), 200
         else:
             return jsonify({"success": False, "message": "사용자를 찾을 수 없습니다."}), 404
     except Exception as e:
+        print(f"Error in get_user_info: {e}")
         return jsonify({"success": False, "message": f"서버 오류: {str(e)}"}), 500
+
 
 
 
