@@ -80,6 +80,38 @@ def checkLogin(id, password):
         print(f"Error during checkLogin: {e}")
         return False
 
+# 사용자 정보를 ID를 기반으로 가져오는 함수
+def get_user_info_by_id(user_id):
+    conn = dbConnection()  # 데이터베이스 연결
+    cursor = conn.cursor()
+
+    try:
+        # 사용자 정보를 가져오는 SQL 쿼리
+        query = """
+        SELECT id, name, phone, email
+        FROM user_info
+        WHERE id = %s
+        """
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchone()
+
+        # 결과 처리
+        if result:
+            return {
+                "id": result[0],
+                "name": result[1],
+                "phone": result[2],
+                "email": result[3] if len(result) > 3 else None
+            }
+        else:
+            return None
+    except Exception as e:
+        print(f"Error in get_user_info_by_id: {e}")
+        return None
+    finally:
+        conn.close()
+
+
 
 #아이디 찾기
 def findUserId(name, phone):
