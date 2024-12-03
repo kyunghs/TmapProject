@@ -5,6 +5,7 @@ from functools import wraps
 from datetime import timedelta
 from datetime import datetime
 from flask import Flask, request, jsonify
+from datetime import datetime, timedelta
 
 # Flask 비밀 키 설정
 SECRET_KEY = "tlqkf" 
@@ -47,10 +48,11 @@ def jwt_required(f):
             decoded_token = verify_jwt(token)
             if "error" in decoded_token:
                 return jsonify({"success": False, "message": decoded_token["error"]}), 401
-        except Exception as e:
+        except Exception:
             return jsonify({"success": False, "message": "유효하지 않은 요청"}), 401
-        return f(*args, **kwargs, user=decoded_token)
+        return f(*args, **kwargs, user=decoded_token)  # user 정보 전달
     return decorated_function
+
 
 # PostgreSQL 데이터베이스 연결 함수
 def dbConnection():
@@ -62,8 +64,6 @@ def dbConnection():
         password="gurtn123"
     )
     return conn
-
-
 
 # 아이디와 비밀번호를 검증하는 함수
 def checkLogin(id, password):
@@ -79,6 +79,59 @@ def checkLogin(id, password):
     except Exception as e:
         print(f"Error during checkLogin: {e}")
         return False
+
+# 사용자 정보를 ID를 기반으로 가져오는 함수
+def get_user_info_by_id(user_id):
+    try:
+        conn = dbConnection()  # 데이터베이스 연결
+        cursor = conn.cursor()
+
+        query = """
+        SELECT id, name, user_tel
+        FROM user_info
+        WHERE id = %s
+        """
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchone()
+
+        if result:
+            return {
+                "id": result[0],
+                "name": result[1],
+                "user_tel": result[2],
+            }
+        else:
+            return None
+    except psycopg2.Error as db_err:
+        print(f"Database error: {db_err}")
+        return None
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return None
+    finally:
+        if conn:
+            conn.close()
+
+# 회원정보 수정
+def update_user_info(user_id, data):
+    try:
+        conn = dbConnection()
+        cursor = conn.cursor()
+        
+        query = """
+        UPDATE user_info
+        SET name = %s, user_tel = %s, password = %s
+        WHERE id = %s
+        """
+        cursor.execute(query, (data['name'], data['user_tel'], data['password'], user_id))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error updating user info: {e}")
+        conn.rollback()
+        return False
+    finally:
+        conn.close()
 
 
 #아이디 찾기

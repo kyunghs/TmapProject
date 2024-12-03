@@ -1,7 +1,10 @@
 package com.myapplication.fragments;
 
 import android.app.Dialog;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +20,9 @@ import com.myapplication.R;
 import com.myapplication.adapters.PlaceAdapter;
 import com.myapplication.models.Place;
 import com.myapplication.utils.HttpUtils;
-
+import com.skt.tmap.engine.navigation.SDKManager;
+import com.skt.tmap.vsm.coordinates.VSMCoordinates;
+import com.myapplication.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,6 +68,7 @@ public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
         if (getArguments() != null) {
             String poiData = getArguments().getString(ARG_POI_DATA);
             parsePoiData(poiData);
+            Log.e("!!!!!!!!!", poiData);
             adapter.notifyDataSetChanged(); // 데이터 변경 후 어댑터 갱신
         }
 
@@ -73,14 +79,32 @@ public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
         try {
             JSONArray poiArray = new JSONArray(poiData);
             for (int i = 0; i < poiArray.length(); i++) {
+
                 JSONObject poi = poiArray.getJSONObject(i);
                 String name = poi.optString("name", "Unknown Place");
-                String address = poi.optString("address", "Unknown Address");
+                String address = poi.optString("newAddressList");
+                // 2. 다시 JSONObject로 파싱
+                JSONObject addressJson = new JSONObject(address);
+
+                // 3. newAddress 배열 가져오기
+                JSONArray newAddressArray = addressJson.optJSONArray("newAddress");
+
+                // 4. 배열의 첫 번째 객체에서 fullAddressRoad 값 추출
+                String fullAddressRoad = newAddressArray.getJSONObject(0).optString("fullAddressRoad");
                 String latitude = poi.optString("frontLat");
                 String longitude = poi.optString("frontLon");
+                double targetLat = Double.parseDouble(latitude);
+                double targetLon = Double.parseDouble(longitude);
 
+                Location currentLocation = SDKManager.getInstance().getCurrentPosition();
+                double currentLong = currentLocation.getLongitude();
+                double currentLat = currentLocation.getLatitude();
+
+                // 거리 계산 (미터 단위)
+                String distance = Utils.calculateDistanceAsString(targetLat, targetLon, currentLat, currentLong);
+                Log.e("!@#!@#!@#$!@", distance);
                 // Place 객체로 변환하여 리스트에 추가
-                placeList.add(new Place(name, address, latitude, longitude));
+                placeList.add(new Place(name, fullAddressRoad, latitude, longitude, distance));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -99,7 +123,8 @@ public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
                 // 선택한 장소의 위도와 경도 가져오기
                 String latitude = place.getLatitude();
                 String longitude = place.getLongitude();
-
+                Log.e("!!", latitude);
+                Log.e("@@",longitude);
                 // JSON 객체 생성
                 JSONObject jsonData = new JSONObject();
                 jsonData.put("lat", latitude);

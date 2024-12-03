@@ -8,7 +8,6 @@ import glob
 import os
 import re
 import pickle
-from datetime import datetime
 from flask import Flask, request, jsonify
 from statsmodels.tsa.arima.model import ARIMA
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -20,7 +19,7 @@ import db_query
 from concurrent.futures import ThreadPoolExecutor
 import jwt
 from functools import wraps
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 # Flask 비밀 키 설정
 SECRET_KEY = "tlqkf" 
@@ -31,6 +30,37 @@ logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
 app = Flask(__name__)
 
+# JWT 발급 함수
+def create_jwt(payload, expiration_minutes=120):
+    payload['exp'] = datetime.utcnow() + timedelta(minutes=expiration_minutes)
+    return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+
+# JWT 검증 함수
+def verify_jwt(token):
+    try:
+        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        return decoded_token
+    except jwt.ExpiredSignatureError:
+        return {"error": "Token expired"}
+    except jwt.InvalidTokenError:
+        return {"error": "Invalid token"}
+
+# JWT 보호를 위한 데코레이터
+def jwt_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        token = request.headers.get("Authorization")
+        if not token:
+            return jsonify({"success": False, "message": "토큰이 없습니다."}), 401
+        try:
+            token = token.split(" ")[1]  # Bearer <token>
+            decoded_token = verify_jwt(token)
+            if "error" in decoded_token:
+                return jsonify({"success": False, "message": decoded_token["error"]}), 401
+        except Exception as e:
+            return jsonify({"success": False, "message": "유효하지 않은 요청"}), 401
+        return f(*args, **kwargs, user=decoded_token)
+    return decorated_function
 
 #GIT에서 소스가 push될 때마다 WEBHOOK을 이용해 자동으로 PULL 받고 서버 RELOAD
 @app.route('/webhook', methods=['POST'])
@@ -60,19 +90,32 @@ def git_webhook():
         return jsonify({"error": str(e)}), 500
 
 
-# 스크립트 실행 함수
+# 스크립트 실행 함수 (수정된 부분)
 def run_script(script_name):
     try:
         script_path = os.path.abspath(os.path.join("scripts", script_name))
         if not os.path.isfile(script_path):
             raise FileNotFoundError(f"Script {script_name} not found at {script_path}")
-        result = subprocess.run(["python", script_path], capture_output=True, text=True)
+
+        # 스크립트 실행
+        result = subprocess.run(
+            ["python", script_path], capture_output=True, text=True
+        )
+
+        # 로그 기록
         logging.info(f"Running script: {script_name}")
         logging.info(f"Output: {result.stdout}")
+
+        # 에러 처리
         if result.stderr:
-            logging.error(f"Error: {result.stderr}")
+            logging.error(f"Error in script {script_name}: {result.stderr}")
+            return {"success": False, "error": result.stderr.strip()}
+
+        # 성공 응답
+        return {"success": True, "output": result.stdout.strip()}
     except Exception as e:
         logging.error(f"Exception while running script {script_name}: {e}")
+        return {"success": False, "error": str(e)}
 
 # 스케줄러 초기화
 scheduler = BackgroundScheduler()
@@ -109,14 +152,20 @@ def start_scheduler():
 def index():
     return "Index Page - Parking Scheduler"
 
+# Flask 엔드포인트에서 스크립트 실행 함수 호출 시 수정
 @app.route('/run_script', methods=['POST'])
 def run_script_endpoint():
     data = request.get_json()
     script_name = data.get('script_name')
     if not script_name:
-        return jsonify({"error": "script_name is required"}), 400
-    run_script(script_name)
-    return jsonify({"message": f"Script {script_name} executed"}), 200
+        return jsonify({"success": False, "message": "script_name is required"}), 400
+
+    # 결과 반환
+    result = run_script(script_name)
+    if result.get("success"):
+        return jsonify({"message": f"Script {script_name} executed successfully", "output": result.get("output")}), 200
+    else:
+        return jsonify({"error": result.get("error")}), 500
 
 
 @app.route('/get/park/info', methods=['POST'])
@@ -226,7 +275,7 @@ def login():
 
         if is_valid:
             # JWT 토큰 생성
-            token = db_query.create_jwt({"id": id})
+            token = create_jwt({"id": id})
             return jsonify({"success": True, "message": "로그인 성공", "token": token}), 200
         else:
             return jsonify({"success": False, "message": "아이디 또는 비밀번호가 잘못되었습니다."}), 401
@@ -295,6 +344,58 @@ def register():
         print("Error in /register endpoint:", e)
         return jsonify({"success": False, "message": f"서버 오류: {str(e)}"}), 500
 
+
+# 사용자 정보 가져오기
+@app.route('/getUserInfo', methods=['GET'])
+@jwt_required
+def get_user_info(user=None):  # JWT 데코레이터로부터 전달된 사용자 정보
+    try:
+        print(f"JWT 디코딩 결과: {user}")  # 디버깅 로그 추가
+
+        if not user or 'id' not in user:
+            return jsonify({"success": False, "message": "유효하지 않은 사용자 정보입니다."}), 400
+
+        user_id = user['id']
+        user_data = db_query.get_user_info_by_id(user_id)
+        print(f"DB 조회 결과: {user_data}")  # 디버깅 로그 추가
+
+        if user_data:
+            return jsonify({
+                "success": True,
+                "data": {
+                    "name": user_data['name'],
+                    "user_tel": user_data['user_tel'],  # 'phone' 대신 'user_tel'로 수정
+                }
+            }), 200
+        else:
+            return jsonify({"success": False, "message": "사용자를 찾을 수 없습니다."}), 404
+    except Exception as e:
+        print(f"Error in get_user_info: {e}")
+        return jsonify({"success": False, "message": f"서버 오류: {str(e)}"}), 500
+
+
+
+
+@app.route('/updateUserInfo', methods=['POST'])
+@jwt_required
+def update_user_info(user):
+    try:
+        user_id = user.get("id")
+        data = request.json
+
+        # 입력 데이터 유효성 검사
+        if not data or 'name' not in data or 'user_tel' not in data or 'password' not in data:
+            return jsonify({"message": "잘못된 요청 데이터입니다."}), 400
+
+        # 유저 정보 업데이트
+        success = db_query.update_user_info(user_id, data)
+        if success:
+            return jsonify({"message": "유저 정보가 업데이트되었습니다.", "success": True}), 200
+        else:
+            return jsonify({"message": "업데이트 실패", "success": False}), 400
+    except Exception as e:
+        print(f"Error in update_user_info: {e}")
+        return jsonify({"message": "서버 오류", "success": False}), 500
 
 
 
@@ -457,9 +558,9 @@ def predict_endpoint():
 #         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    if not os.getenv("WERKZEUG_RUN_MAIN"):  # Flask 재시작 감지
+    """ if not os.getenv("WERKZEUG_RUN_MAIN"):  # Flask 재시작 감지
         if not scheduler.running:
             logging.info("Starting BackgroundScheduler...")
             scheduler_thread = threading.Thread(target=start_scheduler, daemon=True)
-            scheduler_thread.start()
+            scheduler_thread.start() """
     app.run(host='0.0.0.0', port=8241, debug=True) # 스케쥴러와 debug 모드가 충돌날 것을 대비하여 debug false, 별도 쓰레드 동작으로 변경

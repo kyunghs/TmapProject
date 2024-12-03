@@ -53,10 +53,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             // 로딩 표시
-            progressDialog = new ProgressDialog(LoginActivity.this);
-            progressDialog.setMessage("로그인 중...");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+            showProgressDialog("로그인 중...");
 
             // JSON 데이터 생성
             JSONObject loginData = new JSONObject();
@@ -65,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                 loginData.put("password", password);
             } catch (JSONException e) {
                 Log.e(TAG, "JSON 생성 오류: " + e.getMessage());
-                progressDialog.dismiss();
+                dismissProgressDialog();
                 Toast.makeText(LoginActivity.this, "로그인 요청 생성 중 오류 발생", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -74,13 +71,14 @@ public class LoginActivity extends AppCompatActivity {
             HttpUtils.sendJsonToServer(loginData, "/Login", new HttpUtils.HttpResponseCallback() {
                 @Override
                 public void onSuccess(JSONObject responseData) {
-                    progressDialog.dismiss();
+                    dismissProgressDialog();
                     try {
                         boolean loginSuccess = responseData.getBoolean("success");
                         if (loginSuccess) {
                             String token = responseData.getString("token");
                             saveToken(token);
 
+                            // MainActivity로 이동
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -96,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(String errorMessage) {
-                    progressDialog.dismiss();
+                    dismissProgressDialog();
                     Log.e(TAG, "로그인 실패: " + errorMessage);
                     runOnUiThread(() -> Toast.makeText(LoginActivity.this, "서버 요청 중 오류 발생: " + errorMessage, Toast.LENGTH_SHORT).show());
                 }
@@ -116,12 +114,28 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // 로딩 다이얼로그 표시
+    private void showProgressDialog(String message) {
+        progressDialog = new ProgressDialog(LoginActivity.this);
+        progressDialog.setMessage(message);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    // 로딩 다이얼로그 닫기
+    private void dismissProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
     // 토큰 저장 함수
     private void saveToken(String token) {
-        getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        getSharedPreferences("AuthPrefs", MODE_PRIVATE)  // 기존 키와 통일
                 .edit()
-                .putString("JWT_TOKEN", token)
+                .putString("auth_token", token)          // 토큰 키 통일
                 .apply();
+        Log.d(TAG, "토큰 저장 완료: " + token);             // 디버깅 로그
     }
 
     // 네트워크 상태 확인 함수

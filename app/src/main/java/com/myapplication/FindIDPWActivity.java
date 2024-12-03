@@ -117,7 +117,7 @@ public class FindIDPWActivity extends AppCompatActivity {
         }
 
         // API 호출
-        HttpUtils.sendJsonToServer(requestData, "/findUserPw", new HttpUtils.HttpResponseCallback() {
+        HttpUtils.sendJsonToServerWithAuth(requestData, "/findUserPw", null, new HttpUtils.HttpResponseCallback() {
             @Override
             public void onSuccess(JSONObject response) {
                 runOnUiThread(() -> {
@@ -141,6 +141,7 @@ public class FindIDPWActivity extends AppCompatActivity {
                 runOnUiThread(() -> Toast.makeText(FindIDPWActivity.this, "요청 실패: " + errorMessage, Toast.LENGTH_SHORT).show());
             }
         });
+
     }
 
 

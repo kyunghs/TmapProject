@@ -1,5 +1,6 @@
 package com.myapplication.fragments;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.myapplication.R;
 import com.myapplication.adapters.ParkingAdapter;
 import com.myapplication.models.Parking;
+import com.skt.tmap.engine.navigation.SDKManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,6 +60,10 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
             String parkData = getArguments().getString(ARG_PARK_DATA);
             parseParkData(parkData);
         }
+
+        Location currentLocation = SDKManager.getInstance().getCurrentPosition();
+        double currentLong = currentLocation.getLongitude();
+        double currentLat = currentLocation.getLatitude();
 
         // 어댑터 설정
         ParkingAdapter adapter = new ParkingAdapter(parkingList);
