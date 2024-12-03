@@ -57,7 +57,7 @@
                         android:layout_marginStart="0dp"
                         android:background="@drawable/rounded_edittext_background"
                         android:drawableStart="@drawable/search_icon"
-                        android:hint="  목적지를 입력하세요."
+                        android:hint="목적지를 입력하세요."
                         android:padding="8dp"
                         android:textColorHint="#F9C1AC"
                         android:textSize="14dp"

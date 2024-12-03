@@ -58,7 +58,7 @@
                 android:layout_marginStart="0dp"
                 android:drawableStart="@drawable/search_icon"
                 android:background="@drawable/rounded_edittext_background"
-                android:hint=" 목적지를 입력하세요."
+                android:hint="목적지를 입력하세요."
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:padding="8dp"
