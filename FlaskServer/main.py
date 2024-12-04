@@ -407,6 +407,7 @@ def get_edit_user_info(user):
 @app.route('/updateUserInfo', methods=['POST'])
 @jwt_required
 def update_user_info(user):
+    print("Authorization 헤더:", request.headers.get("Authorization"))
     try:
         user_id = user.get("id")
         data = request.json

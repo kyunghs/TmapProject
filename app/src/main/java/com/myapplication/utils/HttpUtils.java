@@ -43,8 +43,8 @@ public class HttpUtils {
 
         Request.Builder requestBuilder = new Request.Builder()
                 .url(url)
-                .post(body)
-                .addHeader("Content-Type", "application/json");
+                .post(body);
+
 
         if (token != null) {
             requestBuilder.addHeader("Authorization", "Bearer " + token);
@@ -57,7 +57,9 @@ public class HttpUtils {
             try {
                 Log.d(TAG, "요청 URL: " + url);
                 Log.d(TAG, "요청 데이터: " + finalJsonData.toString());
-
+                Log.d(TAG, "요청 헤더: " + request.headers().toString());
+                Log.d(TAG, "요청 바디: " + finalJsonData.toString());
+                Log.d("HttpUtils", "Authorization 헤더: " + token);
                 Response response = client.newCall(request).execute();
 
                 if (response.isSuccessful() && response.body() != null) {
@@ -88,6 +90,8 @@ public class HttpUtils {
                 .get()
                 .addHeader("Authorization", token)
                 .build();
+
+        Log.d(TAG, "Authorization 헤더: " + token); // 디버깅용 로그 추가
 
         new Thread(() -> {
             try {
