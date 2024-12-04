@@ -118,6 +118,7 @@ public class UserEditActivity extends AppCompatActivity {
             updateData.put("name", finalName);
             updateData.put("user_tel", finalPhone);
             updateData.put("password", finalPassword);
+            Log.d("UserEditActivity", "요청 JSON 데이터: " + updateData.toString());
         } catch (JSONException e) {
             e.printStackTrace();
             Toast.makeText(this, "데이터 생성 오류", Toast.LENGTH_SHORT).show();

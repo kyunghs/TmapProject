@@ -146,6 +146,7 @@ def update_user_info(user_id, data):
     finally:
         conn.close()
 
+
 # 
 def get_edit_user_info_by_id(user_id):
     try:

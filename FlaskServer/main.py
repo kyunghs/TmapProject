@@ -407,25 +407,25 @@ def get_edit_user_info(user):
 @app.route('/updateUserInfo', methods=['POST'])
 @jwt_required
 def update_user_info(user):
-    
     try:
         user_id = user.get("id")
-        data = request.json
-        print(f"Authorization 헤더: {request.headers.get('Authorization')}")
-        print(f"요청 데이터: {request.json}")
-        # 입력 데이터 유효성 검사
-        if not data or 'name' not in data or 'user_tel' not in data or 'password' not in data:
-            return jsonify({"message": "잘못된 요청 데이터입니다."}), 400
+        if not user_id:
+            return jsonify({"message": "Invalid user ID"}), 400
+
+        data = dict(request.json)
+        if not all(key in data for key in ['name', 'user_tel', 'password']):
+            return jsonify({"message": "Missing required fields"}), 400
 
         # 유저 정보 업데이트
         success = db_query.update_user_info(user_id, data)
         if success:
-            return jsonify({"message": "유저 정보가 업데이트되었습니다.", "success": True}), 200
+            return jsonify({"message": "User information updated successfully", "success": True}), 200
         else:
-            return jsonify({"message": "업데이트 실패", "success": False}), 400
+            return jsonify({"message": "Update failed", "success": False}), 400
     except Exception as e:
         print(f"Error in update_user_info: {e}")
-        return jsonify({"message": "서버 오류", "success": False}), 500
+        return jsonify({"message": "Server error", "success": False}), 500
+
 
 
 
