@@ -133,6 +133,39 @@ def update_user_info(user_id, data):
     finally:
         conn.close()
 
+# 
+def get_edit_user_info_by_id(user_id):
+    try:
+        conn = dbConnection()  
+        cursor = conn.cursor()
+
+        # 사용자 정보 가져오는 쿼리
+        query = """
+        SELECT id, password, name, user_tel
+        FROM user_info
+        WHERE id = %s
+        """
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchone()
+
+        if result:
+            return {
+                "id": result[0],
+                "password": result[1],
+                "name": result[2],
+                "user_tel": result[3]
+            }
+        else:
+            return None
+    except psycopg2.Error as db_err:
+        print(f"Database error: {db_err}")
+        return None
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return None
+    finally:
+        conn.close()
+
 
 #아이디 찾기
 def findUserId(name, phone):

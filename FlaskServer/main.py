@@ -375,7 +375,30 @@ def get_user_info(user=None):  # JWT 데코레이터로부터 전달된 사용�
         print(f"Error in get_user_info: {e}")
         return jsonify({"success": False, "message": f"서버 오류: {str(e)}"}), 500
 
+# 수정할 회원정보 가져오기 
+@app.route('/getEditUserInfo', methods=['GET'])
+@jwt_required
+def get_edit_user_info(user):
+    try:
+        # JWT에서 사용자 ID 가져오기
+        user_id = user.get("id")
+        if not user_id:
+            return jsonify({"message": "유효하지 않은 사용자 정보입니다.", "success": False}), 400
 
+        # DB에서 사용자 정보 조회
+        user_data = db_query.get_edit_user_info_by_id(user_id)
+
+        if user_data:
+            return jsonify({
+                "message": "회원 정보를 성공적으로 가져왔습니다.",
+                "success": True,
+                "data": user_data
+            }), 200
+        else:
+            return jsonify({"message": "사용자를 찾을 수 없습니다.", "success": False}), 404
+    except Exception as e:
+        print(f"Error in get_edit_user_info: {e}")
+        return jsonify({"message": "서버 오류가 발생했습니다.", "success": False}), 500
 
 
 @app.route('/updateUserInfo', methods=['POST'])
