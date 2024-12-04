@@ -263,17 +263,24 @@ def train_model(base_directory, model_directory="/Tmap_project_Data/models"):
 @app.route('/Login', methods=['POST'])
 def login():
     try:
+        # 클라이언트 요청 데이터 확인
         data = request.get_json()
-        print(f"Received login request: {data}")  # 클라이언트에서 받은 데이터를 확인
+        if not data:
+            return jsonify({"success": False, "message": "요청 데이터가 비어있습니다."}), 400
+
+        print(f"Received login request: {data}")  # 디버깅용 로그
+
+        # 입력값 가져오기
         id = data.get('id')
         password = data.get('password')
 
+        # 입력값 검증
         if not id or not password:
             return jsonify({"success": False, "message": "아이디와 비밀번호를 모두 입력하세요."}), 400
 
         # 로그인 검증
         is_valid = db_query.checkLogin(id, password)
-        print(f"Login query result for id={id}: {is_valid}")  # DB 쿼리 결과 출력
+        print(f"Login query result for id={id}: {is_valid}")  # 로그인 결과 로그
 
         if is_valid:
             # JWT 토큰 생성
@@ -281,9 +288,13 @@ def login():
             return jsonify({"success": True, "message": "로그인 성공", "token": token}), 200
         else:
             return jsonify({"success": False, "message": "아이디 또는 비밀번호가 잘못되었습니다."}), 401
+    except KeyError as e:
+        print(f"KeyError in /Login endpoint: Missing key {e}")
+        return jsonify({"success": False, "message": "요청 데이터가 올바르지 않습니다."}), 400
     except Exception as e:
         print(f"Error in /Login endpoint: {e}")
         return jsonify({"success": False, "message": "서버 오류 발생"}), 500
+
 
 
 @app.route('/findUserId', methods=['POST'])

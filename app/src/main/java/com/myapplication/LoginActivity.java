@@ -72,6 +72,10 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(JSONObject responseData) {
                     dismissProgressDialog();
+
+                    // 서버 응답 디버깅 로그 추가
+                    Log.d("LoginActivity", "응답 데이터: " + responseData.toString());
+
                     try {
                         boolean loginSuccess = responseData.getBoolean("success");
                         if (loginSuccess) {
@@ -99,6 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                     runOnUiThread(() -> Toast.makeText(LoginActivity.this, "서버 요청 중 오류 발생: " + errorMessage, Toast.LENGTH_SHORT).show());
                 }
             });
+
         });
 
         // "아이디 · 비밀번호 찾기" 버튼 클릭 이벤트

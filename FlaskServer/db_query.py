@@ -13,13 +13,22 @@ SECRET_KEY = "tlqkf"
 
 # JWT 발급 함수
 def create_jwt(payload, expiration_minutes=120):
+    """
+    JWT 생성 함수.
+    :param payload: dict - 토큰에 포함할 데이터
+    :param expiration_minutes: int - 토큰의 유효 시간 (분 단위)
+    :return: str - 생성된 JWT 토큰
+    """
     try:
-        payload['exp'] = datetime.utcnow() + timedelta(minutes=expiration_minutes)  # timedelta 정의 문제 해결
+        payload['exp'] = datetime.utcnow() + timedelta(minutes=expiration_minutes)
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
         print(f"JWT 생성 성공: {token}")
         return token
-    except Exception as e:
+    except jwt.PyJWTError as e:
         print(f"JWT 생성 실패: {e}")
+        raise
+    except Exception as e:
+        print(f"Unknown error during JWT creation: {e}")
         raise
 
 # JWT 검증 함수
