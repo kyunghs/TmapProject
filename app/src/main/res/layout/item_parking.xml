@@ -62,7 +62,7 @@
                     android:layout_gravity="right"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="#FF6F00" />
+                    android:textColor="#FE4B4B" />
 
                 <TextView
                     android:id="@+id/parkingAvailability"

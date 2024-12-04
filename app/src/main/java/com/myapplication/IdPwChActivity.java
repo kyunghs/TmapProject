@@ -29,6 +29,11 @@ public class IdPwChActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // 타이틀바 숨기기
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         setContentView(R.layout.id_pw_change);
 
         // UI 요소 초기화
