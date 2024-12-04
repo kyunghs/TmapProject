@@ -77,17 +77,21 @@ def dbConnection():
 # 아이디와 비밀번호를 검증하는 함수
 def checkLogin(id, password):
     try:
-        conn = dbConnection()
+        conn = dbConnection()  # 데이터베이스 연결
         cursor = conn.cursor()
-        query = "SELECT * FROM user_info WHERE id = %s AND password = %s"
+
+        query = """
+        SELECT * FROM user_info WHERE id = %s AND password = %s
+        """
         cursor.execute(query, (id, password))
-        user = cursor.fetchone()
-        print(f"checkLogin result for id={id}: {user}")  # 추가 로그
+        user = cursor.fetchone()  # 일치하는 사용자가 있는지 확인
         conn.close()
-        return True
+
+        return user is not None  # 사용자가 있으면 True, 없으면 False 반환
     except Exception as e:
-        print(f"Error during checkLogin: {e}")
-        return False
+        print(f"Error in checkLogin: {e}")
+        return False  # 에러 발생 시 로그인 실패 처리
+        
 
 # 사용자 정보를 ID를 기반으로 가져오는 함수
 def get_user_info_by_id(user_id):
