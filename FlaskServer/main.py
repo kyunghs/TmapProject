@@ -405,16 +405,18 @@ def get_edit_user_info(user):
 
 
 @app.route('/updateUserInfo', methods=['POST'])
-@jwt_required
-def update_user_info(user):
+def update_user_info():
     try:
-        user_id = user.get("id")
-        if not user_id:
-            return jsonify({"message": "Invalid user ID"}), 400
-
         data = dict(request.json)
+        
+        # 요청 데이터에서 ID 가져오기
+        user_id = data.get('id')
+        if not user_id:
+            return jsonify({"message": "Invalid user ID", "success": False}), 400
+
+        # 필수 필드 유효성 검사
         if not all(key in data for key in ['name', 'user_tel', 'password']):
-            return jsonify({"message": "Missing required fields"}), 400
+            return jsonify({"message": "Missing required fields", "success": False}), 400
 
         # 유저 정보 업데이트
         success = db_query.update_user_info(user_id, data)
@@ -425,6 +427,7 @@ def update_user_info(user):
     except Exception as e:
         print(f"Error in update_user_info: {e}")
         return jsonify({"message": "Server error", "success": False}), 500
+
 
 
 

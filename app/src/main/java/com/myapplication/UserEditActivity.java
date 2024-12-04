@@ -92,18 +92,6 @@ public class UserEditActivity extends AppCompatActivity {
     }
 
     private void saveUserData() {
-        // SharedPreferences에서 토큰 가져오기
-        String token = getSharedPreferences("AuthPrefs", Context.MODE_PRIVATE)
-                .getString("auth_token", "");
-
-        if (token.isEmpty()) {
-            Log.e("UserEditActivity", "토큰이 없습니다.");
-            Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
-            return; // 토큰이 없으면 저장 요청을 보내지 않음
-        }
-
-        token = "Bearer " + token; // "Bearer" 붙이기
-
         String updatedName = nameField.getText().toString().trim();
         String updatedPhone = phoneField.getText().toString().trim();
         String updatedPassword = passwordField.getText().toString().trim();
@@ -113,22 +101,23 @@ public class UserEditActivity extends AppCompatActivity {
         String finalPhone = updatedPhone.isEmpty() ? currentPhone : updatedPhone;
         String finalPassword = updatedPassword.isEmpty() ? currentPassword : updatedPassword;
 
+        // JSON 데이터 생성
         JSONObject updateData = new JSONObject();
         try {
+            updateData.put("id", "kim"); // 서버로 보낼 사용자 ID
             updateData.put("name", finalName);
             updateData.put("user_tel", finalPhone);
             updateData.put("password", finalPassword);
-            Log.d("UserEditActivity", "요청 JSON 데이터: " + updateData.toString());
         } catch (JSONException e) {
             e.printStackTrace();
             Toast.makeText(this, "데이터 생성 오류", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Log.d("UserEditActivity", "토큰: " + token);
+        Log.d("UserEditActivity", "업데이트 요청 데이터: " + updateData.toString());
 
         // 서버 요청
-        HttpUtils.sendJsonToServerWithAuth(updateData, "/updateUserInfo", token, new HttpUtils.HttpResponseCallback() {
+        HttpUtils.sendJsonToServer(updateData, "/updateUserInfo", new HttpUtils.HttpResponseCallback() {
             @Override
             public void onSuccess(JSONObject responseData) {
                 Log.d("UserEditActivity", "응답 성공: " + responseData.toString());
@@ -158,3 +147,4 @@ public class UserEditActivity extends AppCompatActivity {
     }
 
 }
+
