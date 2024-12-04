@@ -407,11 +407,12 @@ def get_edit_user_info(user):
 @app.route('/updateUserInfo', methods=['POST'])
 @jwt_required
 def update_user_info(user):
-    print("Authorization 헤더:", request.headers.get("Authorization"))
+    
     try:
         user_id = user.get("id")
         data = request.json
-
+        print(f"Authorization 헤더: {request.headers.get('Authorization')}")
+        print(f"요청 데이터: {request.json}")
         # 입력 데이터 유효성 검사
         if not data or 'name' not in data or 'user_tel' not in data or 'password' not in data:
             return jsonify({"message": "잘못된 요청 데이터입니다."}), 400
