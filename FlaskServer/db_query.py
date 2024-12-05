@@ -66,7 +66,7 @@ def jwt_required(f):
 # PostgreSQL 데이터베이스 연결 함수
 def dbConnection():
     conn = psycopg2.connect(
-        host="220.116.209.226",
+        host="localhost",
         port="5432",
         database="postgres",
         user="postgres",
