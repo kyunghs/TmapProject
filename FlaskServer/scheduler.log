@@ -212,3 +212,72 @@ connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection re
 2024-12-05 22:47:29,940 - apscheduler.scheduler - DEBUG - Looking for jobs to run
 2024-12-05 22:47:29,941 - apscheduler.scheduler - DEBUG - No jobs; waiting until a job is added
 2024-12-05 22:47:29,942 - root - INFO - Scheduler and Executor have been shut down.
+2024-12-05 23:17:12,571 - tzlocal - DEBUG - Looking up time zone info from registry
+2024-12-05 23:17:12,587 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 23:17:12,588 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 23:17:12,590 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 23:17:12,592 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 23:17:12,593 - root - INFO - Starting Scheduler...
+2024-12-05 23:17:12,595 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 23:17:12,596 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 23:17:12,597 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 23:17:12,598 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 23:17:12,599 - apscheduler.scheduler - INFO - Scheduler started
+2024-12-05 23:17:12,602 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 23:17:12,602 - root - INFO - Scheduler started successfully.
+2024-12-05 23:17:12,602 - apscheduler.scheduler - DEBUG - Next wakeup is due at 2024-12-05 23:20:00+09:00 (in 167.397453 seconds)
+2024-12-05 23:20:00,006 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 23:20:00,013 - apscheduler.executors.default - INFO - Running job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 23:20:00 KST)" (scheduled at 2024-12-05 23:20:00+09:00)
+2024-12-05 23:20:00,015 - root - INFO - @@@@ : C:\git_\FlaskServer\scripts\Delete_parking_info.py
+2024-12-05 23:20:00,016 - apscheduler.executors.default - INFO - Running job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 23:20:00 KST)" (scheduled at 2024-12-05 23:20:00+09:00)
+2024-12-05 23:20:00,039 - apscheduler.executors.default - INFO - Running job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 23:20:00 KST)" (scheduled at 2024-12-05 23:20:00+09:00)
+2024-12-05 23:20:00,040 - apscheduler.scheduler - DEBUG - Next wakeup is due at 2024-12-05 23:25:00+09:00 (in 299.959780 seconds)
+2024-12-05 23:20:00,044 - root - INFO - @@@@ : C:\git_\FlaskServer\scripts\Request_parking_filtered_1.py
+2024-12-05 23:20:00,044 - apscheduler.executors.default - INFO - Job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 23:25:00 KST)" executed successfully
+2024-12-05 23:20:00,050 - apscheduler.executors.default - INFO - Job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 23:25:00 KST)" executed successfully
+2024-12-05 23:20:00,050 - root - INFO - @@@@ : C:\git_\FlaskServer\scripts\Request_parking_filtered_2.py
+2024-12-05 23:20:00,499 - root - INFO - Running script: Delete_parking_info.py
+2024-12-05 23:20:00,501 - root - INFO - Output: All data deleted from parking_info table.
+
+2024-12-05 23:20:00,505 - apscheduler.executors.default - INFO - Job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 23:25:00 KST)" executed successfully
+2024-12-05 23:20:03,939 - root - INFO - Running script: Request_parking_filtered_2.py
+2024-12-05 23:20:03,939 - root - INFO - Output: Request_parking_filtered_2 DB insert Success
+
+2024-12-05 23:20:04,078 - root - INFO - Running script: Request_parking_filtered_1.py
+2024-12-05 23:20:04,079 - root - INFO - Output: Request_parking_filtered_1 DB insert Success
+
+2024-12-05 23:25:00,014 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 23:25:00,019 - apscheduler.scheduler - DEBUG - Next wakeup is due at 2024-12-05 23:30:00+09:00 (in 299.980415 seconds)
+2024-12-05 23:25:00,020 - apscheduler.executors.default - INFO - Running job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 23:30:00 KST)" (scheduled at 2024-12-05 23:25:00+09:00)
+2024-12-05 23:25:00,020 - apscheduler.executors.default - INFO - Running job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 23:30:00 KST)" (scheduled at 2024-12-05 23:25:00+09:00)
+2024-12-05 23:25:00,020 - apscheduler.executors.default - INFO - Running job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 23:30:00 KST)" (scheduled at 2024-12-05 23:25:00+09:00)
+2024-12-05 23:25:00,023 - root - INFO - @@@@ : C:\git_\FlaskServer\scripts\Delete_parking_info.py
+2024-12-05 23:25:00,024 - apscheduler.executors.default - INFO - Job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 23:30:00 KST)" executed successfully
+2024-12-05 23:25:00,025 - root - INFO - @@@@ : C:\git_\FlaskServer\scripts\Request_parking_filtered_1.py
+2024-12-05 23:25:00,026 - apscheduler.executors.default - INFO - Job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 23:30:00 KST)" executed successfully
+2024-12-05 23:25:00,026 - root - INFO - @@@@ : C:\git_\FlaskServer\scripts\Request_parking_filtered_2.py
+2024-12-05 23:25:00,401 - root - INFO - Running script: Delete_parking_info.py
+2024-12-05 23:25:00,402 - root - INFO - Output: All data deleted from parking_info table.
+
+2024-12-05 23:25:00,404 - apscheduler.executors.default - INFO - Job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 23:30:00 KST)" executed successfully
+2024-12-05 23:25:03,177 - root - INFO - Running script: Request_parking_filtered_1.py
+2024-12-05 23:25:03,177 - root - INFO - Output: ERROR: (psycopg2.errors.UniqueViolation) 오류:  중복된 키 값이 "parking_info_pklt_cd_key" 고유 제약 조건을 위반함
+DETAIL:  (pklt_cd)=(171721) 키가 이미 있습니다.
+
+[SQL: INSERT INTO parking_info (pklt_cd, pklt_nm, addr, oper_se_nm, prk_stts_yn, tpkct, now_prk_vhcl_cnt, now_prk_vhcl_updt_tm, nght_pay_yn_nm, wd_oper_bgng_tm, wd_oper_end_tm, we_oper_bgng_tm, we_oper_end_tm, lhldy_oper_bgng_tm, lhldy_oper_end_tm, sat_chg ... 37875 characters truncated ... rk_hr__72)s, %(add_prk_crg__72)s, %(add_prk_hr__72)s, %(day_max_crg__72)s, %(lat__72)s, %(lot__72)s)]
+[parameters: {'pklt_nm__0': '세종로 공영주차장(시)', 'bsc_prk_hr__0': '5', 'lot__0': '126.97588429', 'now_prk_vhcl_cnt__0': '202', 'wd_oper_bgng_tm__0': '0000', 'oper_se_nm__0': '시간제 주차장', 'prk_stts_yn__0': '1', 'add_prk_crg__0': '430', 'we_oper_bgng_tm__0': '0000', 'lat__0': '37.57340269', 'pklt_cd__0': '171721', 'add_prk_hr__0': '5', 'wd_oper_end_tm__0': '2400', 'sat_chgd_free_se__0': 'N', 'lhldy_oper_end_tm__0': '2400', 'bsc_prk_crg__0': '430', 'we_oper_end_tm__0': '2400', 'lhldy_oper_bgng_tm__0': '0000', 'addr__0': '종로구 세종로 80-1', 'lhldy_chgd_free_se__0': 'N', 'nght_pay_yn_nm__0': '야간 미개방', 'day_max_crg__0': '30900', 'tpkct__0': '1260', 'now_prk_vhcl_updt_tm__0': '2024-12-05 23:21:50', 'pklt_nm__1': '종묘주차장 공영주차장(시)', 'bsc_prk_hr__1': '5', 'lot__1': '126.99496888', 'now_prk_vhcl_cnt__1': '388', 'wd_oper_bgng_tm__1': '0000', 'oper_se_nm__1': '시간제 주차장', 'prk_stts_yn__1': '1', 'add_prk_crg__1': '400', 'we_oper_bgng_tm__1': '0000', 'lat__1': '37.57150398', 'pklt_cd__1': '171730', 'add_prk_hr__1': '5', 'wd_oper_end_tm__1': '2400', 'sat_chgd_free_se__1': 'N', 'lhldy_oper_end_tm__1': '2400', 'bsc_prk_crg__1': '400', 'we_oper_end_tm__1': '2400', 'lhldy_oper_bgng_tm__1': '0000', 'addr__1': '종로구 훈정동 2-0', 'lhldy_chgd_free_se__1': 'N', 'nght_pay_yn_nm__1': '야간 미개방', 'day_max_crg__1': '28800', 'tpkct__1': '1317', 'now_prk_vhcl_updt_tm__1': '2024-12-05 23:21:50', 'pklt_nm__2': '훈련원공원 공영주차장(시)', 'bsc_prk_hr__2': '5' ... 1652 parameters truncated ... 'tpkct__70': '1', 'now_prk_vhcl_updt_tm__70': '2024-12-05 23:21:53', 'pklt_nm__71': '청계6(신평화시장앞) 공영주차장(시)', 'bsc_prk_hr__71': '5', 'lot__71': '127.01149603', 'now_prk_vhcl_cnt__71': '4', 'wd_oper_bgng_tm__71': '0900', 'oper_se_nm__71': '시간제 주차장', 'prk_stts_yn__71': '1', 'add_prk_crg__71': '450', 'we_oper_bgng_tm__71': '0900', 'lat__71': '37.56957219', 'pklt_cd__71': '1510350', 'add_prk_hr__71': '5', 'wd_oper_end_tm__71': '1900', 'sat_chgd_free_se__71': 'N', 'lhldy_oper_end_tm__71': '0000', 'bsc_prk_crg__71': '450', 'we_oper_end_tm__71': '1500', 'lhldy_oper_bgng_tm__71': '0000', 'addr__71': '중구 신당동 217-91 0', 'lhldy_chgd_free_se__71': 'Y', 'nght_pay_yn_nm__71': '야간 미개방', 'day_max_crg__71': '0', 'tpkct__71': '1', 'now_prk_vhcl_updt_tm__71': '2024-12-05 23:21:54', 'pklt_nm__72': '청계6(동평화) 공영주차장(시)', 'bsc_prk_hr__72': '5', 'lot__72': '127.01303202', 'now_prk_vhcl_cnt__72': '4', 'wd_oper_bgng_tm__72': '0900', 'oper_se_nm__72': '시간제 주차장', 'prk_stts_yn__72': '1', 'add_prk_crg__72': '450', 'we_oper_bgng_tm__72': '0900', 'lat__72': '37.56958176', 'pklt_cd__72': '1510496', 'add_prk_hr__72': '5', 'wd_oper_end_tm__72': '0100', 'sat_chgd_free_se__72': 'N', 'lhldy_oper_end_tm__72': '0000', 'bsc_prk_crg__72': '450', 'we_oper_end_tm__72': '1500', 'lhldy_oper_bgng_tm__72': '0000', 'addr__72': '중구 신당동 217-91 0', 'lhldy_chgd_free_se__72': 'Y', 'nght_pay_yn_nm__72': '야간 미개방', 'day_max_crg__72': '0', 'tpkct__72': '1', 'now_prk_vhcl_updt_tm__72': '2024-12-05 23:22:00'}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+
+2024-12-05 23:25:03,340 - root - INFO - Running script: Request_parking_filtered_2.py
+2024-12-05 23:25:03,340 - root - INFO - Output: ERROR: (psycopg2.errors.UniqueViolation) 오류:  중복된 키 값이 "parking_info_pklt_cd_key" 고유 제약 조건을 위반함
+DETAIL:  (pklt_cd)=(1511816) 키가 이미 있습니다.
+
+[SQL: INSERT INTO parking_info (pklt_cd, pklt_nm, addr, oper_se_nm, prk_stts_yn, tpkct, now_prk_vhcl_cnt, now_prk_vhcl_updt_tm, nght_pay_yn_nm, wd_oper_bgng_tm, wd_oper_end_tm, we_oper_bgng_tm, we_oper_end_tm, lhldy_oper_bgng_tm, lhldy_oper_end_tm, sat_chg ... 13341 characters truncated ... rk_hr__25)s, %(add_prk_crg__25)s, %(add_prk_hr__25)s, %(day_max_crg__25)s, %(lat__25)s, %(lot__25)s)]
+[parameters: {'tpkct__0': '1', 'pklt_cd__0': '1511816', 'day_max_crg__0': '0', 'lot__0': '126.99384405', 'sat_chgd_free_se__0': 'N', 'wd_oper_bgng_tm__0': '0900', 'we_oper_end_tm__0': '1500', 'add_prk_hr__0': '5', 'lat__0': '37.56430723', 'bsc_prk_hr__0': '5', 'we_oper_bgng_tm__0': '0900', 'lhldy_chgd_free_se__0': 'Y', 'prk_stts_yn__0': '1', 'oper_se_nm__0': '시간제 주차장', 'lhldy_oper_end_tm__0': '0000', 'add_prk_crg__0': '680', 'addr__0': '중구 인현동1가 87-10', 'now_prk_vhcl_updt_tm__0': '2024-12-05 23:21:51', 'wd_oper_end_tm__0': '1900', 'nght_pay_yn_nm__0': '야간 미개방', 'pklt_nm__0': '마른내길 공영주차장(시)', 'now_prk_vhcl_cnt__0': '14', 'lhldy_oper_bgng_tm__0': '0000', 'bsc_prk_crg__0': '680', 'tpkct__1': '1', 'pklt_cd__1': '1512125', 'day_max_crg__1': '0', 'lot__1': '127.01643395', 'sat_chgd_free_se__1': 'N', 'wd_oper_bgng_tm__1': '0900', 'we_oper_end_tm__1': '1500', 'add_prk_hr__1': '5', 'lat__1': '37.56973295', 'bsc_prk_hr__1': '5', 'we_oper_bgng_tm__1': '0900', 'lhldy_chgd_free_se__1': 'Y', 'prk_stts_yn__1': '1', 'oper_se_nm__1': '시간제 주차장', 'lhldy_oper_end_tm__1': '0000', 'add_prk_crg__1': '500', 'addr__1': '중구 흥인동 162-1 0', 'now_prk_vhcl_updt_tm__1': '2024-12-05 23:22:03', 'wd_oper_end_tm__1': '1900', 'nght_pay_yn_nm__1': '야간 미개방', 'pklt_nm__1': '청계8가 공영주차장(시)', 'now_prk_vhcl_cnt__1': '19', 'lhldy_oper_bgng_tm__1': '0000', 'bsc_prk_crg__1': '500', 'tpkct__2': '1', 'pklt_cd__2': '1512129' ... 524 parameters truncated ... 'lhldy_oper_bgng_tm__23': '0000', 'bsc_prk_crg__23': '130', 'tpkct__24': '1186', 'pklt_cd__24': '3187200', 'day_max_crg__24': '31600', 'lot__24': '127.007933', 'sat_chgd_free_se__24': 'N', 'wd_oper_bgng_tm__24': '0000', 'we_oper_end_tm__24': '2400', 'add_prk_hr__24': '5', 'lat__24': '37.504517', 'bsc_prk_hr__24': '5', 'we_oper_bgng_tm__24': '0000', 'lhldy_chgd_free_se__24': 'N', 'prk_stts_yn__24': '1', 'oper_se_nm__24': '시간제 주차장', 'lhldy_oper_end_tm__24': '2400', 'add_prk_crg__24': '440', 'addr__24': '서초구 반포동 118-3', 'now_prk_vhcl_updt_tm__24': '2024-12-05 23:21:50', 'wd_oper_end_tm__24': '2400', 'nght_pay_yn_nm__24': '야간 미개방', 'pklt_nm__24': '파미에(반포천) 주차장(시)', 'now_prk_vhcl_cnt__24': '10', 'lhldy_oper_bgng_tm__24': '0000', 'bsc_prk_crg__24': '440', 'tpkct__25': '140', 'pklt_cd__25': '3246959', 'day_max_crg__25': '14400', 'lot__25': '127.0807859', 'sat_chgd_free_se__25': 'N', 'wd_oper_bgng_tm__25': '0000', 'we_oper_end_tm__25': '2400', 'add_prk_hr__25': '5', 'lat__25': '37.5645259', 'bsc_prk_hr__25': '5', 'we_oper_bgng_tm__25': '0000', 'lhldy_chgd_free_se__25': 'N', 'prk_stts_yn__25': '1', 'oper_se_nm__25': '시간제 주차장', 'lhldy_oper_end_tm__25': '2400', 'add_prk_crg__25': '200', 'addr__25': '광진구 중곡동 230-12', 'now_prk_vhcl_updt_tm__25': '2024-12-05 23:21:50', 'wd_oper_end_tm__25': '2400', 'nght_pay_yn_nm__25': '야간 미개방', 'pklt_nm__25': '중곡1동 공영주차장(시)', 'now_prk_vhcl_cnt__25': '52', 'lhldy_oper_bgng_tm__25': '0000', 'bsc_prk_crg__25': '200'}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+
+2024-12-05 23:26:13,173 - root - INFO - Received exit signal. Shutting down...
+2024-12-05 23:26:13,174 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2024-12-05 23:26:13,177 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 23:26:13,179 - apscheduler.scheduler - DEBUG - No jobs; waiting until a job is added
+2024-12-05 23:26:13,180 - root - INFO - Scheduler and Executor have been shut down.

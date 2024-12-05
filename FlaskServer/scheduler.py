@@ -36,34 +36,35 @@ def run_script(script_name):
     except Exception as e:
         logging.error(f"Exception while running script {script_name}: {e}")
 
+# 순차 실행 함수 (실패해도 다음 작업 계속)
+def execute_tasks_in_order():
+    scripts = [
+        "Delete_parking_info.py",
+        "Request_parking_filtered_1.py",
+        "Request_parking_filtered_2.py"
+    ]
+    
+    for script in scripts:
+        try:
+            run_script(script)
+        except Exception as e:
+            logging.error(f"Failed to execute {script}: {e}")
+            continue  # 실패해도 다음 작업 계속 실행
+
 # 스케줄러 초기화
 scheduler = BackgroundScheduler()
 executor = ThreadPoolExecutor()
 
-# 주기적으로 실행할 작업 추가
+# 통합 작업으로 스케줄링
 scheduler.add_job(
-    func=lambda: run_script("Delete_parking_info.py"),
+    func=execute_tasks_in_order,
     trigger="cron",
-    minute="*/5",
-    id="delete_parking_info",
+    minute="*/5",  # 5분마다 실행
+    id="execute_tasks_in_order",
     misfire_grace_time=300
 )
 
-scheduler.add_job(
-    func=lambda: executor.submit(run_script, "Request_parking_filtered_1.py"),
-    trigger="cron",
-    minute="*/5",
-    id="request_parking_1"
-)
-
-scheduler.add_job(
-    func=lambda: executor.submit(run_script, "Request_parking_filtered_2.py"),
-    trigger="cron",
-    minute="*/5",
-    id="request_parking_2"
-)
-
-# 자정마다 실행할 작업 추가 (누락된 작업)
+# 자정마다 실행할 작업 추가
 scheduler.add_job(
     func=lambda: run_script("all_filterd.py"),
     trigger="cron",
