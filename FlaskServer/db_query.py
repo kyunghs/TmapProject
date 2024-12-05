@@ -273,7 +273,7 @@ def getParkInfo(u_lat, u_lot):
 
     conn = dbConnection()
     cursor = conn.cursor()
-    query = ("SELECT pklt_nm, lat, lot, bsc_prk_crg, bsc_prk_hr, add_prk_crg, add_prk_hr, day_max_crg, ROUND(6371000 * acos(cos(radians(%s)) * cos(radians(lat)) * cos(radians(lot) - radians(%s)) + sin(radians(%s)) * sin(radians(lat)))) AS distance "
+    query = ("SELECT pklt_nm, lat, lot, bsc_prk_crg, add_prk_crg, day_max_crg, ROUND(6371000 * acos(cos(radians(%s)) * cos(radians(lat)) * cos(radians(lot) - radians(%s)) + sin(radians(%s)) * sin(radians(lat)))) AS distance "
              "FROM parking_info pi2 "
              "ORDER BY distance LIMIT 5")
     cursor.execute(query, (u_lat, u_lot, u_lat))
@@ -281,7 +281,7 @@ def getParkInfo(u_lat, u_lot):
     conn.close()
 
     parking_list = [
-        {"name": row[0], "latitude": row[1], "longitude": row[2], "distance": row[3]}
+        {"name": row[0], "latitude": row[1], "longitude": row[2], "bsc_prk_crg": row[3], "add_prk_crg": row[4], "day_max_crg": row[5], "distance": row[6]}
         for row in result
     ]
     return parking_list

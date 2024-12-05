@@ -15,6 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.myapplication.R;
 import com.myapplication.adapters.ParkingAdapter;
 import com.myapplication.models.Parking;
+import com.myapplication.utils.Utils;
 import com.skt.tmap.engine.navigation.SDKManager;
 
 import org.json.JSONArray;
@@ -79,17 +80,27 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
             for (int i = 0; i < parkArray.length(); i++) {
                 JSONObject parkObject = parkArray.getJSONObject(i);
                 String name = parkObject.optString("name", "Unknown");
+                String baseFee = parkObject.optString("bsc_prk_crg");
+                String addFee = parkObject.optString("add_prk_crg");
+                String dayMaxFee = parkObject.optString("day_max_crg");
+                double bscPrkCrg = Double.parseDouble(baseFee);
+                double addPrkCrg = Double.parseDouble(addFee);
+                double dayMaxCrg = Double.parseDouble(dayMaxFee);
+                //하드코딩
+                int parkingTime = 120;
+
+                String totalFee = Utils.calculateParkingFee(bscPrkCrg, addPrkCrg, dayMaxCrg, parkingTime);
+                System.out.println("총 주차 요금: " + totalFee + "원");
                 String distance = parkObject.optString("distance", "0m");
                 distance = distance.replaceAll("[^\\d]", "").isEmpty() ? "0" : distance.replaceAll("[^\\d]", "");
                 distance = Integer.parseInt(distance) >= 1000
                         ? String.format("%.1fkm", Integer.parseInt(distance) / 1000.0)
                         : NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(distance)) + "m";
 
-                String price = parkObject.optString("price", "0원");
                 String availability = parkObject.optString("availability", "알 수 없음");
 
                 // Parking 객체로 변환하여 리스트에 추가
-                parkingList.add(new Parking(name, distance, price, availability));
+                parkingList.add(new Parking(name, distance, totalFee, availability));
             }
         } catch (JSONException e) {
             e.printStackTrace();
