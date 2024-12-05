@@ -66,7 +66,7 @@ def jwt_required(f):
 # PostgreSQL 데이터베이스 연결 함수
 def dbConnection():
     conn = psycopg2.connect(
-        host="localhost",
+        host="220.116.209.226",
         port="5432",
         database="postgres",
         user="postgres",
@@ -155,7 +155,7 @@ def get_edit_user_info_by_id(user_id):
 
         # 사용자 정보 가져오는 쿼리
         query = """
-        SELECT id, password, name, user_tel
+        SELECT id, password, name, user_tel, user_code
         FROM user_info
         WHERE id = %s
         """
@@ -167,10 +167,165 @@ def get_edit_user_info_by_id(user_id):
                 "id": result[0],
                 "password": result[1],
                 "name": result[2],
-                "user_tel": result[3]
+                "user_tel": result[3],
+                "user_code":result[4]
             }
         else:
             return None
+    except psycopg2.Error as db_err:
+        print(f"Database error: {db_err}")
+        return None
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return None
+    finally:
+        conn.close()
+
+
+
+def get_user_custom_info(user_id):
+    try:
+
+        print(user_id)
+        conn = dbConnection()  
+        cursor = conn.cursor()
+
+        # 사용자 정보 가져오는 쿼리
+        query = """
+        SELECT user_code, area_1, area_1_alias, area_1_address, area_2, area_2_alias, area_2_address
+        FROM user_custom_info
+        WHERE user_code = %s
+        """
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchone()
+
+        if result:
+            return {
+                "user_code": result[0],
+                "area_1": result[1],
+                "area_1_aliase": result[2],
+                "area_1_address": result[3],
+                "area_2": result[4],
+                "area_2_aliase": result[5],
+                "area_2_address": result[6]
+            }
+        else:
+            return None
+    except psycopg2.Error as db_err:
+        print(f"Database error: {db_err}")
+        return None
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return None
+    finally:
+        conn.close()
+
+
+
+def get_user_history(user_id):
+    try:
+        conn = dbConnection()  
+        cursor = conn.cursor()
+
+        # 사용자 정보 가져오는 쿼리
+        query  = """
+        SELECT user_code, departure, destination, date
+        FROM user_history
+        WHERE user_code = %s
+        ORDER BY date desc
+        """
+
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchall()
+
+        return result
+    except psycopg2.Error as db_err:
+        print(f"Database error: {db_err}")
+        return None
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return None
+    finally:
+        conn.close()
+
+# 즐겨찾기 수정
+def update_user_custom_1(user_id, data):
+    try:
+        conn = dbConnection()
+        cursor = conn.cursor()
+        
+        query = """
+        UPDATE user_custom_info
+        SET area_1 = %s, area_1_alias = %s, area_1_address = %s
+        WHERE user_code = %s
+        """
+        cursor.execute(query, (data['area'], data['area_alias'], data['area_address'], user_id))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error updating user info: {e}")
+        conn.rollback()
+        return False
+    finally:
+        conn.close()
+
+        # 즐겨찾기 수정
+def update_user_custom_2(user_id, data):
+    try:
+        conn = dbConnection()
+        cursor = conn.cursor()
+        
+        query = """
+        UPDATE user_custom_info
+        SET area_2 = %s, area_2_alias = %s, area_2_address = %s
+        WHERE user_code = %s
+        """
+        cursor.execute(query, (data['area'], data['area_alias'], data['area_address'], user_id))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error updating user info: {e}")
+        conn.rollback()
+        return False
+    finally:
+        conn.close()
+        
+
+def get_user_ki_history(user_id):
+    try:
+        conn = dbConnection()  
+        cursor = conn.cursor()
+
+        # 사용자 정보 가져오는 쿼리
+        query_today  = """
+        SELECT user_code, SUM(kilometers) AS total_kilometers
+        FROM user_history
+        WHERE user_code = %s
+        AND DATE(date) = CURRENT_DATE
+        GROUP BY user_code
+        """
+
+        cursor.execute(query_today, (user_id,))
+        result = cursor.fetchone()
+
+
+        query_yesterday = """
+        SELECT user_code, SUM(kilometers) AS total_kilometers
+        FROM user_history
+        WHERE user_code = %s
+        AND DATE(date) = CURRENT_DATE - INTERVAL '1 day'
+        GROUP BY user_code
+        """
+        cursor.execute(query_yesterday, (user_id,))
+        result2 = cursor.fetchone()
+
+        ki = result[1] - result2[1] if result[1] - result2[1] >= 0 else 0
+
+
+        return {
+            "ki": ki,
+            "today_ki": result[1],
+        }
     except psycopg2.Error as db_err:
         print(f"Database error: {db_err}")
         return None
@@ -223,8 +378,20 @@ def register_user(id, password, name, user_tel, birthday):
         query = """
         INSERT INTO user_info (id, password, name, user_tel, birthday)
         VALUES (%s, %s, %s, %s, %s)
+        RETURNING user_code
         """
         cursor.execute(query, (id, password, name, user_tel, birthday))
+
+        user_code = cursor.fetchone()[0]
+
+        print(user_code)
+
+        query2 = """
+        INSERT INTO user_custom_info (user_code)
+        VALUES (%s)
+        """
+        cursor.execute(query2, (user_code,))
+
         conn.commit()
         return True
     except Exception as e:
@@ -273,9 +440,10 @@ def getParkInfo(u_lat, u_lot):
 
     conn = dbConnection()
     cursor = conn.cursor()
-    query = ("SELECT pklt_nm, now_prk_vhcl_cnt, lat, lot, bsc_prk_crg, add_prk_crg, day_max_crg, ROUND(6371000 * acos(cos(radians(%s)) * cos(radians(lat)) * cos(radians(lot) - radians(%s)) + sin(radians(%s)) * sin(radians(lat)))) AS distance "
-             "FROM parking_info pi2 "
-             "ORDER BY distance LIMIT 5")
+    
+    query = ("SELECT pklt_nm, now_prk_vhcl_cnt, lat, lot, bsc_prk_crg, add_prk_crg, day_max_crg, ROUND(6371000 * acos(cos(radians(%s)) * cos(radians(lat)) * cos(radians(lot) - radians(%s)) + sin(radians(%s)) * sin(radians(lat)))) AS distance ")
+              
+
     cursor.execute(query, (u_lat, u_lot, u_lat))
     result = cursor.fetchall()
     conn.close()

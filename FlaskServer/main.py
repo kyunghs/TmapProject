@@ -403,6 +403,85 @@ def get_edit_user_info(user):
         print(f"Error in get_edit_user_info: {e}")
         return jsonify({"message": "서버 오류가 발생했습니다.", "success": False}), 500
 
+# 대시보드 정보 가져오기 
+@app.route('/main/dashboard', methods=['POST'])
+@jwt_required
+def get_main_info(user):
+    try:
+        # JWT에서 사용자 ID 가져오기
+        user_id = user.get("id")
+        if not user_id:
+            return jsonify({"message": "유효하지 않은 사용자 정보입니다.", "success": False}), 400
+
+        # DB에서 사용자 정보 조회
+        user_data = db_query.get_edit_user_info_by_id(user_id)
+
+        if user_data:
+            # 대시보드 작업
+            user_custom_data = db_query.get_user_custom_info(user_data["user_code"])
+            get_user_history_data = db_query.get_user_history(user_data["user_code"])
+            get_user_ki_history_data = db_query.get_user_ki_history(user_data["user_code"])
+
+            return jsonify({
+                "message": "대시보드 정보를 성공적으로 가져왔습니다.",
+                "success": True,
+                "data": {
+                    "user_custom_data": user_custom_data,
+                    "get_user_history_data":get_user_history_data,
+                    "get_user_ki_history_data":get_user_ki_history_data,
+                }
+            }), 200
+        else:
+            return jsonify({"message": "사용자를 찾을 수 없습니다.", "success": False}), 404
+    except Exception as e:
+        print(f"Error in get_edit_user_info: {e}")
+        return jsonify({"message": "서버 오류가 발생했습니다.", "success": False}), 500
+
+
+# 대시보드 정보 가져오기 
+@app.route('/update_user_custom_data', methods=['POST'])
+@jwt_required
+def update_user_custom_data(user):
+    try:
+        # JWT에서 사용자 ID 가져오기
+
+        body = request.get_json()
+        if not body:
+            return jsonify({"error": "No data provided"}), 400
+
+        user_id = user.get("id")
+        if not user_id:
+            return jsonify({"message": "유효하지 않은 사용자 정보입니다.", "success": False}), 400
+
+        # DB에서 사용자 정보 조회
+
+        area = body.get("area", "")
+        area_alias = body.get("area_alias", "")
+        area_address = body.get("area_address", "")
+
+        user_data = db_query.get_edit_user_info_by_id(user_id)
+        if user_data:
+            # 대시보드 작업
+            category = body.get("category", 1)
+
+            if category == 1:
+                db_query.update_user_custom_1(user_data["user_code"], {"area": area, "area_alias":area_alias, "area_address": area_address })
+            else:
+                db_query.update_user_custom_2(user_data["user_code"], {"area": area, "area_alias":area_alias, "area_address": area_address })
+        
+            return jsonify({
+                "message": "완료",
+                "success": True,
+            }), 200
+        else:
+            return jsonify({"message": "사용자를 찾을 수 없습니다.", "success": False}), 404
+       
+    
+    except Exception as e:
+        print(f"Error in get_edit_user_info: {e}")
+        return jsonify({"message": "서버 오류가 발생했습니다.", "success": False}), 500
+
+
 
 @app.route('/updateUserInfo', methods=['POST'])
 def update_user_info():
