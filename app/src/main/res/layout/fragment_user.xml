@@ -54,10 +54,7 @@
                     android:textStyle="bold"
                     android:textColor="#FFFFFF" />
 
-                <!-- 추후에 내용 추가 (빈 공간) -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="240dp" />
+
 
 
                 <TextView
@@ -241,12 +238,14 @@
 
         <!-- 이미지뷰 -->
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:id="@+id/profile_image"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
             android:layout_marginTop="66dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="640dp"
             android:contentDescription="프로필 이미지"
+            android:background="@drawable/circle_background_profile"
             android:clipToOutline="true"
             android:elevation="4dp"
             android:src="@drawable/karina" />
