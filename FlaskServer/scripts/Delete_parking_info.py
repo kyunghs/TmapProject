@@ -6,7 +6,8 @@ import psycopg2
 # 데이터베이스 연결 정보
 db_user = 'postgres'
 db_password = 'gurtn123'
-db_host = 'localhost'
+# db_host = 'localhost'
+db_host = '220.116.209.226'
 db_name = 'postgres'
 
 try:

@@ -1,0 +1,214 @@
+2024-12-05 22:17:27,288 - tzlocal - DEBUG - Looking up time zone info from registry
+2024-12-05 22:17:27,323 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:17:27,324 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:17:27,324 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:17:27,324 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:17:27,325 - root - INFO - Starting Scheduler...
+2024-12-05 22:17:27,325 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:17:27,325 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:17:27,326 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:17:27,326 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:17:27,326 - apscheduler.scheduler - INFO - Scheduler started
+2024-12-05 22:17:27,327 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:17:27,328 - root - INFO - Scheduler started successfully.
+2024-12-05 22:17:27,328 - apscheduler.scheduler - DEBUG - Next wakeup is due at 2024-12-05 22:20:00+09:00 (in 152.671550 seconds)
+2024-12-05 22:21:34,541 - tzlocal - DEBUG - Looking up time zone info from registry
+2024-12-05 22:21:34,557 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:21:34,558 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:21:34,559 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:21:34,561 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:21:34,564 - root - INFO - Starting Scheduler...
+2024-12-05 22:21:34,566 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:21:34,567 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:21:34,568 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:21:34,569 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:21:34,570 - apscheduler.scheduler - INFO - Scheduler started
+2024-12-05 22:21:34,574 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:21:34,574 - root - INFO - Scheduler started successfully.
+2024-12-05 22:21:34,574 - apscheduler.scheduler - DEBUG - Next wakeup is due at 2024-12-05 22:25:00+09:00 (in 205.425133 seconds)
+2024-12-05 22:25:00,025 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:28:10,117 - tzlocal - DEBUG - Looking up time zone info from registry
+2024-12-05 22:28:10,133 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:28:10,134 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:28:10,136 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:28:10,138 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:28:10,139 - root - INFO - Starting Scheduler...
+2024-12-05 22:28:10,140 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:28:10,141 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:28:10,142 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:28:10,144 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:28:10,145 - apscheduler.scheduler - INFO - Scheduler started
+2024-12-05 22:28:10,148 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:28:10,148 - root - INFO - Scheduler started successfully.
+2024-12-05 22:28:10,148 - apscheduler.scheduler - DEBUG - Next wakeup is due at 2024-12-05 22:30:00+09:00 (in 109.851304 seconds)
+2024-12-05 22:28:17,386 - root - INFO - Received exit signal. Shutting down...
+2024-12-05 22:28:17,387 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2024-12-05 22:28:17,387 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:28:17,387 - apscheduler.scheduler - DEBUG - No jobs; waiting until a job is added
+2024-12-05 22:28:17,388 - root - INFO - Scheduler and Executor have been shut down.
+2024-12-05 22:28:17,388 - root - INFO - Received exit signal. Shutting down...
+2024-12-05 22:28:29,723 - tzlocal - DEBUG - Looking up time zone info from registry
+2024-12-05 22:28:29,740 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:28:29,740 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:28:29,742 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:28:29,744 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:28:29,745 - root - INFO - Starting Scheduler...
+2024-12-05 22:28:29,746 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:28:29,747 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:28:29,748 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:28:29,749 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:28:29,750 - apscheduler.scheduler - INFO - Scheduler started
+2024-12-05 22:28:29,754 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:28:29,754 - root - INFO - Scheduler started successfully.
+2024-12-05 22:28:29,754 - apscheduler.scheduler - DEBUG - Next wakeup is due at 2024-12-05 22:30:00+09:00 (in 90.245782 seconds)
+2024-12-05 22:30:00,003 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:32:42,418 - apscheduler.executors.default - INFO - Running job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:30:00 KST)" (scheduled at 2024-12-05 22:30:00+09:00)
+2024-12-05 22:32:42,421 - apscheduler.executors.default - WARNING - Run time of job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:30:00 KST)" was missed by 0:02:42.421809
+2024-12-05 22:32:42,423 - apscheduler.executors.default - WARNING - Run time of job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:30:00 KST)" was missed by 0:02:42.422810
+2024-12-05 22:32:42,424 - apscheduler.scheduler - DEBUG - Next wakeup is due at 2024-12-05 22:35:00+09:00 (in 137.575190 seconds)
+2024-12-05 22:32:46,797 - root - INFO - Running script: Delete_parking_info.py
+2024-12-05 22:32:52,741 - root - INFO - Output: ERROR: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+
+2024-12-05 22:32:52,743 - apscheduler.executors.default - INFO - Job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:35:00 KST)" executed successfully
+2024-12-05 22:33:48,245 - root - INFO - Received exit signal. Shutting down...
+2024-12-05 22:33:48,246 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2024-12-05 22:33:48,248 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:33:48,250 - apscheduler.scheduler - DEBUG - No jobs; waiting until a job is added
+2024-12-05 22:33:48,251 - root - INFO - Scheduler and Executor have been shut down.
+2024-12-05 22:33:48,252 - root - INFO - Received exit signal. Shutting down...
+2024-12-05 22:33:55,486 - tzlocal - DEBUG - Looking up time zone info from registry
+2024-12-05 22:33:55,502 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:33:55,503 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:33:55,503 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:33:55,504 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:33:55,505 - root - INFO - Starting Scheduler...
+2024-12-05 22:33:55,505 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:33:55,506 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:33:55,506 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:33:55,507 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:33:55,508 - apscheduler.scheduler - INFO - Scheduler started
+2024-12-05 22:33:55,511 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:33:55,511 - root - INFO - Scheduler started successfully.
+2024-12-05 22:33:55,512 - apscheduler.scheduler - DEBUG - Next wakeup is due at 2024-12-05 22:35:00+09:00 (in 64.487624 seconds)
+2024-12-05 22:35:00,019 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:35:00,023 - apscheduler.executors.default - INFO - Running job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:35:00 KST)" (scheduled at 2024-12-05 22:35:00+09:00)
+2024-12-05 22:35:00,027 - apscheduler.executors.default - INFO - Running job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:40:00 KST)" (scheduled at 2024-12-05 22:35:00+09:00)
+2024-12-05 22:35:00,029 - apscheduler.executors.default - INFO - Running job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:40:00 KST)" (scheduled at 2024-12-05 22:35:00+09:00)
+2024-12-05 22:35:00,029 - apscheduler.scheduler - DEBUG - Next wakeup is due at 2024-12-05 22:40:00+09:00 (in 299.970684 seconds)
+2024-12-05 22:35:00,129 - apscheduler.executors.default - INFO - Job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:40:00 KST)" executed successfully
+2024-12-05 22:35:00,134 - apscheduler.executors.default - INFO - Job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:40:00 KST)" executed successfully
+2024-12-05 22:35:04,421 - root - INFO - Running script: Delete_parking_info.py
+2024-12-05 22:35:04,421 - root - INFO - Output: ERROR: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+
+2024-12-05 22:35:04,425 - apscheduler.executors.default - INFO - Job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:40:00 KST)" executed successfully
+2024-12-05 22:35:09,564 - root - INFO - Running script: Request_parking_filtered_1.py
+2024-12-05 22:35:09,564 - root - INFO - Output: ERROR: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+2024-12-05 22:35:09,616 - root - INFO - Running script: Request_parking_filtered_2.py
+2024-12-05 22:35:09,616 - root - INFO - Output: ERROR: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+2024-12-05 22:35:34,467 - root - INFO - Received exit signal. Shutting down...
+2024-12-05 22:35:34,468 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2024-12-05 22:35:34,469 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:35:34,469 - apscheduler.scheduler - DEBUG - No jobs; waiting until a job is added
+2024-12-05 22:35:34,469 - root - INFO - Scheduler and Executor have been shut down.
+2024-12-05 22:35:34,470 - root - INFO - Received exit signal. Shutting down...
+2024-12-05 22:39:03,669 - tzlocal - DEBUG - Looking up time zone info from registry
+2024-12-05 22:39:03,685 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:39:03,686 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:39:03,688 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:39:03,690 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2024-12-05 22:39:03,691 - root - INFO - Starting Scheduler...
+2024-12-05 22:39:03,693 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:39:03,693 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:39:03,695 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:39:03,696 - apscheduler.scheduler - INFO - Added job "<lambda>" to job store "default"
+2024-12-05 22:39:03,697 - apscheduler.scheduler - INFO - Scheduler started
+2024-12-05 22:39:03,700 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:39:03,700 - root - INFO - Scheduler started successfully.
+2024-12-05 22:39:03,700 - apscheduler.scheduler - DEBUG - Next wakeup is due at 2024-12-05 22:40:00+09:00 (in 56.299602 seconds)
+2024-12-05 22:40:00,027 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:40:59,930 - apscheduler.executors.default - INFO - Running job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:40:00 KST)" (scheduled at 2024-12-05 22:40:00+09:00)
+2024-12-05 22:40:59,933 - root - INFO - @@@@ : C:\git_\FlaskServer\scripts\Delete_parking_info.py
+2024-12-05 22:40:59,935 - apscheduler.executors.default - WARNING - Run time of job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:40:00 KST)" was missed by 0:00:59.935473
+2024-12-05 22:40:59,941 - apscheduler.executors.default - WARNING - Run time of job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:40:00 KST)" was missed by 0:00:59.941475
+2024-12-05 22:40:59,943 - apscheduler.scheduler - DEBUG - Next wakeup is due at 2024-12-05 22:45:00+09:00 (in 240.056526 seconds)
+2024-12-05 22:41:04,223 - root - INFO - Running script: Delete_parking_info.py
+2024-12-05 22:44:31,588 - root - INFO - Output: ERROR: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+
+2024-12-05 22:44:31,592 - apscheduler.executors.default - INFO - Job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:45:00 KST)" executed successfully
+2024-12-05 22:45:00,003 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:45:00,006 - apscheduler.scheduler - DEBUG - Next wakeup is due at 2024-12-05 22:50:00+09:00 (in 299.993473 seconds)
+2024-12-05 22:45:00,006 - apscheduler.executors.default - INFO - Running job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:50:00 KST)" (scheduled at 2024-12-05 22:45:00+09:00)
+2024-12-05 22:45:00,007 - apscheduler.executors.default - INFO - Running job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:50:00 KST)" (scheduled at 2024-12-05 22:45:00+09:00)
+2024-12-05 22:45:00,007 - apscheduler.executors.default - INFO - Running job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:50:00 KST)" (scheduled at 2024-12-05 22:45:00+09:00)
+2024-12-05 22:45:00,009 - root - INFO - @@@@ : C:\git_\FlaskServer\scripts\Delete_parking_info.py
+2024-12-05 22:45:00,012 - apscheduler.executors.default - INFO - Job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:50:00 KST)" executed successfully
+2024-12-05 22:45:00,013 - root - INFO - @@@@ : C:\git_\FlaskServer\scripts\Request_parking_filtered_1.py
+2024-12-05 22:45:00,013 - apscheduler.executors.default - INFO - Job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:50:00 KST)" executed successfully
+2024-12-05 22:45:00,014 - root - INFO - @@@@ : C:\git_\FlaskServer\scripts\Request_parking_filtered_2.py
+2024-12-05 22:45:01,905 - root - INFO - Running script: Request_parking_filtered_2.py
+2024-12-05 22:45:01,906 - root - INFO - Output: 
+2024-12-05 22:45:01,908 - root - ERROR - Error: Traceback (most recent call last):
+  File "C:\Users\¿ÃπŒ»£\AppData\Local\Programs\Python\Python39\lib\site-packages\requests\models.py", line 971, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "C:\Users\¿ÃπŒ»£\AppData\Local\Programs\Python\Python39\lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+  File "C:\Users\¿ÃπŒ»£\AppData\Local\Programs\Python\Python39\lib\json\decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "C:\Users\¿ÃπŒ»£\AppData\Local\Programs\Python\Python39\lib\json\decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\git_\FlaskServer\scripts\Request_parking_filtered_2.py", line 13, in <module>
+    data = response.json()
+  File "C:\Users\¿ÃπŒ»£\AppData\Local\Programs\Python\Python39\lib\site-packages\requests\models.py", line 975, in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+2024-12-05 22:45:04,271 - root - INFO - Running script: Delete_parking_info.py
+2024-12-05 22:45:04,272 - root - INFO - Output: ERROR: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+
+2024-12-05 22:45:04,276 - apscheduler.executors.default - INFO - Job "<lambda> (trigger: cron[minute='*/5'], next run at: 2024-12-05 22:50:00 KST)" executed successfully
+2024-12-05 22:45:06,623 - root - INFO - Running script: Request_parking_filtered_1.py
+2024-12-05 22:45:06,623 - root - INFO - Output: ERROR: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+2024-12-05 22:47:29,937 - root - INFO - Received exit signal. Shutting down...
+2024-12-05 22:47:29,937 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2024-12-05 22:47:29,940 - apscheduler.scheduler - DEBUG - Looking for jobs to run
+2024-12-05 22:47:29,941 - apscheduler.scheduler - DEBUG - No jobs; waiting until a job is added
+2024-12-05 22:47:29,942 - root - INFO - Scheduler and Executor have been shut down.
