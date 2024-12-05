@@ -43,6 +43,7 @@ public class HttpUtils {
 
         Request.Builder requestBuilder = new Request.Builder()
                 .url(url)
+                .addHeader("Content-Type", "application/json")
                 .post(body);
 
 

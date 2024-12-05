@@ -30,7 +30,7 @@
                     android:layout_weight="1"
                     android:text="장소 이름"
                     android:textStyle="bold"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textColor="#000000" />
 
                 <TextView
@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="장소 주소"
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textColor="#6F6F6F" />
             </LinearLayout>
         <LinearLayout
@@ -54,7 +54,7 @@
                 android:layout_weight="1"
                 android:text="0"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:textColor="#FE4B4B" />
         </LinearLayout>
     </LinearLayout>

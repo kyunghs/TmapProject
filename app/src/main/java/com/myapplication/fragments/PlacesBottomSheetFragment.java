@@ -102,7 +102,6 @@ public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
 
                 // 거리 계산 (미터 단위)
                 String distance = Utils.calculateDistanceAsString(targetLat, targetLon, currentLat, currentLong);
-                Log.e("!@#!@#!@#$!@", distance);
                 // Place 객체로 변환하여 리스트에 추가
                 placeList.add(new Place(name, fullAddressRoad, latitude, longitude, distance));
             }
