@@ -46,8 +46,6 @@ public class HttpUtils {
                 .addHeader("Content-Type", "application/json")
                 .post(body);
 
-
-
         if (token != null) {
             requestBuilder.addHeader("Authorization", "Bearer " + token);
         }
