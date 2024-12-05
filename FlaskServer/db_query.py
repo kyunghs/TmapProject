@@ -74,6 +74,7 @@ def dbConnection():
     )
     return conn
 
+
 # 아이디와 비밀번호를 검증하는 함수
 def checkLogin(id, password):
     try:
