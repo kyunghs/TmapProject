@@ -2,6 +2,8 @@ package com.myapplication.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,12 +25,18 @@ import com.myapplication.utils.HttpUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class UserFragment extends Fragment {
 
     private TextView nameText;
     private ImageView profileImageView;
 
     private static final int REQUEST_CODE_PICK_IMAGE = 1001;
+    private static final String PROFILE_IMAGE_NAME = "profile_image.png";
 
     @Nullable
     @Override
@@ -39,6 +47,9 @@ public class UserFragment extends Fragment {
         nameText = view.findViewById(R.id.name_text);
         profileImageView = view.findViewById(R.id.profile_image);
         Button editProfileButton = view.findViewById(R.id.edit_profile_button);
+
+        // 로컬 저장소에서 프로필 이미지 로드
+        loadImageFromLocalStorage();
 
         // 유저 정보 로드
         fetchUserInfo();
@@ -125,10 +136,39 @@ public class UserFragment extends Fragment {
             if (selectedImageUri != null) {
                 profileImageView.setImageURI(selectedImageUri); // 이미지 설정
                 profileImageView.setClipToOutline(true); // 원형 유지
+                saveImageToLocalStorage(selectedImageUri); // 이미지 로컬 저장
                 Log.d("UserFragment", "이미지 업데이트 완료: " + selectedImageUri.toString());
                 Toast.makeText(getActivity(), "프로필 이미지가 변경되었습니다.", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
+    // 이미지 로컬 저장
+    private void saveImageToLocalStorage(Uri imageUri) {
+        try {
+            InputStream inputStream = getActivity().getContentResolver().openInputStream(imageUri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+            // 이미지 저장 경로
+            File file = new File(getActivity().getFilesDir(), PROFILE_IMAGE_NAME);
+            FileOutputStream fos = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+
+            Log.d("UserFragment", "이미지 로컬 저장 완료: " + file.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(getActivity(), "이미지를 저장하지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // 로컬 저장소에서 이미지 로드
+    private void loadImageFromLocalStorage() {
+        File file = new File(getActivity().getFilesDir(), PROFILE_IMAGE_NAME);
+        if (file.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            profileImageView.setImageBitmap(bitmap);
+            profileImageView.setClipToOutline(true); // 원형 유지
+        }
+    }
 }

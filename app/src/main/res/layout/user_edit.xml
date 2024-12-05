@@ -68,6 +68,7 @@
             android:layout_height="80dp" >
 
             <ImageView
+                android:id="@+id/profile_image_select"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/karina"
