@@ -100,54 +100,6 @@ public class MapFragment extends Fragment {
             }
         });
 
-        // path_select_sheet.xml 표시 및 "안내 시작" 버튼 설정
-        mapBottomContainer.removeAllViews(); // 이전 뷰 제거
-        View pathSelectView = inflater.inflate(R.layout.path_select_sheet, mapBottomContainer, false);
-        mapBottomContainer.addView(pathSelectView);
-
-        Button guideStartButton = pathSelectView.findViewById(R.id.btnSave); // "안내 시작" 버튼
-        guideStartButton.setOnClickListener(v -> {
-            // BottomNavigationView 숨기기
-            if (bottomNavigationView != null) {
-                Log.d(TAG, "Hiding BottomNavigationView.");
-                bottomNavigationView.setVisibility(View.GONE);
-            }
-
-            // map_bottom.xml 표시
-            mapBottomContainer.removeAllViews(); // 이전 path_select_sheet.xml 제거
-            View mapBottomView = inflater.inflate(R.layout.map_bottom, mapBottomContainer, false);
-            mapBottomContainer.addView(mapBottomView);
-            mapBottomContainer.setVisibility(View.VISIBLE);
-
-            // map_bottom.xml 내부 아이템 설정
-            ImageView refreshIcon = mapBottomView.findViewById(R.id.refresh_icon);
-            if (refreshIcon != null) {
-                refreshIcon.setOnClickListener(refreshView -> {
-                    Toast.makeText(requireContext(), "새로고침 클릭됨", Toast.LENGTH_SHORT).show();
-                });
-            } else {
-                Log.e(TAG, "refresh_icon is null. Check XML ID or layout.");
-            }
-
-            // "닫기" 버튼 설정
-            ImageView closeButton = mapBottomView.findViewById(R.id.more_icon); // 닫기 버튼
-            if (closeButton != null) {
-                closeButton.setOnClickListener(closeView -> {
-                    if (bottomNavigationView != null) {
-                        Log.d(TAG, "Showing BottomNavigationView.");
-                        bottomNavigationView.setVisibility(View.VISIBLE);
-                    }
-
-                    // mapBottomContainer 초기화 및 숨기기
-                    mapBottomContainer.removeAllViews();
-                    mapBottomContainer.setVisibility(View.GONE);
-                    Log.d(TAG, "map_bottom.xml removed.");
-                });
-            } else {
-                Log.e(TAG, "more_icon is null. Check XML ID or layout.");
-            }
-        });
-
         //목적지 검색 시
         searchMap.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {

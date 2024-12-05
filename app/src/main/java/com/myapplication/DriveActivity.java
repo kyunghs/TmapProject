@@ -48,7 +48,7 @@ import com.tmapmobility.tmap.tmapsdk.ui.view.MapConstant;
 
 import java.util.ArrayList;
 
-public class DriveActivity extends AppCompatActivity {
+public class DriveActivity extends AppCompatActivity implements PathSelectBottomSheetFragment.RouteSelectionListener {
     private static final String TAG = "Develop";
 
     boolean isEDC; // edc 수신 여부
@@ -71,11 +71,8 @@ public class DriveActivity extends AppCompatActivity {
         }
         checkPermission();
 
-        /*PathSelectBottomSheetFragment pathSelectBottomSheetFragment = new PathSelectBottomSheetFragment();
-        pathSelectBottomSheetFragment.show(getSupportFragmentManager(), "PathSelectBottomSheetFragment");*/
-        /*new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Test(destinationName, latitude, longitude);
-        }, 1000);*/
+        PathSelectBottomSheetFragment pathSelectBottomSheetFragment = PathSelectBottomSheetFragment.newInstance(latitude, longitude);
+        pathSelectBottomSheetFragment.show(getSupportFragmentManager(), "PathSelectBottomSheetFragment");
 
 
 
@@ -122,6 +119,13 @@ public class DriveActivity extends AppCompatActivity {
 
     }
 
+    // RouteSelectionListener 구현
+    @Override
+    public void onRouteSelected(int route) {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            Test(destinationName, latitude, longitude, route);
+        }, 1000);
+    }
 
 
     private void checkPermission() {
@@ -478,7 +482,7 @@ public class DriveActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void Test(String destinationName, String lat, String lot){
+    private void Test(String destinationName, String lat, String lot, int Route){
 
         // 자동차 옵션 설정
         CarOption carOption = new CarOption();
@@ -497,14 +501,9 @@ public class DriveActivity extends AppCompatActivity {
 
         // 목적지
         WayPoint endPoint = new WayPoint(destinationName, new MapPoint(longitude, latitude));
-
+        navigationFragment.setRoutePlanType(RoutePlanType.getRoutePlanType(1));
         ArrayList<RoutePlanType> planTypeList = new ArrayList<>();
         planTypeList.add(RoutePlanType.Traffic_Recommend);
-        planTypeList.add(RoutePlanType.Traffic_Free);
-
-        Log.e("@!##!", String.valueOf(RoutePlanType.getRoutePlanType(1).getRouteOption()));
-        Log.e("@!##!", String.valueOf(RoutePlanType.getRoutePlanType(2).ordinal()));
-        Log.e("@!##!", String.valueOf(RoutePlanType.getRoutePlanType(2)));
 
         navigationFragment.requestRoute(startPoint, null, endPoint, false, new TmapUISDK.RouteRequestListener() {
             @Override

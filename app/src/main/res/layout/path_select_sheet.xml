@@ -29,9 +29,10 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <!-- 카드 예시 -->
+
             <LinearLayout
                 android:layout_width="160dp"
+                android:id="@+id/firstRoute"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:background="@drawable/card_background"
@@ -47,55 +48,65 @@
                     android:textColor="#FF8B61"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+
                 <LinearLayout
-                    android:layout_width="55dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/firstTime"
                         android:layout_width="30dp"
                         android:layout_height="wrap_content"
                         android:text="50"
+                        android:textColor="#000000"
                         android:textSize="25dp"
-                        android:textStyle="bold"
-                        android:textColor="#000000" />
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:layout_width="15dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="분"
+                        android:text="분 소요"
                         android:textColor="#000000" />
                 </LinearLayout>
 
 
-
                 <TextView
+                    android:id="@+id/firstArrive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="left"
                     android:text="오후 8:58분 도착"
                     android:textSize="14dp" />
+
                 <LinearLayout
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal">
+
                     <TextView
-                        android:layout_width="40dp"
+                        android:id="@+id/firstDist"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="50km" />
+                        android:layout_marginEnd="16dp"
+                        android:text="50km"
+                        android:textSize="13sp" />
+
                     <TextView
-                        android:layout_width="60dp"
+                        android:id="@+id/firstFee"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="4,700원" />
+                        android:text="4,700원"
+                        android:textSize="13sp" />
                 </LinearLayout>
 
             </LinearLayout>
 
-            <!-- 추가 카드들 -->
             <LinearLayout
                 android:layout_width="160dp"
+                android:id="@+id/secondRoute"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:background="@drawable/card_background"
@@ -107,12 +118,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="내비서 추천"
+                    android:text="최적 + 무료우선"
                     android:textColor="#FF8B61"
                     android:textSize="16sp"
                     android:textStyle="bold" />
                 <LinearLayout
-                    android:layout_width="55dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:orientation="horizontal" >
@@ -120,15 +131,16 @@
                     <TextView
                         android:layout_width="30dp"
                         android:layout_height="wrap_content"
+                        android:id="@+id/secondTime"
                         android:text="50"
                         android:textSize="25dp"
                         android:textStyle="bold"
                         android:textColor="#000000" />
 
                     <TextView
-                        android:layout_width="15dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="분"
+                        android:text="분 소요"
                         android:textColor="#000000" />
                 </LinearLayout>
 
@@ -137,21 +149,27 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/secondArrive"
                     android:layout_marginTop="8dp"
                     android:gravity="left"
                     android:text="오후 8:58분 도착"
                     android:textSize="14dp" />
                 <LinearLayout
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal" >
                     <TextView
-                        android:layout_width="40dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="50km" />
+                        android:id="@+id/secondDist"
+                        android:text="50km"
+                        android:textSize="13sp"
+                        android:layout_marginEnd="16dp"/>
                     <TextView
-                        android:layout_width="60dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/secondFee"
+                        android:textSize="13sp"
                         android:text="4,700원" />
                 </LinearLayout>
 
@@ -159,6 +177,7 @@
 
             <LinearLayout
                 android:layout_width="160dp"
+                android:id="@+id/thirdRoute"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:background="@drawable/card_background"
@@ -170,12 +189,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="내비서 추천"
+                    android:text="최소시간"
                     android:textColor="#FF8B61"
                     android:textSize="16sp"
                     android:textStyle="bold" />
                 <LinearLayout
-                    android:layout_width="55dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:orientation="horizontal" >
@@ -183,15 +202,16 @@
                     <TextView
                         android:layout_width="30dp"
                         android:layout_height="wrap_content"
+                        android:id="@+id/thirdTime"
                         android:text="50"
                         android:textSize="25dp"
                         android:textStyle="bold"
                         android:textColor="#000000" />
 
                     <TextView
-                        android:layout_width="15dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="분"
+                        android:text="분 소요"
                         android:textColor="#000000" />
                 </LinearLayout>
 
@@ -200,151 +220,33 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/thirdArrive"
                     android:layout_marginTop="8dp"
                     android:gravity="left"
                     android:text="오후 8:58분 도착"
                     android:textSize="14dp" />
                 <LinearLayout
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal" >
                     <TextView
-                        android:layout_width="40dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="50km" />
+                        android:id="@+id/thirdDist"
+                        android:text="50km"
+                        android:textSize="13sp"
+                        android:layout_marginEnd="16dp"/>
                     <TextView
-                        android:layout_width="60dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/thirdFee"
+                        android:textSize="13sp"
                         android:text="4,700원" />
                 </LinearLayout>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/card_background"
-                android:gravity="left"
-                android:orientation="vertical"
-                android:padding="16dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="내비서 추천"
-                    android:textColor="#FF8B61"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-                <LinearLayout
-                    android:layout_width="55dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        android:layout_width="30dp"
-                        android:layout_height="wrap_content"
-                        android:text="50"
-                        android:textSize="25dp"
-                        android:textStyle="bold"
-                        android:textColor="#000000" />
-
-                    <TextView
-                        android:layout_width="15dp"
-                        android:layout_height="wrap_content"
-                        android:text="분"
-                        android:textColor="#000000" />
-                </LinearLayout>
-
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="left"
-                    android:text="오후 8:58분 도착"
-                    android:textSize="14dp" />
-                <LinearLayout
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
-                    <TextView
-                        android:layout_width="40dp"
-                        android:layout_height="wrap_content"
-                        android:text="50km" />
-                    <TextView
-                        android:layout_width="60dp"
-                        android:layout_height="wrap_content"
-                        android:text="4,700원" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/card_background"
-                android:gravity="left"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="내비서 추천"
-                    android:textColor="#FF8B61"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-                <LinearLayout
-                    android:layout_width="55dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        android:layout_width="30dp"
-                        android:layout_height="wrap_content"
-                        android:text="50"
-                        android:textSize="25dp"
-                        android:textStyle="bold"
-                        android:textColor="#000000" />
-
-                    <TextView
-                        android:layout_width="15dp"
-                        android:layout_height="wrap_content"
-                        android:text="분"
-                        android:textColor="#000000" />
-                </LinearLayout>
-
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="left"
-                    android:text="오후 8:58분 도착"
-                    android:textSize="14dp" />
-                <LinearLayout
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
-                    <TextView
-                        android:layout_width="40dp"
-                        android:layout_height="wrap_content"
-                        android:text="50km" />
-                    <TextView
-                        android:layout_width="60dp"
-                        android:layout_height="wrap_content"
-                        android:text="4,700원" />
-                </LinearLayout>
-
-            </LinearLayout>
         </LinearLayout>
     </HorizontalScrollView>
 
@@ -357,7 +259,7 @@
         android:layout_gravity="center">
 
 
-        <Button
+        <!--<Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -366,6 +268,6 @@
             android:textSize="15dp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
-            android:background="@drawable/button_border" />
+            android:background="@drawable/button_border" />-->
     </LinearLayout>
 </LinearLayout>

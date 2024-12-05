@@ -1,5 +1,6 @@
 package com.myapplication.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,9 +39,8 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ParkingV
     @Override
     public void onBindViewHolder(@NonNull ParkingViewHolder holder, int position) {
         Parking parking = parkingList.get(position);
-
         holder.nameTextView.setText(parking.getName());
-        holder.remainTextView.setText("남은 자리 : " + parking.getRemain());
+        holder.remainTextView.setText("남은 자리 : " + parking.getRemain()+"석");
         holder.distanceTextView.setText(parking.getDistance());
         holder.priceTextView.setText("예상 요금 : " + Utils.NumberFormat(parking.getPrice()) + "원");
 

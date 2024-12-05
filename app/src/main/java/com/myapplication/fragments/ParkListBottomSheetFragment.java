@@ -83,38 +83,62 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
         try {
             JSONObject rootObject = new JSONObject(parkData);
             JSONArray parkArray = rootObject.getJSONArray("parks");
+
             for (int i = 0; i < parkArray.length(); i++) {
                 JSONObject parkObject = parkArray.getJSONObject(i);
+
+                // 필수 필드 초기화 및 null/empty 처리
                 String name = parkObject.optString("name", "Unknown");
-                String remain = parkObject.optString("now_prk_vhcl_cnt");
-                if (remain == null || remain.trim().isEmpty()) {
-                    remain = "";
+                String remain = parkObject.optString("now_prk_vhcl_cnt", "").trim();
+                remain = remain.isEmpty() ? "0" : remain;
+
+                String baseFee = parkObject.optString("bsc_prk_crg", "0");
+                String addFee = parkObject.optString("add_prk_crg", "0");
+                String dayMaxFee = parkObject.optString("day_max_crg", "0");
+
+                String lat = parkObject.optString("lat", "0.0");
+                String lot = parkObject.optString("lot", "0.0");
+
+                double targetLat, targetLot;
+                try {
+                    targetLat = Double.parseDouble(lat);
+                    targetLot = Double.parseDouble(lot);
+                } catch (NumberFormatException e) {
+                    Log.e("ParseParkData", "Invalid lat/lot values: " + lat + ", " + lot);
+                    targetLat = 0.0;
+                    targetLot = 0.0;
                 }
-                String baseFee = parkObject.optString("bsc_prk_crg");
-                String addFee = parkObject.optString("add_prk_crg");
-                String dayMaxFee = parkObject.optString("day_max_crg");
-                String lat = parkObject.optString("lat");
-                String lot = parkObject.optString("lot");
-                double targetLat = Double.parseDouble(lat);
-                double targetLot = Double.parseDouble(lot);
+
                 Location currentLocation = SDKManager.getInstance().getCurrentPosition();
                 double currentLong = currentLocation.getLongitude();
                 double currentLat = currentLocation.getLatitude();
 
                 // 주차 요금 계산
-                double bscPrkCrg = Double.parseDouble(baseFee);
-                double addPrkCrg = Double.parseDouble(addFee);
-                double dayMaxCrg = Double.parseDouble(dayMaxFee);
+                double bscPrkCrg, addPrkCrg, dayMaxCrg;
+                try {
+                    bscPrkCrg = Double.parseDouble(baseFee);
+                    addPrkCrg = Double.parseDouble(addFee);
+                    dayMaxCrg = Double.parseDouble(dayMaxFee);
+                } catch (NumberFormatException e) {
+                    Log.e("ParseParkData", "Invalid fee values: " + baseFee + ", " + addFee + ", " + dayMaxFee);
+                    bscPrkCrg = addPrkCrg = dayMaxCrg = 0.0;
+                }
+
                 int parkingTime = 120; // 하드코딩된 주차 시간
                 String totalFee = Utils.calculateParkingFee(bscPrkCrg, addPrkCrg, dayMaxCrg, parkingTime);
 
                 // 거리 계산
-                String distance = parkObject.optString("distance", "0m");
+                String distance = parkObject.optString("distance", "0m").trim();
                 distance = distance.replaceAll("[^\\d]", "").isEmpty() ? "0" : distance.replaceAll("[^\\d]", "");
-                distance = Integer.parseInt(distance) >= 1000
-                        ? String.format("%.1fkm", Integer.parseInt(distance) / 1000.0)
-                        : NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(distance)) + "m";
-
+                try {
+                    int distValue = Integer.parseInt(distance);
+                    distance = distValue >= 1000
+                            ? String.format("%.1fkm", distValue / 1000.0)
+                            : NumberFormat.getNumberInstance(Locale.US).format(distValue) + "m";
+                } catch (NumberFormatException e) {
+                    Log.e("ParseParkData", "Invalid distance value: " + distance);
+                    distance = "0m";
+                }
 
                 // 초기 totalTime 값을 0으로 설정
                 int[] totalTime = {0};
@@ -138,13 +162,14 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
                             }
                             Log.e("RouteRequest", "Total Time for " + name + ": " + totalTime[0]);
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            Log.e("RouteRequest", "JSON 파싱 오류: totalTime", e);
                             Toast.makeText(getActivity(), "JSON 파싱 오류: totalTime", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onError(String errorMessage) {
+                        Log.e("RouteRequest", "오류: " + errorMessage);
                         Toast.makeText(getActivity(), "오류: " + errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -155,7 +180,7 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
                 Log.e("ParkingList", "Added: " + name + ", Total Time: " + totalTime[0]);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("ParseParkData", "JSON 파싱 오류", e);
         }
     }
 }
