@@ -111,7 +111,7 @@ public class HomeFragment extends Fragment {
                                 String name = userData.optString("name", "알 수 없음");
                                 // String user_tel = userData.optString("user_tel", "알 수 없음");
 
-                                
+
 
                                 // UI 업데이트
                                 // nameText.setText(name);
