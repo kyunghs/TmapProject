@@ -83,6 +83,8 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
                 String baseFee = parkObject.optString("bsc_prk_crg");
                 String addFee = parkObject.optString("add_prk_crg");
                 String dayMaxFee = parkObject.optString("day_max_crg");
+                double lat = Double.parseDouble(parkObject.optString("lat"));
+                double lot = Double.parseDouble(parkObject.optString("lat"));
                 double bscPrkCrg = Double.parseDouble(baseFee);
                 double addPrkCrg = Double.parseDouble(addFee);
                 double dayMaxCrg = Double.parseDouble(dayMaxFee);
@@ -100,7 +102,7 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
                 String availability = parkObject.optString("availability", "알 수 없음");
 
                 // Parking 객체로 변환하여 리스트에 추가
-                parkingList.add(new Parking(name, distance, totalFee, availability));
+                parkingList.add(new Parking(name, distance, totalFee, availability, lat, lot));
             }
         } catch (JSONException e) {
             e.printStackTrace();

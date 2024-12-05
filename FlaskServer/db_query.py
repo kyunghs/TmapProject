@@ -281,7 +281,7 @@ def getParkInfo(u_lat, u_lot):
     conn.close()
 
     parking_list = [
-        {"name": row[0], "latitude": row[1], "longitude": row[2], "bsc_prk_crg": row[3], "add_prk_crg": row[4], "day_max_crg": row[5], "distance": row[6]}
+        {"name": row[0], "lat": row[1], "lot": row[2], "bsc_prk_crg": row[3], "add_prk_crg": row[4], "day_max_crg": row[5], "distance": row[6]}
         for row in result
     ]
     return parking_list

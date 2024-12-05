@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.myapplication.R;
 import com.myapplication.models.Parking;
+import com.myapplication.utils.Utils;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ParkingV
 
         holder.nameTextView.setText(parking.getName());
         holder.distanceTextView.setText(parking.getDistance());
-        holder.priceTextView.setText(parking.getPrice());
+        holder.priceTextView.setText("예상 요금 : " + Utils.NumberFormat(parking.getPrice()) + "원");
         holder.availabilityTextView.setText(parking.getAvailability());
     }
 

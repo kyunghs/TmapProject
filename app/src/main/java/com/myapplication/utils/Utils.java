@@ -1,6 +1,28 @@
 package com.myapplication.utils;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
+
 public class Utils {
+
+    /**
+     * 숫자 문자열에 천 단위 콤마를 추가하여 반환합니다.
+     * @param numberStr 콤마를 추가할 숫자 문자열
+     * @return 천 단위 콤마가 추가된 문자열
+     * @throws IllegalArgumentException 잘못된 숫자 문자열이 입력된 경우
+     */
+    public static String NumberFormat(String numberStr) {
+        try {
+            // 문자열을 숫자로 변환
+            Number number = NumberFormat.getInstance().parse(numberStr);
+
+            // 숫자를 천 단위 콤마 형식으로 변환
+            return NumberFormat.getNumberInstance(Locale.getDefault()).format(number);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("입력 값이 유효한 숫자 문자열이 아닙니다: " + numberStr, e);
+        }
+    }
 
     /**
      * 두 위도와 경도를 기반으로 거리 계산 후 결과 반환 (Haversine 공식)
