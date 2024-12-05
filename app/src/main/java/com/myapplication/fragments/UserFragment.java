@@ -2,11 +2,13 @@ package com.myapplication.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
@@ -23,7 +25,10 @@ import org.json.JSONObject;
 
 public class UserFragment extends Fragment {
 
-    private TextView nameText, phoneText;
+    private TextView nameText;
+    private ImageView profileImageView;
+
+    private static final int REQUEST_CODE_PICK_IMAGE = 1001;
 
     @Nullable
     @Override
@@ -32,21 +37,25 @@ public class UserFragment extends Fragment {
 
         // UI 요소 초기화
         nameText = view.findViewById(R.id.name_text);
-        //phoneText = view.findViewById(R.id.phone_text);
+        profileImageView = view.findViewById(R.id.profile_image);
         Button editProfileButton = view.findViewById(R.id.edit_profile_button);
 
         // 유저 정보 로드
         fetchUserInfo();
 
-        // "프로필 편집" 버튼 클릭 이벤트
+        // 프로필 편집 버튼 클릭 이벤트
         editProfileButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), UserEditActivity.class);
             startActivity(intent);
         });
 
+        // 프로필 이미지 클릭 이벤트
+        profileImageView.setOnClickListener(v -> openGallery());
+
         return view;
     }
 
+    // 유저 정보 가져오기
     private void fetchUserInfo() {
         String token = "Bearer " + getActivity()
                 .getSharedPreferences("AuthPrefs", Context.MODE_PRIVATE)
@@ -70,11 +79,9 @@ public class UserFragment extends Fragment {
                             JSONObject userData = responseData.optJSONObject("data");
                             if (userData != null) {
                                 String name = userData.optString("name", "알 수 없음");
-                                //String user_tel = userData.optString("user_tel", "알 수 없음");
 
                                 // UI 업데이트
                                 nameText.setText(name);
-                                //phoneText.setText(user_tel);
 
                                 Log.d("UserFragment", "UI 업데이트 완료 - 이름: " + name);
                             } else {
@@ -99,6 +106,29 @@ public class UserFragment extends Fragment {
                 });
             }
         });
+    }
+
+    // 갤러리 열기
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
+    }
+
+    // 이미지 선택 결과 처리
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == getActivity().RESULT_OK && data != null) {
+            Uri selectedImageUri = data.getData();
+            if (selectedImageUri != null) {
+                profileImageView.setImageURI(selectedImageUri); // 이미지 설정
+                profileImageView.setClipToOutline(true); // 원형 유지
+                Log.d("UserFragment", "이미지 업데이트 완료: " + selectedImageUri.toString());
+                Toast.makeText(getActivity(), "프로필 이미지가 변경되었습니다.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 }
