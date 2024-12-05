@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,12 @@ public class HomeFragment extends Fragment {
     private final static String USER_KEY = "";
     private final static String DEVICE_KEY = "";
 
+    private TextView areaAlias1Text;
+    private TextView areaAlias1Address;
+    private TextView areaAlias2Text;
+    private TextView areaAlias2Address;
+    private TextView distance_ce;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,6 +44,14 @@ public class HomeFragment extends Fragment {
         // "집으로" 카드 레이아웃 초기화
         LinearLayout homeCardLayout = view.findViewById(R.id.home_card_layout);
         EditText searchHome = view.findViewById(R.id.search_home);
+
+        // ui
+        areaAlias1Text = view.findViewById(R.id.area_alias1_text);
+        areaAlias1Address = view.findViewById(R.id.area_alias1_address);
+        areaAlias2Text = view.findViewById(R.id.area_alias2_text);
+        areaAlias2Address = view.findViewById(R.id.area_alias2_address);
+        distance_ce = view.findViewById(R.id.distance_ce);
+
 
         fetchMainInfo();
         // 클릭 이벤트 설정
@@ -108,16 +123,30 @@ public class HomeFragment extends Fragment {
                         if (responseData.getBoolean("success")) {
                             JSONObject userData = responseData.optJSONObject("data");
                             if (userData != null) {
-                                String name = userData.optString("name", "알 수 없음");
-                                // String user_tel = userData.optString("user_tel", "알 수 없음");
+                                JSONObject userCustomData = userData.optJSONObject("user_custom_data");
+                                JSONObject get_user_ki_history_data = userData.optJSONObject("get_user_ki_history_data");
+                                if (userCustomData != null) {
 
-
+                                String area1 = userCustomData.optString("area_1", "정보 없음");
+                                String area1Address = userCustomData.optString("area_1_address", "주소 없음");
+                                String area2 = userCustomData.optString("area_2", "정보 없음");
+                                String area2Address = userCustomData.optString("area_2_address", "주소 없음");
+//                                String distanceKilo = get_user_ki_history_data.optString("distanceKilo", "잘못불러옴");
 
                                 // UI 업데이트
-                                // nameText.setText(name);
-                                // phoneText.setText(user_tel);
+                                areaAlias1Text.setText(area1);
+                                areaAlias1Address.setText(area1Address);
+                                areaAlias2Text.setText(area2);
+                                areaAlias2Address.setText(area2Address);
+//                                distance_ce.setText(distanceKilo);
 
-                                Log.d("UserFragment", "UI 업데이트 완료 - 이름: " + name);
+
+
+
+                                }
+
+
+//                                Log.d("UserFragment", "UI 업데이트 완료 - 이름: " + name);
                             } else {
                                 Toast.makeText(getActivity(), "유효한 사용자 데이터를 받을 수 없습니다.", Toast.LENGTH_SHORT).show();
                             }

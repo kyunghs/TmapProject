@@ -111,6 +111,7 @@
                             android:src="@drawable/bookmark_icon" />
 
                         <TextView
+                            android:id="@+id/area_alias1_text"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -125,6 +126,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/area_alias1_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
@@ -159,6 +161,7 @@
                             android:src="@drawable/bookmark_icon" />
 
                         <TextView
+                            android:id="@+id/area_alias2_text"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -173,6 +176,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/area_alias2_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
@@ -206,6 +210,7 @@
                         android:textSize="12dp" />
 
                     <TextView
+                        android:id="@+id/distance_ce"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"

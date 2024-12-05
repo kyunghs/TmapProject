@@ -11,6 +11,7 @@ import xml.etree.ElementTree as ET
 # API 요청 URL
 url = "http://openapi.seoul.go.kr:8088/5a5261555272756439347555534747/xml/GetParkingInfo/1/1000/"
 response = requests.get(url)
+# print(response.content)
 
 # XML 데이터를 파싱
 if response.status_code == 200:
@@ -61,8 +62,8 @@ df_filtered.to_csv(full_path, index=False, encoding='utf-8-sig')
 # DB 연결 설정
 db_user = 'postgres'
 db_password = 'gurtn123'
-# db_host = '220.116.209.226'
-db_host = 'localhost'
+db_host = '220.116.209.226'
+# db_host = 'localhost'
 db_name = 'postgres'
 
 try:
