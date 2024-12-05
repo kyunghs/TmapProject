@@ -4,12 +4,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.myapplication.DriveActivity;
 import com.myapplication.R;
 import com.myapplication.models.Parking;
 import com.myapplication.utils.Utils;
@@ -42,9 +40,9 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ParkingV
         Parking parking = parkingList.get(position);
 
         holder.nameTextView.setText(parking.getName());
+        holder.remainTextView.setText("남은 자리 : " + parking.getRemain());
         holder.distanceTextView.setText(parking.getDistance());
         holder.priceTextView.setText("예상 요금 : " + Utils.NumberFormat(parking.getPrice()) + "원");
-        holder.availabilityTextView.setText(parking.getAvailability());
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -60,16 +58,16 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ParkingV
 
     public static class ParkingViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView;
+        TextView remainTextView;
         TextView distanceTextView;
         TextView priceTextView;
-        TextView availabilityTextView;
 
         public ParkingViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.parkingName);
             distanceTextView = itemView.findViewById(R.id.parkingDistance);
             priceTextView = itemView.findViewById(R.id.parkingPrice);
-            availabilityTextView = itemView.findViewById(R.id.parkingAvailability);
+            remainTextView = itemView.findViewById(R.id.remain);
         }
     }
 }

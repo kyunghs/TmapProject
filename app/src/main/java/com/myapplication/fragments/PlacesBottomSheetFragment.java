@@ -19,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.myapplication.R;
 import com.myapplication.adapters.PlaceAdapter;
 import com.myapplication.models.Place;
+import com.myapplication.utils.HttpSearchUtils;
 import com.myapplication.utils.HttpUtils;
 import com.skt.tmap.engine.navigation.SDKManager;
 import com.skt.tmap.vsm.coordinates.VSMCoordinates;
@@ -96,6 +97,7 @@ public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
                 double targetLat = Double.parseDouble(latitude);
                 double targetLon = Double.parseDouble(longitude);
 
+
                 Location currentLocation = SDKManager.getInstance().getCurrentPosition();
                 double currentLong = currentLocation.getLongitude();
                 double currentLat = currentLocation.getLatitude();
@@ -115,15 +117,12 @@ public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
         Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.park_popup);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-
         // "예" 버튼 클릭 이벤트
         dialog.findViewById(R.id.yesBtn).setOnClickListener(v -> {
             try {
                 // 선택한 장소의 위도와 경도 가져오기
                 String latitude = place.getLatitude();
                 String longitude = place.getLongitude();
-                Log.e("!!", latitude);
-                Log.e("@@",longitude);
                 // JSON 객체 생성
                 JSONObject jsonData = new JSONObject();
                 jsonData.put("lat", latitude);

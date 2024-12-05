@@ -28,6 +28,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.myapplication.fragments.PathSelectBottomSheetFragment;
+import com.myapplication.utils.HttpSearchUtils;
 import com.skt.tmap.engine.navigation.SDKManager;
 import com.skt.tmap.engine.navigation.network.ndds.CarOilType;
 import com.skt.tmap.engine.navigation.network.ndds.TollCarType;
@@ -69,11 +70,12 @@ public class DriveActivity extends AppCompatActivity {
             longitude = intent.getStringExtra("lot");
         }
         checkPermission();
-        PathSelectBottomSheetFragment pathSelectBottomSheetFragment = new PathSelectBottomSheetFragment();
-        pathSelectBottomSheetFragment.show(getSupportFragmentManager(), "PathSelectBottomSheetFragment");
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+
+        /*PathSelectBottomSheetFragment pathSelectBottomSheetFragment = new PathSelectBottomSheetFragment();
+        pathSelectBottomSheetFragment.show(getSupportFragmentManager(), "PathSelectBottomSheetFragment");*/
+        /*new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Test(destinationName, latitude, longitude);
-        }, 1000);
+        }, 1000);*/
 
 
 
@@ -500,7 +502,9 @@ public class DriveActivity extends AppCompatActivity {
         planTypeList.add(RoutePlanType.Traffic_Recommend);
         planTypeList.add(RoutePlanType.Traffic_Free);
 
-
+        Log.e("@!##!", String.valueOf(RoutePlanType.getRoutePlanType(1).getRouteOption()));
+        Log.e("@!##!", String.valueOf(RoutePlanType.getRoutePlanType(2).ordinal()));
+        Log.e("@!##!", String.valueOf(RoutePlanType.getRoutePlanType(2)));
 
         navigationFragment.requestRoute(startPoint, null, endPoint, false, new TmapUISDK.RouteRequestListener() {
             @Override

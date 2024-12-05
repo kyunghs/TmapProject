@@ -3,9 +3,11 @@ package com.myapplication.fragments;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +19,7 @@ import com.myapplication.DriveActivity;
 import com.myapplication.R;
 import com.myapplication.adapters.ParkingAdapter;
 import com.myapplication.models.Parking;
+import com.myapplication.utils.HttpSearchUtils;
 import com.myapplication.utils.Utils;
 import com.skt.tmap.engine.navigation.SDKManager;
 
@@ -52,7 +55,6 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.park_list, container, false);
-
         // RecyclerView 초기화
         RecyclerView parkingRecyclerView = view.findViewById(R.id.parkingRecyclerView);
         parkingRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -62,10 +64,6 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
             String parkData = getArguments().getString(ARG_PARK_DATA);
             parseParkData(parkData);
         }
-
-        Location currentLocation = SDKManager.getInstance().getCurrentPosition();
-        double currentLong = currentLocation.getLongitude();
-        double currentLat = currentLocation.getLatitude();
 
         // 어댑터 설정
         ParkingAdapter adapter = new ParkingAdapter(parkingList, (name, lat, lot) -> {
@@ -88,30 +86,73 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
             for (int i = 0; i < parkArray.length(); i++) {
                 JSONObject parkObject = parkArray.getJSONObject(i);
                 String name = parkObject.optString("name", "Unknown");
+                String remain = parkObject.optString("now_prk_vhcl_cnt");
+                if (remain == null || remain.trim().isEmpty()) {
+                    remain = "";
+                }
                 String baseFee = parkObject.optString("bsc_prk_crg");
                 String addFee = parkObject.optString("add_prk_crg");
                 String dayMaxFee = parkObject.optString("day_max_crg");
                 String lat = parkObject.optString("lat");
                 String lot = parkObject.optString("lot");
+                double targetLat = Double.parseDouble(lat);
+                double targetLot = Double.parseDouble(lot);
+                Location currentLocation = SDKManager.getInstance().getCurrentPosition();
+                double currentLong = currentLocation.getLongitude();
+                double currentLat = currentLocation.getLatitude();
+
+                // 주차 요금 계산
                 double bscPrkCrg = Double.parseDouble(baseFee);
                 double addPrkCrg = Double.parseDouble(addFee);
                 double dayMaxCrg = Double.parseDouble(dayMaxFee);
-                //하드코딩
-                int parkingTime = 120;
-
+                int parkingTime = 120; // 하드코딩된 주차 시간
                 String totalFee = Utils.calculateParkingFee(bscPrkCrg, addPrkCrg, dayMaxCrg, parkingTime);
-                System.out.println("총 주차 요금: " + totalFee + "원");
+
+                // 거리 계산
                 String distance = parkObject.optString("distance", "0m");
                 distance = distance.replaceAll("[^\\d]", "").isEmpty() ? "0" : distance.replaceAll("[^\\d]", "");
                 distance = Integer.parseInt(distance) >= 1000
                         ? String.format("%.1fkm", Integer.parseInt(distance) / 1000.0)
                         : NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(distance)) + "m";
 
-                String availability = parkObject.optString("availability", "알 수 없음");
 
-                // Parking 객체로 변환하여 리스트에 추가
-                parkingList.add(new Parking(name, distance, totalFee, availability, lat, lot));
+                // 초기 totalTime 값을 0으로 설정
+                int[] totalTime = {0};
 
+                // 비동기 요청
+                HttpSearchUtils.performRouteRequest(requireContext(), 0, currentLong, currentLat, targetLot, targetLat, new HttpSearchUtils.RouteRequestCallback() {
+                    @Override
+                    public void onSuccess(JSONObject rootObject) {
+                        try {
+                            if (rootObject.has("features")) {
+                                JSONArray features = rootObject.getJSONArray("features");
+                                if (features.length() > 0) {
+                                    JSONObject firstFeature = features.getJSONObject(0);
+                                    if (firstFeature.has("properties")) {
+                                        JSONObject properties = firstFeature.getJSONObject("properties");
+                                        if (properties.has("totalTime")) {
+                                            totalTime[0] = properties.getInt("totalTime");
+                                        }
+                                    }
+                                }
+                            }
+                            Log.e("RouteRequest", "Total Time for " + name + ": " + totalTime[0]);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getActivity(), "JSON 파싱 오류: totalTime", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Toast.makeText(getActivity(), "오류: " + errorMessage, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                // Parking 객체 생성 및 추가
+                parkingList.add(new Parking(name, remain, distance, totalFee, lat, lot, totalTime[0]));
+                Log.e("ParkingList", "Added: " + name + ", remain: " + remain);
+                Log.e("ParkingList", "Added: " + name + ", Total Time: " + totalTime[0]);
             }
         } catch (JSONException e) {
             e.printStackTrace();
