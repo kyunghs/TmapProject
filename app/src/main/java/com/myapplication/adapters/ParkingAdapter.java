@@ -4,10 +4,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.myapplication.DriveActivity;
 import com.myapplication.R;
 import com.myapplication.models.Parking;
 import com.myapplication.utils.Utils;
@@ -15,11 +17,16 @@ import com.myapplication.utils.Utils;
 import java.util.List;
 
 public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ParkingViewHolder> {
-
     private List<Parking> parkingList;
+    private OnParkingClickListener listener;
 
-    public ParkingAdapter(List<Parking> parkingList) {
+    public interface OnParkingClickListener {
+        void onParkingClick(String name, String lat, String lot);
+    }
+
+    public ParkingAdapter(List<Parking> parkingList, OnParkingClickListener listener) {
         this.parkingList = parkingList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -38,6 +45,12 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ParkingV
         holder.distanceTextView.setText(parking.getDistance());
         holder.priceTextView.setText("예상 요금 : " + Utils.NumberFormat(parking.getPrice()) + "원");
         holder.availabilityTextView.setText(parking.getAvailability());
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onParkingClick(parking.getName(), parking.getLat(), parking.getLot());
+            }
+        });
     }
 
     @Override

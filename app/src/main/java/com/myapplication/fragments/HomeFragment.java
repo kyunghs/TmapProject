@@ -68,7 +68,6 @@ public class HomeFragment extends Fragment {
         TmapUISDK.Companion.initialize(getActivity(), CLIENT_ID, API_KEY, USER_KEY, DEVICE_KEY, new TmapUISDK.InitializeListener() {
             @Override
             public void onSuccess() {
-                Toast.makeText(requireContext(), "#!@#!@#I@!FJSDFdwsjfiowejfiowejfew", Toast.LENGTH_SHORT).show();
             }
 
             @Override

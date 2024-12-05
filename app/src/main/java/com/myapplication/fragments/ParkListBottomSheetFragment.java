@@ -1,5 +1,6 @@
 package com.myapplication.fragments;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.myapplication.DriveActivity;
 import com.myapplication.R;
 import com.myapplication.adapters.ParkingAdapter;
 import com.myapplication.models.Parking;
@@ -47,7 +49,6 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
         setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.AppBottomSheetDialogBorder20WhiteTheme);
     }
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.park_list, container, false);
@@ -67,7 +68,14 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
         double currentLat = currentLocation.getLatitude();
 
         // 어댑터 설정
-        ParkingAdapter adapter = new ParkingAdapter(parkingList);
+        ParkingAdapter adapter = new ParkingAdapter(parkingList, (name, lat, lot) -> {
+            // 클릭 이벤트 처리
+            Intent intent = new Intent(requireContext(), DriveActivity.class);
+            intent.putExtra("name", name);
+            intent.putExtra("lat", lat);
+            intent.putExtra("lot", lot);
+            startActivity(intent);
+        });
         parkingRecyclerView.setAdapter(adapter);
 
         return view;
@@ -83,8 +91,8 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
                 String baseFee = parkObject.optString("bsc_prk_crg");
                 String addFee = parkObject.optString("add_prk_crg");
                 String dayMaxFee = parkObject.optString("day_max_crg");
-                double lat = Double.parseDouble(parkObject.optString("lat"));
-                double lot = Double.parseDouble(parkObject.optString("lat"));
+                String lat = parkObject.optString("lat");
+                String lot = parkObject.optString("lot");
                 double bscPrkCrg = Double.parseDouble(baseFee);
                 double addPrkCrg = Double.parseDouble(addFee);
                 double dayMaxCrg = Double.parseDouble(dayMaxFee);
@@ -103,6 +111,7 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
 
                 // Parking 객체로 변환하여 리스트에 추가
                 parkingList.add(new Parking(name, distance, totalFee, availability, lat, lot));
+
             }
         } catch (JSONException e) {
             e.printStackTrace();

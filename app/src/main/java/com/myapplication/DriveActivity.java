@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.myapplication.fragments.PathSelectBottomSheetFragment;
 import com.skt.tmap.engine.navigation.SDKManager;
 import com.skt.tmap.engine.navigation.network.ndds.CarOilType;
 import com.skt.tmap.engine.navigation.network.ndds.TollCarType;
@@ -49,15 +50,12 @@ import java.util.ArrayList;
 public class DriveActivity extends AppCompatActivity {
     private static final String TAG = "Develop";
 
-    private final static String CLIENT_ID = "";
-    private final static String API_KEY = "qfhtGmuYyk3bKgfAwRxra5UIpzImSFxU9Wg1uWlp"; //발급받은 KEY
-    private final static String USER_KEY = "";
-    private final static String DEVICE_KEY = "";
     boolean isEDC; // edc 수신 여부
 
     private NavigationFragment navigationFragment;
-    private FragmentTransaction transaction;
     private FragmentManager fragmentManager;
+    private FragmentTransaction transaction;
+    private String destinationName = "";
     private String latitude = "";
     private String longitude = "";
     @Override
@@ -66,42 +64,18 @@ public class DriveActivity extends AppCompatActivity {
         setContentView(R.layout.activity_drive);
         Intent intent = getIntent();
         if (intent != null) {
+            destinationName = intent.getStringExtra("name");
             latitude = intent.getStringExtra("lat");
             longitude = intent.getStringExtra("lot");
         }
         checkPermission();
-        showPopup(latitude, longitude);
-    }
+        PathSelectBottomSheetFragment pathSelectBottomSheetFragment = new PathSelectBottomSheetFragment();
+        pathSelectBottomSheetFragment.show(getSupportFragmentManager(), "PathSelectBottomSheetFragment");
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            Test(destinationName, latitude, longitude);
+        }, 1000);
 
-    private void showPopup(String lat, String lot) {
-        // Dialog 객체 생성 및 레이아웃 설정
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.park_popup);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        // 팝업 내 확인 버튼 설정
-        Button confirmButton = dialog.findViewById(R.id.yesBtn);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss(); // 팝업을 닫음
-                Test(lat, lot); // Test() 메서드 호출
-            }
-        });
-
-        // 팝업 내 닫기 버튼 설정
-        Button closeButton = dialog.findViewById(R.id.noBtn);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss(); // 팝업 닫기
-                // MainActivity로 이동
-                Intent intent = new Intent(DriveActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish(); // 현재 액티비티를 종료
-            }
-        });
 
         Button test2 = findViewById(R.id.test2);
         test2.setOnClickListener(new View.OnClickListener() {
@@ -144,19 +118,14 @@ public class DriveActivity extends AppCompatActivity {
             }
         });
 
-
-
-        // 팝업 표시
-        dialog.show();
     }
 
 
-    private void checkPermission() {
 
+    private void checkPermission() {
         if (checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             initUI();
-            initUISDK();
         } else {
             String[] permissionArr = {android.Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
             requestPermissions(permissionArr, 100);
@@ -164,10 +133,9 @@ public class DriveActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-        fragmentManager = getSupportFragmentManager();
         MapSetting d = new MapSetting();
         d.setShowClosedPopup(false);
-
+        fragmentManager = getSupportFragmentManager();
         navigationFragment = TmapUISDK.Companion.getFragment();
 
         transaction = fragmentManager.beginTransaction();
@@ -478,31 +446,6 @@ public class DriveActivity extends AppCompatActivity {
 
     }
 
-
-    private void initUISDK() {
-        TmapUISDK.Companion.initialize(this, CLIENT_ID, API_KEY, USER_KEY, DEVICE_KEY, new TmapUISDK.InitializeListener() {
-            @Override
-            public void onSuccess() {
-                Log.e(TAG, "success initialize");
-            }
-
-            @Override
-            public void onFail(int i, @Nullable String s) {
-                Toast.makeText(DriveActivity.this, i + "::" + s, Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "onFail " + i + " :: " + s);
-            }
-
-            @Override
-            public void savedRouteInfoExists(@Nullable String dest) {
-
-                Log.e(TAG,"목적지 : " + dest);
-                if (dest != null) {
-                    showDialogContinueRoute(dest);
-                }
-            }
-        });
-    }
-
     private void showDialogContinueRoute(String dest) {
         String message = dest + "(으)로 경로 안내를 이어서 안내 받으시겠습니까?";
         new AlertDialog.Builder(this)
@@ -533,13 +476,16 @@ public class DriveActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void Test(String lat, String lot){
+    private void Test(String destinationName, String lat, String lot){
 
+        // 자동차 옵션 설정
+        CarOption carOption = new CarOption();
+        carOption.setHipassOn(true);
 
         //현재 위치
         Location currentLocation = SDKManager.getInstance().getCurrentPosition();
         String currentName = VSMCoordinates.getAddressOffline(currentLocation.getLongitude(), currentLocation.getLatitude());
-
+        Toast.makeText(DriveActivity.this, lat + lot, Toast.LENGTH_SHORT).show();
 
         WayPoint startPoint = new WayPoint(currentName, new MapPoint(currentLocation.getLongitude(), currentLocation.getLatitude()));
 
@@ -548,15 +494,12 @@ public class DriveActivity extends AppCompatActivity {
         double longitude = Double.parseDouble(lot);
 
         // 목적지
-        WayPoint endPoint = new WayPoint(
-                "아마존카",
-                new MapPoint(longitude, latitude)
-        );
-
+        WayPoint endPoint = new WayPoint(destinationName, new MapPoint(longitude, latitude));
 
         ArrayList<RoutePlanType> planTypeList = new ArrayList<>();
         planTypeList.add(RoutePlanType.Traffic_Recommend);
         planTypeList.add(RoutePlanType.Traffic_Free);
+
 
 
         navigationFragment.requestRoute(startPoint, null, endPoint, false, new TmapUISDK.RouteRequestListener() {

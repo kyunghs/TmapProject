@@ -5,10 +5,10 @@ public class Parking {
     private String distance;
     private String price;
     private String availability;
-    private double lat;
-    private double lot;
+    private String lat;
+    private String lot;
 
-    public Parking(String name, String distance, String price, String availability, double lat, double lot) {
+    public Parking(String name, String distance, String price, String availability, String lat, String lot) {
         this.name = name;
         this.distance = distance;
         this.price = price;
@@ -34,11 +34,11 @@ public class Parking {
         return availability;
     }
 
-    public double getLat() {
+    public String getLat() {
         return lat;
     }
 
-    public double getLot() {
+    public String getLot() {
         return lot;
     }
 }
