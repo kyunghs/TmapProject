@@ -26,9 +26,11 @@
         android:layout_marginTop="40dp"
         android:layout_gravity="center">
         <ImageView
+            android:id="@+id/voice_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/voice_icon" />
+            android:src="@drawable/voice_icon"
+            android:contentDescription="음성 출력 버튼" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -36,8 +38,10 @@
         android:layout_marginTop="50dp"
         android:layout_gravity="right">
         <ImageView
+            android:id="@+id/close_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/close_icon" />
+            android:src="@drawable/close_icon"
+            android:contentDescription="팝업 닫기 버튼" />
     </LinearLayout>
 </LinearLayout>
