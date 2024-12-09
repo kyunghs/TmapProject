@@ -6,9 +6,7 @@ import android.speech.RecognitionListener;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 public class TTSSTTHelper {
@@ -26,11 +24,11 @@ public class TTSSTTHelper {
                 int result = tts.setLanguage(Locale.KOREAN);
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                     Log.e(TAG, "TTS 언어 지원되지 않음");
-                    tts = null; // 초기화 실패 시 null로 설정
+                    tts = null;
                 }
             } else {
                 Log.e(TAG, "TTS 초기화 실패");
-                tts = null; // 초기화 실패 시 null로 설정
+                tts = null;
             }
         });
 
@@ -39,19 +37,17 @@ public class TTSSTTHelper {
     }
 
     public void speakText(String text) {
-        if (tts != null && tts.getEngines() != null) { // 초기화 여부 확인
+        if (tts != null) {
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "tts1");
         } else {
             Log.e(TAG, "TTS가 초기화되지 않았습니다.");
         }
     }
 
-
     public void startListening(RecognitionListener listener) {
         Intent intent = new Intent(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL, android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
-        intent.putExtra(android.speech.RecognizerIntent.EXTRA_CALLING_PACKAGE, activity.getPackageName());
         speechRecognizer.setRecognitionListener(listener);
         speechRecognizer.startListening(intent);
     }
