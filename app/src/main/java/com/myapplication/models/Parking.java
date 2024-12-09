@@ -49,4 +49,40 @@ public class Parking {
     public int getTime() {
         return time;
     }
+
+    // getTotalFee 메서드 추가
+    public String getTotalFee() {
+        return price;
+    }
+
+    // 거리 값을 숫자로 변환 (단위: 미터)
+    public int getDistanceAsNumber() {
+        if (distance == null || distance.trim().isEmpty()) {
+            return Integer.MAX_VALUE; // 거리 값이 없으면 최대값으로 설정
+        }
+
+        if (distance.contains("km")) {
+            // "1.2km" -> 1200 (미터로 변환)
+            return (int) (Double.parseDouble(distance.replace("km", "").trim()) * 1000);
+        } else if (distance.contains("m")) {
+            // "500m" -> 500
+            return Integer.parseInt(distance.replace("m", "").trim());
+        } else {
+            return Integer.MAX_VALUE; // 예상치 못한 형식 처리
+        }
+    }
+
+    // 가격 값을 숫자로 변환
+    public int getFeeAsNumber() {
+        if (price == null || price.trim().isEmpty()) {
+            return Integer.MAX_VALUE; // 가격이 없으면 최대값으로 설정
+        }
+
+        try {
+            return Integer.parseInt(price.trim());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return Integer.MAX_VALUE; // 형식 오류가 있을 경우 최대값
+        }
+    }
 }

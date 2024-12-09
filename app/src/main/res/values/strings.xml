@@ -44,4 +44,52 @@
     <string name="delete_fail">연락처 삭제에 실패하였습니다.</string>
     <string name="delete_check_message">연락처 삭제를 하게 되면 해당 연락처는 다시 확인 할 수 없습니다. \n\n연락처를 삭제하시겠습니까?</string>
     <string name="delete_check_title">"연락처 삭제"</string>
+
+    <!-- 스피너 아이템 (할인조건) -->
+    <string-array name="benefit_options">
+        <item>선택사항없음</item>
+        <item>국가유공자</item>
+        <item>장애인</item>
+        <item>다자녀</item>
+        <item>저공해차량</item>
+        <item>모범납세자</item>
+        <item>한부모가정</item>
+    </string-array>
+
+    <string-array name="hour_options">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+    </string-array>
+
+    <string-array name="minute_options">
+        <item>00</item>
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+    </string-array>
 </resources>

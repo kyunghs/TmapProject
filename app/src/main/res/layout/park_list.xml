@@ -19,75 +19,99 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="left"
             android:text="주차 시간"
             android:textSize="14sp"
-            android:textColor="#808080" />
+            android:textColor="#686767" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="left"
             android:text="할인 조건"
             android:textSize="14sp"
-            android:textColor="#808080" />
+            android:textColor="#686767" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="left"
             android:text="정렬 기준"
             android:textSize="14sp"
-            android:textColor="#808080" />
+            android:textColor="#686767" />
     </LinearLayout>
 
     <!-- 필터 선택 -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:orientation="horizontal"
         android:layout_marginBottom="16dp"
         android:weightSum="3">
 
         <!-- 주차 시간 버튼 -->
-        <TextView
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="41dp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="2시간 00분"
-            android:background="@drawable/filter_background"
-            android:paddingHorizontal="20dp"
-            android:paddingVertical="8dp"
-            android:textSize="14sp"
-            android:textColor="#000000" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp"
+            android:weightSum="3">
+
+            <!-- 시간 Spinner -->
+            <Spinner
+                android:id="@+id/hourSpinner"
+                android:layout_width="0dp"
+                android:layout_height="41dp"
+                android:layout_weight="1.5"
+                android:overlapAnchor="false"
+                android:dropDownHeight="200dp"
+                android:background="@drawable/filter_background"
+                android:textAlignment="center" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:textColor="#000000"
+                android:layout_marginHorizontal="2dp" />
+
+            <!-- 분 Spinner -->
+            <Spinner
+                android:id="@+id/minuteSpinner"
+                android:layout_width="0dp"
+                android:layout_height="41dp"
+                android:layout_weight="1.5"
+                android:overlapAnchor="false"
+                android:background="@drawable/filter_background"
+                android:textAlignment="center" />
+        </LinearLayout>
 
         <!-- 할인 조건 버튼 -->
-        <TextView
+        <Spinner
+            android:id="@+id/benefitSpinner"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="41dp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="장애인 외2"
+            android:textAlignment="center"
+            android:autofillHints="선택사항 없음"
             android:background="@drawable/filter_background"
-            android:paddingHorizontal="20dp"
-            android:paddingVertical="8dp"
-            android:textSize="14sp"
-            android:textColor="#000000" />
+            android:textSize="12sp"
+            android:overlapAnchor="false"
+            android:textColor="#000000"
+            android:entries="@array/benefit_options" />
 
         <!-- 정렬 기준 버튼 -->
-        <TextView
+        <Button
+            android:id="@+id/sortBy"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="가격순"
+            android:text="거리순"
             android:background="@drawable/filter_background"
-            android:paddingHorizontal="20dp"
-            android:paddingVertical="8dp"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textColor="#000000" />
     </LinearLayout>
 
