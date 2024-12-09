@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.myapplication.fragments.PathSelectBottomSheetFragment;
 import com.myapplication.utils.HttpSearchUtils;
 import com.skt.tmap.engine.navigation.SDKManager;
@@ -51,6 +53,7 @@ import java.util.ArrayList;
 public class DriveActivity extends AppCompatActivity implements PathSelectBottomSheetFragment.RouteSelectionListener {
     private static final String TAG = "Develop";
 
+    private TTSSTTHelper ttssttHelper;
     boolean isEDC; // edc 수신 여부
 
     private NavigationFragment navigationFragment;
@@ -63,6 +66,13 @@ public class DriveActivity extends AppCompatActivity implements PathSelectBottom
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drive);
+
+        // Helper 초기화
+        ttssttHelper = new TTSSTTHelper(this);
+
+        Button ttsTestButton = findViewById(R.id.TTStest);
+        ttsTestButton.setOnClickListener(v -> showTTSBottomSheet());
+
         Intent intent = getIntent();
         if (intent != null) {
             destinationName = intent.getStringExtra("name");
@@ -117,6 +127,68 @@ public class DriveActivity extends AppCompatActivity implements PathSelectBottom
             }
         });
 
+    }
+
+    private void showTTSBottomSheet() {
+        BottomSheetDialog ttsBottomSheet = new BottomSheetDialog(this);
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.tts_top_sheet, null);
+
+        ImageView voiceIcon = bottomSheetView.findViewById(R.id.voice_icon);
+        voiceIcon.setOnClickListener(v -> {
+            String message = "잔여석이 있는 부근 주차장을 안내할까요?";
+            ttssttHelper.speakText(message);
+            ttssttHelper.startListening(new TTSRecognitionListener());
+        });
+
+        ImageView closeIcon = bottomSheetView.findViewById(R.id.close_icon);
+        closeIcon.setOnClickListener(v -> ttsBottomSheet.dismiss());
+
+        ttsBottomSheet.setContentView(bottomSheetView);
+        ttsBottomSheet.show();
+    }
+
+    private class TTSRecognitionListener implements android.speech.RecognitionListener {
+        @Override
+        public void onReadyForSpeech(Bundle params) {
+        }
+
+        @Override
+        public void onBeginningOfSpeech() {
+        }
+
+        @Override
+        public void onRmsChanged(float rmsdB) {
+        }
+
+        @Override
+        public void onBufferReceived(byte[] buffer) {
+        }
+
+        @Override
+        public void onEndOfSpeech() {
+        }
+
+        @Override
+        public void onError(int error) {
+        }
+
+        @Override
+        public void onResults(Bundle results) {
+        }
+
+        @Override
+        public void onPartialResults(Bundle partialResults) {
+        }
+
+        @Override
+        public void onEvent(int eventType, Bundle params) {
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        ttssttHelper.shutdown();
+        super.onDestroy();
     }
 
     // RouteSelectionListener 구현

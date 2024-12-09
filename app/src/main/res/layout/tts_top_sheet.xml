@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -20,6 +19,7 @@
             android:textStyle="bold"
             android:textSize="18dp" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,6 +32,23 @@
             android:src="@drawable/voice_icon"
             android:contentDescription="음성 출력 버튼" />
     </LinearLayout>
+
+    <!-- Recognized Text Display -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="8dp">
+        <TextView
+            android:id="@+id/recognized_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="여기에 사용자의 음성이 표시됩니다."
+            android:textColor="#000000"
+            android:textSize="16dp"
+            android:visibility="gone" />
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
