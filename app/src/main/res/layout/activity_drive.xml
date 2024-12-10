@@ -5,97 +5,217 @@
     android:layout_height="match_parent">
 
     <!-- 기존 FrameLayout -->
+
+    <!-- 디버깅용 버튼 그룹 -->
     <FrameLayout
         android:id="@+id/tmapUILayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- 디버깅용 버튼 그룹 -->
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="end|top"
-        android:padding="16dp">
-
-        <Button
-            android:id="@+id/test2"
-            android:text="~~~~~~"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/test3"
-            android:text="test3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/test4"
-            android:text="test4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/TTStest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TTS/STT 실행" />
-    </LinearLayout>
+            android:orientation="vertical"
+            android:layout_gravity="end|top"
+            android:padding="16dp">
 
-    <!-- TTS/STT BottomSheet -->
+            <Button
+                android:id="@+id/TTStest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TTS/STT 실행" />
+        </LinearLayout>
+
+        <!-- TTS/STT BottomSheet -->
+        <LinearLayout
+            android:id="@+id/tts_bottom_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:elevation="10dp"
+            android:padding="16dp"
+            android:visibility="gone"
+            android:layout_gravity="bottom">
+
+            <!-- 상단 텍스트 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12dp">
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="잔여석이 있는 목적지 부근 주차장을 안내 할까요?"
+                    android:textColor="#FF875B"
+                    android:textStyle="bold"
+                    android:textSize="18dp" />
+            </LinearLayout>
+
+            <!-- 음성 출력 버튼 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_gravity="center">
+                <ImageView
+                    android:id="@+id/voice_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/voice_icon"
+                    android:contentDescription="음성 출력 버튼" />
+            </LinearLayout>
+
+            <!-- 팝업 닫기 버튼 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_gravity="right">
+                <ImageView
+                    android:id="@+id/close_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/close_icon"
+                    android:contentDescription="팝업 닫기 버튼" />
+            </LinearLayout>
+        </LinearLayout>
+
+
     <LinearLayout
-        android:id="@+id/tts_bottom_sheet"
+        android:id="@+id/bottom_info_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="#FFFFFF"
-        android:elevation="10dp"
-        android:padding="16dp"
+        android:layout_height="90dp"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
         android:visibility="gone"
-        android:layout_gravity="bottom">
+        android:elevation="10dp"
+        android:background="@drawable/rounded_map_bottom">
 
-        <!-- 상단 텍스트 -->
+        <LinearLayout
+            android:layout_width="76dp"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/refresh_icon"
+                android:layout_width="33dp"
+                android:layout_height="34dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="25dp"
+                android:src="@drawable/refresh_icon" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#F26D3D" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="12dp">
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="30dp"
+            android:orientation="horizontal">
+
             <TextView
-                android:layout_width="200dp"
+                android:id="@+id/remain_dist"
+                android:layout_width="90dp"
                 android:layout_height="wrap_content"
-                android:text="잔여석이 있는 목적지 부근 주차장을 안내 할까요?"
-                android:textColor="#FF875B"
-                android:textStyle="bold"
-                android:textSize="18dp" />
+                android:text="51km"
+                android:textAlignment="center"
+                android:textColor="#ffffff"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/remain_time"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:text="58분"
+                android:textAlignment="center"
+                android:textColor="#ffffff"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
         </LinearLayout>
 
-        <!-- 음성 출력 버튼 -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_gravity="center">
-            <ImageView
-                android:id="@+id/voice_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/voice_icon"
-                android:contentDescription="음성 출력 버튼" />
-        </LinearLayout>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#F26D3D" />
 
-        <!-- 팝업 닫기 버튼 -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:layout_gravity="right">
+            android:id="@+id/more"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
             <ImageView
-                android:id="@+id/close_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/close_icon"
-                android:contentDescription="팝업 닫기 버튼" />
+                android:id="@+id/more_icon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="25dp"
+                android:src="@drawable/more_icon" />
         </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/more2"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_gravity="bottom"
+        android:visibility="gone"
+        android:background="@drawable/rounded_map_bottom"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="안내음성 크기"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:textSize="16dp"
+            android:padding="12dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/mute_icon" />
+
+            <SeekBar
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:thumb="@drawable/seek_point" />
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/speaker_icon" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/stopBtn"
+                android:layout_width="240dp"
+                android:layout_height="50dp"
+                android:background="@drawable/guide_end_button"
+                android:text="안내종료"
+                android:textColor="#FF8B61"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+
 </FrameLayout>
