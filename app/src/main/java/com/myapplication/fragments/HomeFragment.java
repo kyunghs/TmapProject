@@ -40,6 +40,7 @@ public class HomeFragment extends Fragment {
     private TextView areaAlias2Text;
     private TextView areaAlias2Address;
     private TextView distance_ce;
+    private TextView distance_ye;
 
     @Nullable
     @Override
@@ -56,6 +57,7 @@ public class HomeFragment extends Fragment {
         areaAlias2Text = view.findViewById(R.id.area_alias2_text);
         areaAlias2Address = view.findViewById(R.id.area_alias2_address);
         distance_ce = view.findViewById(R.id.distance_ce);
+        distance_ye = view.findViewById(R.id.distance_ye);
 
 
         fetchMainInfo();
@@ -142,11 +144,14 @@ public class HomeFragment extends Fragment {
                                 String area1Address = userCustomData.optString("area_1_address", "주소 없음");
                                 String area2 = userCustomData.optString("area_2", "정보 없음");
                                 String area2Address = userCustomData.optString("area_2_address", "주소 없음");
-                                String distanceValue = "db확인필요"; // 서버에서 받아온 distanceKilo 값
+                                String todayKiValue = "아직 운행기록이 없어요.";
+                                String yesterdayKiValue = " ";
                                 if (get_user_ki_history_data != null) {
-                                    distanceValue = get_user_ki_history_data.optString("distanceKilo", "db확인필요");
+                                    todayKiValue = get_user_ki_history_data.optString("today_ki", "db확인필요");
+                                    yesterdayKiValue = get_user_ki_history_data.optString("ki", "db확인필요");
                                 }
-                                String displayText = String.format("자동차로\n약 %s 이동", distanceValue);
+                                String displayText = String.format("자동차로\n약 %s km 이동", todayKiValue);
+                                String displayText2 = String.format("전일 대비 +%s km 이동", yesterdayKiValue);
 
 
                                 // UI 업데이트
@@ -155,6 +160,7 @@ public class HomeFragment extends Fragment {
                                 areaAlias2Text.setText(area2);
                                 areaAlias2Address.setText(area2Address);
                                 distance_ce.setText(displayText);
+                                distance_ye.setText(displayText2);
 
 
 
