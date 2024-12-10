@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment {
         // "집으로" 카드 레이아웃 초기화
         LinearLayout homeCardLayout = view.findViewById(R.id.home_card_layout);
         EditText searchHome = view.findViewById(R.id.search_home);
-
+        LinearLayout recent = view.findViewById(R.id.recent);
         // ui
         areaAlias1Text = view.findViewById(R.id.area_alias1_text);
         areaAlias1Address = view.findViewById(R.id.area_alias1_address);
@@ -91,6 +91,14 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
 
                 showPopup("37.5548375992165", "126.971732581232");
+            }
+        });
+
+        recent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showPopup2("37.5734027", "126.9758843");
             }
         });
 
@@ -222,8 +230,56 @@ public class HomeFragment extends Fragment {
         dialog.findViewById(R.id.noBtn).setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), DriveActivity.class);
             intent.putExtra("name", "서울역");
-            intent.putExtra("lat", "37.5548375992165");
-            intent.putExtra("lot", "126.971732581232");
+            intent.putExtra("lat", "37.6225571786308 ");
+            intent.putExtra("lot", "127.078754902898");
+            startActivity(intent);
+            dialog.dismiss(); // 현재 다이얼로그 닫기
+        });
+
+        dialog.show();
+    }
+
+    private void showPopup2(String lat, String lot) {
+        Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.park_popup);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        // "예" 버튼 클릭 이벤트
+        dialog.findViewById(R.id.yesBtn).setOnClickListener(v -> {
+            try {
+                JSONObject jsonData = new JSONObject();
+                jsonData.put("lat", lat);
+                jsonData.put("lot", lot);
+
+                // 서버에 JSON 데이터 전송
+                HttpUtils.sendJsonToServer(jsonData, "/get/park/info", new HttpUtils.HttpResponseCallback() {
+                    @Override
+                    public void onSuccess(JSONObject responseData) {
+                        // ParkListBottomSheetFragment 호출 및 데이터 전달
+                        ParkListBottomSheetFragment parkListBottomSheet = ParkListBottomSheetFragment.newInstance(responseData.toString());
+                        parkListBottomSheet.show(getParentFragmentManager(), "ParkListBottomSheetFragment");
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        // 에러 처리
+                        requireActivity().runOnUiThread(() ->
+                                Toast.makeText(requireContext(), "서버 요청 실패: " + errorMessage, Toast.LENGTH_SHORT).show()
+                        );
+                    }
+                });
+                dialog.dismiss(); // 다이얼로그 닫기
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(requireContext(), "JSON 생성 오류", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // "아니요" 버튼 클릭 이벤트
+        dialog.findViewById(R.id.noBtn).setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), DriveActivity.class);
+            intent.putExtra("name", "세종로 공영주차장(시)");
+            intent.putExtra("lat", lat);
+            intent.putExtra("lot", lot);
             startActivity(intent);
             dialog.dismiss(); // 현재 다이얼로그 닫기
         });

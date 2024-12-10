@@ -259,6 +259,7 @@
 
                     <!-- 카드 예시 -->
                     <LinearLayout
+                        android:id="@+id/recent"
                         android:layout_width="200dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"

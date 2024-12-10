@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,10 +30,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.myapplication.fragments.HomeFragment;
+import com.myapplication.fragments.MapBottomFragment;
 import com.myapplication.utils.HttpSearchUtils;
 import com.skt.tmap.engine.navigation.SDKManager;
+import com.skt.tmap.engine.navigation.livedata.ObservableRouteProgressData;
 import com.skt.tmap.engine.navigation.network.ndds.CarOilType;
 import com.skt.tmap.engine.navigation.network.ndds.TollCarType;
 import com.skt.tmap.engine.navigation.route.RoutePlanType;
@@ -44,11 +50,15 @@ import com.skt.tmap.vsm.map.marker.VSMMarkerManager;
 import com.skt.tmap.vsm.map.marker.VSMMarkerPoint;
 import com.tmapmobility.tmap.tmapsdk.ui.data.CarOption;
 import com.tmapmobility.tmap.tmapsdk.ui.data.MapSetting;
+import com.tmapmobility.tmap.tmapsdk.ui.data.ObservableRouteData;
+import com.tmapmobility.tmap.tmapsdk.ui.data.RouteDataCoord;
+import com.tmapmobility.tmap.tmapsdk.ui.data.RouteDataTraffic;
 import com.tmapmobility.tmap.tmapsdk.ui.fragment.NavigationFragment;
 import com.tmapmobility.tmap.tmapsdk.ui.util.TmapUISDK;
 import com.tmapmobility.tmap.tmapsdk.ui.view.MapConstant;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class DriveActivity extends AppCompatActivity {
@@ -56,17 +66,22 @@ public class DriveActivity extends AppCompatActivity {
 
     private TTSSTTHelper ttssttHelper;
     boolean isEDC; // edc 수신 여부
-
     private NavigationFragment navigationFragment;
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
     private String destinationName = "";
     private String latitude = "";
     private String longitude = "";
+    private TextView remainDistTextView;
+    private TextView remainTimeTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drive);
+
+        // remain_dist와 remain_time TextView 참조
+        remainDistTextView = findViewById(R.id.remain_dist);
+        remainTimeTextView = findViewById(R.id.remain_time);
 
         // Helper 초기화
         ttssttHelper = new TTSSTTHelper(this);
@@ -80,52 +95,65 @@ public class DriveActivity extends AppCompatActivity {
             latitude = intent.getStringExtra("lat");
             longitude = intent.getStringExtra("lot");
         }
+
         checkPermission();
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Test(destinationName, latitude, longitude);
         }, 1000);
 
-        Button test2 = findViewById(R.id.test2);
-        test2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String markerID = "TEST";
-                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.parking);
-                VSMMarkerPoint marker = new VSMMarkerPoint(markerID);
+        // 'more'와 'more2' LinearLayout 가져오기
+        LinearLayout moreLayout = findViewById(R.id.more);
+        LinearLayout more2Layout = findViewById(R.id.more2);
+        LinearLayout bottom_info_bar = findViewById(R.id.bottom_info_bar);
+        Button stopBtn = findViewById(R.id.stopBtn);
 
-                marker.setIcon(MarkerImage.fromBitmap(icon));
-                marker.setShowPriority(MapConstant.MarkerRenderingPriority.DEFAULT_PRIORITY);
-                marker.setText("TEST");
-
-                //현재 위치 보다 조금 옆에 마커를 찍는다.
-                VSMMapPoint position = new VSMMapPoint(127.0456768, 37.6523704);
-                marker.setPosition(position);
-
-                VSMMarkerManager markerManager = navigationFragment.getMapView().getMarkerManager();
-                if (markerManager == null) {
-                    Log.e(TAG, "마커 매니저 NULL");
-                    return;
-                }
-                markerManager.addMarker(marker);
-            }
+        // 'more' 클릭 이벤트 설정
+        moreLayout.setOnClickListener(v -> {
+            // 'more2'를 GONE에서 VISIBLE로 변경
+            bottom_info_bar.setVisibility(View.GONE);
+            more2Layout.setVisibility(View.VISIBLE);
         });
 
-        Button test3 = findViewById(R.id.test3);
-        test3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigationFragment.stopDrive();
-            }
+        stopBtn.setOnClickListener(v -> {
+            // navigationFragment의 stopDrive 메서드 호출
+            navigationFragment.stopDrive();
         });
+    }
 
-        Button test4 = findViewById(R.id.test4);
-        test4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigationFragment.stopDrive();
+    private Observer<ObservableRouteData> routeDataListener = new Observer<ObservableRouteData>() {
+        @Override
+        public void onChanged(ObservableRouteData data) {
+            Log.e(TAG, data.toString());
+            int distance = data.getNTotalDist(); // 목적지까지 총 남은거리(m)
+            int time = data.getNTotalTime(); // 목적지까지 총 남은 시간(초).
+
+            // 거리 포맷팅
+            String formattedDistance;
+            if (distance >= 1000) {
+                formattedDistance = String.format("%.1fkm", distance / 1000.0);
+            } else {
+                formattedDistance = distance + "m";
             }
-        });
 
+            // 시간 포맷팅
+            String formattedTime;
+            int hours = time / 3600;
+            int minutes = (time % 3600) / 60;
+
+            if (hours > 0) {
+                formattedTime = String.format("%d시간 %d분", hours, minutes);
+            } else {
+                formattedTime = String.format("%d분", minutes);
+            }
+
+            // TextView 업데이트
+            remainDistTextView.setText(formattedDistance); // 남은 거리 설정
+            remainTimeTextView.setText(formattedTime); // 남은 시간 설정
+        }
+    };
+
+    private void subscribeRouteData() {
+        TmapUISDK.observableRouteData.observe(this, routeDataListener);
     }
 
     private void showTTSBottomSheet() {
@@ -152,7 +180,6 @@ public class DriveActivity extends AppCompatActivity {
         ttsBottomSheet.setContentView(bottomSheetView);
         ttsBottomSheet.show();
     }
-
 
     private class TTSRecognitionListener implements android.speech.RecognitionListener {
         @Override
@@ -261,7 +288,33 @@ public class DriveActivity extends AppCompatActivity {
 
             @Override
             public void onStartNavigationInfo(int totalDistanceInMeter, int totalTimeInSec, int tollFree) {
-                //경로 시작 정보
+                LinearLayout moreLayout = findViewById(R.id.bottom_info_bar);
+                moreLayout.setVisibility(View.VISIBLE);
+
+                // 거리 포맷팅
+                String formattedDistance;
+                if (totalDistanceInMeter >= 1000) {
+                    formattedDistance = String.format("%.1fkm", totalDistanceInMeter / 1000.0);
+                } else {
+                    formattedDistance = totalDistanceInMeter + "m";
+                }
+
+                // 시간 포맷팅
+                String formattedTime;
+                int hours = totalTimeInSec / 3600;
+                int minutes = (totalTimeInSec % 3600) / 60;
+
+                if (hours > 0) {
+                    formattedTime = String.format("%d시간 %d분", hours, minutes);
+                } else {
+                    formattedTime = String.format("%d분", minutes);
+                }
+
+                // TextView 업데이트
+                remainDistTextView.setText(formattedDistance); // 남은 거리 설정
+                remainTimeTextView.setText(formattedTime); // 남은 시간 설정
+
+                subscribeRouteData();
             }
 
             @Override
@@ -313,7 +366,6 @@ public class DriveActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(DriveActivity.this, "onRouteChanged", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -499,16 +551,39 @@ public class DriveActivity extends AppCompatActivity {
                 // dest 목적지 명
                 // drivingTime 운전시간
                 // drivingDistance 운전거리
-
-                Log.e(TAG, "onArrivedDestination");
-
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(DriveActivity.this, "onArrivedDestination", Toast.LENGTH_SHORT).show();
+                        // 거리 포맷팅
+                        String formattedDistance;
+                        if (drivingDistance >= 1000) {
+                            formattedDistance = String.format("%.1fkm", drivingDistance / 1000.0);
+                        } else {
+                            formattedDistance = drivingDistance + "m";
+                        }
+
+                        // 시간 포맷팅
+                        String formattedTime;
+                        int hours = drivingTime / 3600;
+                        int minutes = (drivingTime % 3600) / 60;
+
+                        if (hours > 0) {
+                            formattedTime = String.format("%d시간 %d분", hours, minutes);
+                        } else {
+                            formattedTime = String.format("%d분", minutes);
+                        }
+
+                        // Intent 생성 및 데이터 전달
+                        Intent intent = new Intent(DriveActivity.this, HomeFragment.class);
+                        intent.putExtra("dest", dest);
+                        intent.putExtra("dist", formattedDistance);
+                        intent.putExtra("time", formattedTime);
+
+                        // Fragment로 데이터 전달
+                        startActivity(intent);
+                        finish(); // DriveActivity 종료
                     }
                 });
-
             }
 
             @Override
