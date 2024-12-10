@@ -23,6 +23,7 @@ public class BookmarkEditBottomSheetFragment extends BottomSheetDialogFragment {
         // EditText 초기화
         EditText editTextNickname = view.findViewById(R.id.editTextNickname);
 
+        
         // EditorActionListener 설정
         editTextNickname.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
