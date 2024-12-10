@@ -51,6 +51,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/ediTextName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="목적지 이름"
@@ -59,6 +60,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/editAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="목적지 주소"

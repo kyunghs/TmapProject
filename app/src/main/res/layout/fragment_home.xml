@@ -91,7 +91,7 @@
                 <LinearLayout
                     android:id="@+id/home_card_layout"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="110dp"
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/card_background"
@@ -113,9 +113,9 @@
                         <TextView
                             android:id="@+id/area_alias1_text"
                             android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:layout_weight="1"
                             android:text="즐겨찾기"
                             android:textStyle="bold" />
 
@@ -139,7 +139,7 @@
                 <LinearLayout
                     android:id="@+id/card_layout"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="110dp"
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/card_background"
@@ -182,7 +182,7 @@
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="16dp"
                         android:gravity="left"
-                        android:text="서울특별시 영등포구\n의사당대로 8" />
+                        android:text="장소를\n등록 해주세요" />
                 </LinearLayout>
             </LinearLayout>
 

@@ -139,30 +139,48 @@ public class HomeFragment extends Fragment {
                             if (userData != null) {
                                 JSONObject userCustomData = userData.optJSONObject("user_custom_data");
                                 JSONObject get_user_ki_history_data = userData.optJSONObject("get_user_ki_history_data");
+
+                                // 초기 세팅 값
+                                String de_area1 = "즐겨찾기";
+                                String de_area1Address = "장소를\n등록 해주세요";
+                                String de_area2 = "즐겨찾기";
+                                String de_area2Address = "장소를\n등록 해주세요";
+                                String de_todayKi = "아직 운행기록이 없어요.";
+                                String de_yesterdayKiValue = " ";
+
+
                                 if (userCustomData != null) {
-                                String area1 = userCustomData.optString("area_1", "정보 없음");
-                                String area1Address = userCustomData.optString("area_1_address", "주소 없음");
-                                String area2 = userCustomData.optString("area_2", "정보 없음");
-                                String area2Address = userCustomData.optString("area_2_address", "주소 없음");
-                                String todayKiValue = "아직 운행기록이 없어요.";
-                                String yesterdayKiValue = " ";
+                                    de_area1 = userCustomData.optString("area_1", "즐겨찾기").isEmpty()
+                                            ? "즐겨찾기"
+                                            : userCustomData.optString("area_1");
+
+                                    de_area1Address = userCustomData.optString("area_1_address", "장소를\n등록 해주세요").isEmpty()
+                                            ? "장소를\n등록 해주세요"
+                                            : userCustomData.optString("area_1_address");
+
+                                    de_area2 = userCustomData.optString("area_2", "즐겨찾기").isEmpty()
+                                            ? "즐겨찾기"
+                                            : userCustomData.optString("area_2");
+
+                                    de_area2Address = userCustomData.optString("area_2_address", "장소를\n등록 해주세요").isEmpty()
+                                            ? "장소를\n등록 해주세요"
+                                            : userCustomData.optString("area_2_address");
+
                                 if (get_user_ki_history_data != null) {
-                                    todayKiValue = get_user_ki_history_data.optString("today_ki", "db확인필요");
-                                    yesterdayKiValue = get_user_ki_history_data.optString("ki", "db확인필요");
+                                    de_todayKi = get_user_ki_history_data.optString("today_ki", "db확인필요");
+                                    de_yesterdayKiValue = get_user_ki_history_data.optString("ki", "db확인필요");
                                 }
-                                String displayText = String.format("자동차로\n약 %s km 이동", todayKiValue);
-                                String displayText2 = String.format("전일 대비 +%s km 이동", yesterdayKiValue);
+                                String displayText = String.format("자동차로\n약 %s km 이동", de_todayKi);
+                                String displayText2 = String.format("전일 대비 +%s km 이동", de_yesterdayKiValue);
 
 
                                 // UI 업데이트
-                                areaAlias1Text.setText(area1);
-                                areaAlias1Address.setText(area1Address);
-                                areaAlias2Text.setText(area2);
-                                areaAlias2Address.setText(area2Address);
+                                areaAlias1Text.setText(de_area1);
+                                areaAlias1Address.setText(de_area1Address);
+                                areaAlias2Text.setText(de_area2);
+                                areaAlias2Address.setText(de_area2Address);
                                 distance_ce.setText(displayText);
                                 distance_ye.setText(displayText2);
-
-
 
 
                                 }
