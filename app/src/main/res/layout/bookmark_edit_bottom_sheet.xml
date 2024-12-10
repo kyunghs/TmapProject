@@ -30,6 +30,8 @@
             android:hint="위치를 검색 해주세요."
             android:padding="12dp"
             android:textColorHint="#F9C1AC"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
             android:drawableRight="@drawable/clear_button" />
     </LinearLayout>
 

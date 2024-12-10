@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +42,19 @@ public class BookmarkBottomSheetFragment extends BottomSheetDialogFragment {
         area1_alias = view.findViewById(R.id.editTextNickname);
         area1_name = view.findViewById(R.id.ediTextName);
         area1_address = view.findViewById(R.id.editAddress);
+
+        // 키보드의 확인 버튼 이벤트 처리
+        area1_alias.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // 확인 버튼 눌렀을 때 동작
+                Toast.makeText(getActivity(), "확인 버튼 눌림: " + area1_alias.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                // 필요한 추가 로직 (예: 서버로 데이터 전송 등)
+
+                return true; // 이벤트 처리 완료
+            }
+            return false;
+        });
 
         fetchMainInfo();
 

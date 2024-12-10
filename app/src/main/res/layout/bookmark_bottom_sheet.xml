@@ -28,6 +28,8 @@
             android:drawableRight="@drawable/clear_button"
             android:hint="별명을 설정해주세요"
             android:padding="12dp"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
             android:textColorHint="#F9C1AC" />
     </LinearLayout>
 
