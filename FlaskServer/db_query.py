@@ -299,7 +299,7 @@ def get_user_ki_history(user_id):
 
         # 사용자 정보 가져오는 쿼리
         query_today  = """
-        SELECT user_code, SUM(kilometers) AS total_kilometers
+        SELECT user_code, COALESCE(SUM(kilometers), 0) AS total_kilometers
         FROM user_history
         WHERE user_code = %s
         AND DATE(date) = CURRENT_DATE
@@ -311,7 +311,7 @@ def get_user_ki_history(user_id):
 
 
         query_yesterday = """
-        SELECT user_code, SUM(kilometers) AS total_kilometers
+        SELECT user_code, COALESCE(SUM(kilometers), 0) AS total_kilometers
         FROM user_history
         WHERE user_code = %s
         AND DATE(date) = CURRENT_DATE - INTERVAL '1 day'
