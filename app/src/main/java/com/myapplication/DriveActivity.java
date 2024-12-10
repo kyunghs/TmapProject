@@ -30,7 +30,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.myapplication.fragments.PathSelectBottomSheetFragment;
 import com.myapplication.utils.HttpSearchUtils;
 import com.skt.tmap.engine.navigation.SDKManager;
 import com.skt.tmap.engine.navigation.network.ndds.CarOilType;
@@ -52,7 +51,7 @@ import com.tmapmobility.tmap.tmapsdk.ui.view.MapConstant;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class DriveActivity extends AppCompatActivity implements PathSelectBottomSheetFragment.RouteSelectionListener {
+public class DriveActivity extends AppCompatActivity {
     private static final String TAG = "Develop";
 
     private TTSSTTHelper ttssttHelper;
@@ -82,11 +81,9 @@ public class DriveActivity extends AppCompatActivity implements PathSelectBottom
             longitude = intent.getStringExtra("lot");
         }
         checkPermission();
-
-        PathSelectBottomSheetFragment pathSelectBottomSheetFragment = PathSelectBottomSheetFragment.newInstance(latitude, longitude);
-        pathSelectBottomSheetFragment.show(getSupportFragmentManager(), "PathSelectBottomSheetFragment");
-
-
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            Test(destinationName, latitude, longitude);
+        }, 1000);
 
         Button test2 = findViewById(R.id.test2);
         test2.setOnClickListener(new View.OnClickListener() {
@@ -236,14 +233,6 @@ public class DriveActivity extends AppCompatActivity implements PathSelectBottom
         super.onDestroy();
     }
 
-
-    // RouteSelectionListener 구현
-    @Override
-    public void onRouteSelected(int route) {
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Test(destinationName, latitude, longitude, route);
-        }, 1000);
-    }
 
 
     private void checkPermission() {
@@ -421,7 +410,6 @@ public class DriveActivity extends AppCompatActivity implements PathSelectBottom
                 // GPS 상태 변화 시점에 호출
                 Log.e(TAG, "onPassedAlternativeRouteJunction :: " + b);
 
-                runOnUiThread(() -> Toast.makeText(DriveActivity.this, "onNoLocationSignal " + b, Toast.LENGTH_SHORT).show());
 
 
             }
@@ -565,41 +553,9 @@ public class DriveActivity extends AppCompatActivity implements PathSelectBottom
 
             }
         });
-
-
     }
 
-    private void showDialogContinueRoute(String dest) {
-        String message = dest + "(으)로 경로 안내를 이어서 안내 받으시겠습니까?";
-        new AlertDialog.Builder(this)
-                .setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton("네", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        navigationFragment.continueDrive(true, new TmapUISDK.RouteRequestListener() {
-                            @Override
-                            public void onSuccess() {
-                                Log.e("DriveActivity", "경로 계속 운행 성공");
-                            }
-
-                            @Override
-                            public void onFail(int i, @Nullable String s) {
-                                Log.e("DriveActivity", "경로 계속 운행 실패 " + s);
-                            }
-                        });
-                    }
-                })
-                .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        navigationFragment.clearContinueDriveInfo();
-                    }
-                })
-                .show();
-    }
-
-    private void Test(String destinationName, String lat, String lot, int Route){
+    private void Test(String destinationName, String lat, String lot){
 
         // 자동차 옵션 설정
         CarOption carOption = new CarOption();

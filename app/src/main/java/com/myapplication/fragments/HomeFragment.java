@@ -1,6 +1,8 @@
 package com.myapplication.fragments;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +18,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import com.myapplication.DriveActivity;
 import com.myapplication.R;
+import com.myapplication.models.Place;
 import com.myapplication.utils.HttpSearchUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.myapplication.utils.HttpUtils;
@@ -81,6 +86,13 @@ public class HomeFragment extends Fragment {
             return false;
         });
 
+        areaAlias1Address.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showPopup("37.5548375992165", "126.971732581232");
+            }
+        });
 
         return view;
     }
@@ -169,6 +181,54 @@ public class HomeFragment extends Fragment {
                 });
             }
         });
+    }
+
+    private void showPopup(String lat, String lot) {
+        Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.park_popup);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        // "예" 버튼 클릭 이벤트
+        dialog.findViewById(R.id.yesBtn).setOnClickListener(v -> {
+            try {
+                JSONObject jsonData = new JSONObject();
+                jsonData.put("lat", lat);
+                jsonData.put("lot", lot);
+
+                // 서버에 JSON 데이터 전송
+                HttpUtils.sendJsonToServer(jsonData, "/get/park/info", new HttpUtils.HttpResponseCallback() {
+                    @Override
+                    public void onSuccess(JSONObject responseData) {
+                        // ParkListBottomSheetFragment 호출 및 데이터 전달
+                        ParkListBottomSheetFragment parkListBottomSheet = ParkListBottomSheetFragment.newInstance(responseData.toString());
+                        parkListBottomSheet.show(getParentFragmentManager(), "ParkListBottomSheetFragment");
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        // 에러 처리
+                        requireActivity().runOnUiThread(() ->
+                                Toast.makeText(requireContext(), "서버 요청 실패: " + errorMessage, Toast.LENGTH_SHORT).show()
+                        );
+                    }
+                });
+                dialog.dismiss(); // 다이얼로그 닫기
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(requireContext(), "JSON 생성 오류", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // "아니요" 버튼 클릭 이벤트
+        dialog.findViewById(R.id.noBtn).setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), DriveActivity.class);
+            intent.putExtra("name", "서울역");
+            intent.putExtra("lat", "37.5548375992165");
+            intent.putExtra("lot", "126.971732581232");
+            startActivity(intent);
+            dialog.dismiss(); // 현재 다이얼로그 닫기
+        });
+
+        dialog.show();
     }
 
 }

@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.myapplication.fragments.HistoryFragment;
 import com.myapplication.fragments.HomeFragment;
 import com.myapplication.fragments.MapFragment;
-import com.myapplication.fragments.PathSelectBottomSheetFragment;
 import com.myapplication.fragments.MapBottomFragment;
 import com.myapplication.fragments.UserFragment;
 import com.tmapmobility.tmap.tmapsdk.ui.fragment.NavigationFragment;
@@ -42,9 +40,6 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.map:
                         selectedFragment = new MapFragment();
-                        break;
-                    case R.id.history:
-                        selectedFragment = new HistoryFragment();
                         break;
                     case R.id.user:
                         selectedFragment = new UserFragment();

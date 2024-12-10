@@ -130,7 +130,7 @@ public class PathSelectBottomSheetFragment extends BottomSheetDialogFragment {
             dismiss(); // Fragment 종료
         });
 
-        // HTTP requests
+        /*// HTTP requests
         for (int i = 0; i < 3; i++) {
             final int finalI = i; // Mark `i` as effectively final
             HttpSearchUtils.performRouteRequest(requireContext(), finalI, currentLong, currentLat, targetLot, targetLat, new HttpSearchUtils.RouteRequestCallback() {
@@ -208,7 +208,7 @@ public class PathSelectBottomSheetFragment extends BottomSheetDialogFragment {
                     );
                 }
             });
-        }
+        }*/
 
         return view;
     }

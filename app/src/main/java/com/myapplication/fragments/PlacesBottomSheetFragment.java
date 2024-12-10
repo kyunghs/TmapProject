@@ -69,7 +69,6 @@ public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
         if (getArguments() != null) {
             String poiData = getArguments().getString(ARG_POI_DATA);
             parsePoiData(poiData);
-            Log.e("!!!!!!!!!", poiData);
             adapter.notifyDataSetChanged(); // 데이터 변경 후 어댑터 갱신
         }
 
@@ -155,8 +154,7 @@ public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
 
         // "아니요" 버튼 클릭 이벤트
         dialog.findViewById(R.id.noBtn).setOnClickListener(v -> {
-            PathSelectBottomSheetFragment pathSelectBottomSheetFragment = new PathSelectBottomSheetFragment();
-            pathSelectBottomSheetFragment.show(getParentFragmentManager(), "PathSelectBottomSheetFragment");
+
             dialog.dismiss(); // 현재 다이얼로그 닫기
         });
 

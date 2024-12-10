@@ -24,17 +24,6 @@
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/history"
-        android:enabled="true"
-        android:icon="@drawable/navi_main_history"
-        android:title="기록"
-        android:textSize="12sp"
-        android:iconTint="@color/navigation_item_icon_tint"
-        android:titleTextColor="@color/navigation_item_color"
-        android:background="@drawable/navigation_item_background"
-        app:showAsAction="always"/>
-
-    <item
         android:id="@+id/user"
         android:enabled="true"
         android:icon="@drawable/frame"
