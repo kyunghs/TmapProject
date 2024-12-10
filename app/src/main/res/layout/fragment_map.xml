@@ -108,8 +108,7 @@
                 android:background="#FF8B61"
                 android:text="안심주행 시작"
                 android:textColor="#ffffff"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="16sp"/>
         </FrameLayout>
 
         <!-- 버튼 -->

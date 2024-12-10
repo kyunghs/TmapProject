@@ -240,15 +240,14 @@
                     android:id="@+id/registBtn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
                     android:background="@drawable/signup_rounded_button_filled"
                     android:backgroundTint="#FF7F50"
                     android:padding="16dp"
                     android:text="내비서 시작하기"
                     android:textColor="#FFFFFF"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp"/>
 
                 <Button
                     android:id="@+id/passStartBtn"
@@ -261,8 +260,7 @@
                     android:padding="16dp"
                     android:text="프리패스 시작"
                     android:textColor="#FFFFFF"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp"/>
             </LinearLayout>
         </LinearLayout>
 

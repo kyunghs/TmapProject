@@ -33,8 +33,7 @@
         android:gravity="center"
         android:text="@string/login_button_text"
         android:textColor="#FF7F50"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textSize="18sp"/>
 
     <!-- 회원가입 버튼 -->
     <Button
@@ -46,8 +45,7 @@
         android:gravity="center"
         android:text="@string/signup_button_text"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textSize="18sp"/>
 
     <Space
         android:layout_width="match_parent"

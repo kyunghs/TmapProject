@@ -43,7 +43,7 @@
 
                 <Button
                     android:id="@+id/edit_profile_button"
-                    android:layout_width="145dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_marginTop="20dp"
                     android:layout_gravity="center"
@@ -51,7 +51,6 @@
                     android:background="@drawable/profile_edit_button"
                     android:paddingHorizontal="36dp"
                     android:text="프로필 편집"
-                    android:textStyle="bold"
                     android:textColor="#FFFFFF" />
 
 
