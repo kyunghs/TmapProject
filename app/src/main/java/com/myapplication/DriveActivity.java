@@ -74,6 +74,10 @@ public class DriveActivity extends AppCompatActivity {
     private String longitude = "";
     private TextView remainDistTextView;
     private TextView remainTimeTextView;
+    private boolean isBackPressedOnce = false; // 뒤로가기 플래그
+    private static final int BACK_PRESS_DELAY = 2000; // 2초 (밀리초 단위)
+    private Handler backPressHandler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,6 +121,11 @@ public class DriveActivity extends AppCompatActivity {
         stopBtn.setOnClickListener(v -> {
             // navigationFragment의 stopDrive 메서드 호출
             navigationFragment.stopDrive();
+        });
+
+        more2Layout.setOnTouchListener((v, event) -> {
+            // 이벤트를 소비하여 아래로 전달되지 않음
+            return true;
         });
     }
 
@@ -545,7 +554,7 @@ public class DriveActivity extends AppCompatActivity {
 
             }
 
-            @Override
+            /*@Override
             public void onArrivedDestination(@NonNull String dest, int drivingTime, int drivingDistance) {
                 // 목적지 도착 시 호출
                 // dest 목적지 명
@@ -583,6 +592,44 @@ public class DriveActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish(); // DriveActivity 종료
                     }
+                });
+            }*/
+
+            @Override
+            public void onArrivedDestination(@NonNull String dest, int drivingTime, int drivingDistance) {
+                // 목적지 도착 시 호출
+                runOnUiThread(() -> {
+                    // 거리 포맷팅
+                    String formattedDistance;
+                    if (drivingDistance >= 1000) {
+                        formattedDistance = String.format("%.1fkm", drivingDistance / 1000.0);
+                    } else {
+                        formattedDistance = drivingDistance + "m";
+                    }
+
+                    // 시간 포맷팅
+                    String formattedTime;
+                    int hours = drivingTime / 3600;
+                    int minutes = (drivingTime % 3600) / 60;
+
+                    if (hours > 0) {
+                        formattedTime = String.format("%d시간 %d분", hours, minutes);
+                    } else {
+                        formattedTime = String.format("%d분", minutes);
+                    }
+
+                    // 데이터 전달 및 Fragment 전환
+                    HomeFragment homeFragment = new HomeFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("dest", dest);
+                    bundle.putString("dist", formattedDistance);
+                    bundle.putString("time", formattedTime);
+                    homeFragment.setArguments(bundle);
+
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.tmapUILayout, homeFragment); // 'R.id.fragment_container'는 FrameLayout ID
+                    transaction.addToBackStack(null);
+                    transaction.commit();
                 });
             }
 
@@ -666,6 +713,30 @@ public class DriveActivity extends AppCompatActivity {
             }
         }, planTypeList);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        LinearLayout more2Layout = findViewById(R.id.more2);
+        LinearLayout bottom_info_bar = findViewById(R.id.bottom_info_bar);
+
+        if (more2Layout.getVisibility() == View.VISIBLE) {
+            // 'more2Layout'이 VISIBLE인 경우 처리
+            more2Layout.setVisibility(View.GONE);
+            bottom_info_bar.setVisibility(View.VISIBLE);
+        } else {
+            // 이미 GONE 상태일 때 뒤로가기 두 번 확인 로직
+            if (isBackPressedOnce) {
+                super.onBackPressed(); // 이전 페이지로 이동
+                return;
+            }
+
+            isBackPressedOnce = true;
+            Toast.makeText(this, "뒤로가기를 한 번 더 누르면 이전 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
+
+            // 일정 시간 이후 플래그 초기화
+            backPressHandler.postDelayed(() -> isBackPressedOnce = false, BACK_PRESS_DELAY);
+        }
     }
 
 
