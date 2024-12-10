@@ -599,6 +599,13 @@ def predict_endpoint():
         logging.error(f"Error during prediction: {e}")
         return jsonify({"error": str(e)}), 500
 
+@app.route('/selectPark', methods=['POST'])
+def selectPark():
+    try:
+        parkList = db_query.selectPark()
+        return jsonify({"success": True, "parkList": parkList}), 200
+    except Exception as e:
+        return jsonify({"success": False, "message": "서버 오류: " + str(e)}), 500
 
 # 이전 예측 소스
 

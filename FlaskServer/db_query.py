@@ -453,3 +453,19 @@ def getParkInfo(u_lat, u_lot):
         for row in result
     ]
     return parking_list
+
+def selectPark():
+    conn = dbConnection()
+        cursor = conn.cursor()
+
+        query = ("SELECT pklt_cd, pklt_nm, addr, tpkct, now_prk_vhcl_cnt wd_oper_bgng_tm, wd_oper_end_tm, bsc_prk_crg, add_prk_crg, day_max_crg, lat, lot FROM parking_info")
+
+        cursor.execute(query)
+        result = cursor.fetchall()
+        conn.close()
+
+        parking_list = [
+            {"pklt_cd": row[0], "pklt_nm": row[1], "addr": row[2], "tpkct": row[3], "now_prk_vhcl_cnt": row[4], "wd_oper_bgng_tm": row[5], "wd_oper_end_tm": row[6], "bsc_prk_crg": row[7], "add_prk_crg": row[8], "day_max_crg": row[9], "lat": row[10], "lot": row[11]}
+            for row in result
+        ]
+        return parking_list
