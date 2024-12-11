@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.myapplication.fragments.PlacesBottomSheetFragment;
 
 import org.json.JSONArray;
@@ -77,6 +78,68 @@ public class HttpSearchUtils {
             e.printStackTrace();
         }
     }
+    public static void performSearch2(String keyword, Context context, FragmentManager fragmentManager, BottomSheetDialogFragment fragment, OnSearchCompleteListener listener) {
+        OkHttpClient client = new OkHttpClient();
+
+        try {
+            String encodedKeyword = URLEncoder.encode(keyword, "UTF-8");
+            String url = "https://apis.openapi.sk.com/tmap/pois?version=1&searchKeyword=" + encodedKeyword +
+                    "&searchType=all&searchtypCd=A&reqCoordType=WGS84GEO&resCoordType=WGS84GEO&page=1&count=5&multiPoint=N&poiGroupYn=N";
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .get()
+                    .addHeader("Accept", "application/json")
+                    .addHeader("appKey", API_KEY)
+                    .build();
+
+            new Thread(() -> {
+                try {
+                    Response response = client.newCall(request).execute();
+                    String responseBody = response.body().string();
+
+                    if (context instanceof android.app.Activity) {
+                        ((android.app.Activity) context).runOnUiThread(() -> {
+                            try {
+                                JSONObject rootObject = new JSONObject(responseBody);
+                                JSONObject searchPoiInfo = rootObject.getJSONObject("searchPoiInfo");
+                                JSONObject pois = searchPoiInfo.getJSONObject("pois");
+                                JSONArray poiArray = pois.getJSONArray("poi");
+
+                                if (listener != null && poiArray.length() > 0) {
+                                    String firstPlaceName = poiArray.getJSONObject(0).optString("name", "Unknown");
+                                    listener.onSearchComplete(firstPlaceName);
+                                }
+
+                                showPlacesBottomSheet2(poiArray.toString(), fragmentManager);
+                                // 검색 결과를 Toast로 표시
+//                                Toast.makeText(context, "검색 결과: " + poiArray.toString(), Toast.LENGTH_SHORT).show();
+
+                                // 현재 BottomSheetFragment 닫기
+                                if (fragment != null) {
+                                    fragment.dismiss();
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(context, "JSON 파싱 오류", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public interface OnSearchCompleteListener {
+        void onSearchComplete(String result);
+    }
+
+
 
     public static void performRouteRequest(Context context, int way, double startX, double startY, double endX, double endY, RouteRequestCallback callback) {
         OkHttpClient client = new OkHttpClient();
@@ -155,7 +218,13 @@ public class HttpSearchUtils {
     }
 
     private static void showPlacesBottomSheet(String poiData, FragmentManager fragmentManager) {
-        PlacesBottomSheetFragment placesBottomSheet = PlacesBottomSheetFragment.newInstance(poiData);
+        PlacesBottomSheetFragment placesBottomSheet = PlacesBottomSheetFragment.newInstance(poiData, false);
+        placesBottomSheet.show(fragmentManager, "PlacesBottomSheetFragment");
+    }
+
+    private static void showPlacesBottomSheet2(String poiData, FragmentManager fragmentManager) {
+//        PlacesBottomSheetFragment.setShouldDismissImmediately(true);
+        PlacesBottomSheetFragment placesBottomSheet = PlacesBottomSheetFragment.newInstance(poiData, true);
         placesBottomSheet.show(fragmentManager, "PlacesBottomSheetFragment");
     }
 }

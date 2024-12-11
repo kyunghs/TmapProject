@@ -1,5 +1,6 @@
 package com.myapplication.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.location.Location;
 import android.location.LocationManager;
@@ -34,13 +35,15 @@ import java.util.List;
 public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
 
     private static final String ARG_POI_DATA = "poi_data";
+    private static boolean shouldDismissImmediately = false; // 플래그 추가
     private List<Place> placeList = new ArrayList<>();
 
-    public static PlacesBottomSheetFragment newInstance(String poiData) {
+    public static PlacesBottomSheetFragment newInstance(String poiData, boolean dismissOnTouch) {
         PlacesBottomSheetFragment fragment = new PlacesBottomSheetFragment();
         Bundle args = new Bundle();
         args.putString(ARG_POI_DATA, poiData);
         fragment.setArguments(args);
+        shouldDismissImmediately = dismissOnTouch;
         return fragment;
     }
 
@@ -52,22 +55,42 @@ public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
         setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.AppBottomSheetDialogBorder20WhiteTheme);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.places_list, container, false);
 
+        if (shouldDismissImmediately) {
+            view.setOnClickListener(v ->
+                    dismiss());
+        }
         // RecyclerView 초기화
         RecyclerView placesRecyclerView = view.findViewById(R.id.placesRecyclerView);
         placesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         // 어댑터 설정
-        PlaceAdapter adapter = new PlaceAdapter(placeList, this::showPopup);
+//        PlaceAdapter adapter = new PlaceAdapter(placeList, this::showPopup);
+//        placesRecyclerView.setAdapter(adapter);
+
+        // 어댑터 설정: 클릭 리스너를 플래그에 따라 다르게 처리
+        PlaceAdapter adapter = new PlaceAdapter(placeList, place -> {
+            if (shouldDismissImmediately) {
+                // 플래그가 true일 때 dismiss 호출
+                if (isAdded()) {
+                    dismiss();
+                }
+            } else {
+                // 플래그가 false일 때 showPopup 호출
+                showPopup(place);
+            }
+        });
         placesRecyclerView.setAdapter(adapter);
 
         // 데이터 파싱 및 업데이트
         if (getArguments() != null) {
             String poiData = getArguments().getString(ARG_POI_DATA);
+
             parsePoiData(poiData);
             adapter.notifyDataSetChanged(); // 데이터 변경 후 어댑터 갱신
         }
@@ -160,4 +183,10 @@ public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
 
         dialog.show();
     }
+
+    public static void setShouldDismissImmediately(boolean value) {
+        shouldDismissImmediately = value;
+
+    }
+
 }

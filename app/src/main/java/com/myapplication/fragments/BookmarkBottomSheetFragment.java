@@ -221,4 +221,5 @@ public class BookmarkBottomSheetFragment extends BottomSheetDialogFragment {
 
     }
 
+
 }

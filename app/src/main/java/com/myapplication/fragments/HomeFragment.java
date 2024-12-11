@@ -207,17 +207,17 @@ public class HomeFragment extends Fragment {
                                     String displayText = String.format("자동차로\n약 %s km 이동", de_todayKi);
                                     String displayText2 = String.format("전일 대비 +%s km 이동", de_yesterdayKiValue);
 
-                                if (de_todayKi == "아직 운행기록이 없어요.") {
-                                  distance_ce.setText(de_todayKi);
-                                } else {
-                                  distance_ce.setText(displayText);
-                                }
+                                    if (de_todayKi == "아직 운행기록이 없어요.") {
+                                      distance_ce.setText(de_todayKi);
+                                    } else {
+                                      distance_ce.setText(displayText);
+                                    }
 
-                                if (de_yesterdayKiValue == " ") {
-                                    distance_ye.setText(de_yesterdayKiValue);
-                                } else {
-                                    distance_ye.setText(displayText2);
-                                }
+                                    if (de_yesterdayKiValue == " ") {
+                                        distance_ye.setText(de_yesterdayKiValue);
+                                    } else {
+                                        distance_ye.setText(displayText2);
+                                    }
 
 
                                     // UI 업데이트

@@ -16,6 +16,8 @@ import com.myapplication.R;
 import com.myapplication.utils.HttpSearchUtils;
 
 public class BookmarkEditBottomSheetFragment extends BottomSheetDialogFragment {
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -30,8 +32,6 @@ public class BookmarkEditBottomSheetFragment extends BottomSheetDialogFragment {
                 // 확인 버튼 눌렀을 때 동작
                 Toast.makeText(getActivity(), "확인 버튼 눌림@@: " + editTextNickname.getText().toString(), Toast.LENGTH_SHORT).show();
 
-                // 필요한 추가 로직 (예: 서버로 데이터 전송 등)ㅣ
-
                 return true; // 이벤트 처리 완료
             }
             return false;
@@ -41,7 +41,9 @@ public class BookmarkEditBottomSheetFragment extends BottomSheetDialogFragment {
         editTextNickname.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 String inputText = editTextNickname.getText().toString();
-                HttpSearchUtils.performSearch(inputText, requireContext(), getParentFragmentManager());
+//                HttpSearchUtils.performSearch2(inputText, requireContext(), getParentFragmentManager(), this );
+                HttpSearchUtils.performSearch2(inputText, requireContext(), getParentFragmentManager(), this, updatedNickname -> {
+                });
                 return true;
             }
             return false;
