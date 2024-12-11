@@ -97,10 +97,11 @@ public class UserFragment extends Fragment {
         setupToggleBackground(singleParentFamily, "한부모 가정: 50% 감면", R.drawable.single_parent_family);
     }
 
-    // 배경 토글 로직 (한 번에 하나의 항목만 활성화 + 설명 표시)
+    /// 배경 토글 로직 (한 번에 하나의 항목만 활성화 + 설명 표시)
+    // Grid 아이템 클릭 리스너 설정 (업데이트 호출 추가)
     private void setupToggleBackground(LinearLayout layout, String description, int drawableId) {
-        ImageView imageView = (ImageView) layout.getChildAt(0); // 첫 번째 자식이 ImageView
-        TextView textView = (TextView) layout.getChildAt(1);    // 두 번째 자식이 TextView
+        ImageView imageView = (ImageView) layout.getChildAt(0);
+        TextView textView = (TextView) layout.getChildAt(1);
 
         layout.setOnClickListener(v -> {
             if (imageView == null || textView == null) {
@@ -128,7 +129,7 @@ public class UserFragment extends Fragment {
                 // 현재 선택된 항목 초기화
                 currentlySelectedLayout = null;
 
-                // API 호출로 선택 해제 상태 업데이트
+                // 서버로 선택 해제 상태 전송
                 sendSelectionToServer(null);
             } else {
                 // 새로운 상태로 변경
@@ -144,7 +145,7 @@ public class UserFragment extends Fragment {
                 // 현재 선택된 항목 업데이트
                 currentlySelectedLayout = layout;
 
-                // API 호출로 선택 상태 업데이트
+                // 서버로 선택 상태 업데이트
                 sendSelectionToServer(layout.getId());
             }
         });
@@ -182,16 +183,24 @@ public class UserFragment extends Fragment {
         try {
             requestData.put("selected_column", selectedColumn);
 
-            // 요청 전송 (토큰 없이)
+            // 요청 전송
             HttpUtils.sendJsonToServer(requestData, "/updateUserSelection", new HttpUtils.HttpResponseCallback() {
                 @Override
                 public void onSuccess(JSONObject response) {
                     Log.d("UserFragment", "선택 상태 업데이트 성공: " + response.toString());
+
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getActivity(), "선택 상태가 업데이트되었습니다.", Toast.LENGTH_SHORT).show();
+                    });
                 }
 
                 @Override
                 public void onFailure(String errorMessage) {
                     Log.e("UserFragment", "선택 상태 업데이트 실패: " + errorMessage);
+
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getActivity(), "선택 상태 업데이트에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    });
                 }
             });
         } catch (JSONException e) {
@@ -207,32 +216,50 @@ public class UserFragment extends Fragment {
         ImageView imageView = (ImageView) layout.getChildAt(0); // 첫 번째 자식이 ImageView
         TextView textView = (TextView) layout.getChildAt(1);    // 두 번째 자식이 TextView
 
-        if (imageView != null) imageView.setVisibility(View.VISIBLE);
-        if (textView != null) textView.setVisibility(View.VISIBLE);
+        if (imageView != null) imageView.setVisibility(View.VISIBLE); // 이미지 다시 표시
+        if (textView != null) textView.setVisibility(View.VISIBLE); // 텍스트 다시 표시
         layout.setBackgroundResource(R.drawable.border); // 기본 배경으로 복구
         layout.setTag(false);
     }
 
+
     // 유저 정보 가져오기
     private void fetchUserInfo() {
-        HttpUtils.sendGetRequestWithAuth("/getUserInfo", null, new HttpUtils.HttpResponseCallback() {
+        // SharedPreferences에서 토큰 가져오기
+        String token = getActivity()
+                .getSharedPreferences("AuthPrefs", Context.MODE_PRIVATE)
+                .getString("auth_token", "");
+
+        if (token == null || token.isEmpty()) {
+            Log.e("UserFragment", "토큰이 없습니다. 로그인을 확인하세요.");
+            Toast.makeText(getActivity(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // GET 요청으로 사용자 정보 가져오기
+        HttpUtils.sendGetRequestWithAuth("/getUserInfo", "Bearer " + token, new HttpUtils.HttpResponseCallback() {
             @Override
             public void onSuccess(JSONObject responseData) {
                 getActivity().runOnUiThread(() -> {
                     try {
                         if (responseData.getBoolean("success")) {
-                            JSONObject data = responseData.getJSONObject("data");
+                            JSONObject userData = responseData.optJSONObject("data");
+                            if (userData != null) {
+                                String name = userData.optString("name", "알 수 없음");
 
-                            // 사용자 이름 업데이트
-                            nameText.setText(data.optString("name", "알 수 없음"));
-
-                            // 초기 선택 상태 업데이트
-                            updateGridSelectionFromData(data);
+                                // UI 업데이트
+                                nameText.setText(name);
+                                updateGridSelectionFromData(userData);
+                            } else {
+                                Toast.makeText(getActivity(), "유효한 사용자 데이터를 받을 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
-                            Toast.makeText(getActivity(), responseData.optString("message", "오류 발생"), Toast.LENGTH_SHORT).show();
+                            String message = responseData.optString("message", "오류 발생");
+                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         Toast.makeText(getActivity(), "데이터 처리 오류: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.e("UserFragment", "JSONException", e);
                     }
                 });
             }
@@ -241,40 +268,88 @@ public class UserFragment extends Fragment {
             public void onFailure(String errorMessage) {
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getActivity(), "서버 요청 실패: " + errorMessage, Toast.LENGTH_SHORT).show();
+                    Log.e("UserFragment", "요청 실패: " + errorMessage);
                 });
             }
         });
     }
 
 
+
     // 선택 상태 초기화
     private void updateGridSelectionFromData(JSONObject userData) {
-        if (userData.optString("disabled_human", "N").equals("Y")) {
-            setSelectedLayout(R.id.disabled_persons);
-        }
-        if (userData.optString("multiple_child", "N").equals("Y")) {
-            setSelectedLayout(R.id.multiple_children);
-        }
-        if (userData.optString("electric_car", "N").equals("Y")) {
-            setSelectedLayout(R.id.low_emission_vehicles);
-        }
-        if (userData.optString("person_merit", "N").equals("Y")) {
-            setSelectedLayout(R.id.person_of_national_merit);
-        }
-        if (userData.optString("tax_payment", "N").equals("Y")) {
-            setSelectedLayout(R.id.model_taxpayer);
-        }
-        if (userData.optString("alone_family", "N").equals("Y")) {
-            setSelectedLayout(R.id.single_parent_family);
+        // 모든 레이아웃 초기화
+        resetAllLayouts();
+
+        // 유저 데이터에 따라 선택 상태 설정
+        try {
+            if (userData.optString("disabled_human", "N").equals("Y")) {
+                setSelectedLayout(R.id.disabled_persons, R.drawable.disabled_persons, "장애인: 80% 감면 (지하철 환승주차장에 한하여 최초 3시간 주차요금 면제 후 80% 감면)");
+            }
+            if (userData.optString("multiple_child", "N").equals("Y")) {
+                setSelectedLayout(R.id.multiple_children, R.drawable.multiple_children, "다자녀(2자녀 이상): 50% 감면");
+            }
+            if (userData.optString("electric_car", "N").equals("Y")) {
+                setSelectedLayout(R.id.low_emission_vehicles, R.drawable.low_emission_vehicles, "저공해 차량: 50% 감면 + 전기차 충전 시 1시간 면제 후 50% 감면");
+            }
+            if (userData.optString("person_merit", "N").equals("Y")) {
+                setSelectedLayout(R.id.person_of_national_merit, R.drawable.person_of_national_merit, "국가유공자: 80% 감면");
+            }
+            if (userData.optString("tax_payment", "N").equals("Y")) {
+                setSelectedLayout(R.id.model_taxpayer, R.drawable.model_taxpayer, "모범납세자: 1년간 주차요금 면제");
+            }
+            if (userData.optString("alone_family", "N").equals("Y")) {
+                setSelectedLayout(R.id.single_parent_family, R.drawable.single_parent_family, "한부모 가정: 50% 감면");
+            }
+        } catch (Exception e) {
+            Log.e("UserFragment", "초기 UI 설정 오류: " + e.getMessage());
         }
     }
 
+    // 모든 레이아웃 초기화
+    private void resetAllLayouts() {
+        // 초기화할 레이아웃 ID 목록
+        int[] layoutIds = {
+                R.id.disabled_persons,
+                R.id.multiple_children,
+                R.id.low_emission_vehicles,
+                R.id.person_of_national_merit,
+                R.id.model_taxpayer,
+                R.id.single_parent_family
+        };
+
+        for (int layoutId : layoutIds) {
+            LinearLayout layout = getView().findViewById(layoutId);
+            if (layout != null) {
+                resetLayout(layout); // 초기화
+            }
+        }
+
+        // 설명 텍스트 숨기기
+        parkingDiscountDescription.setVisibility(View.GONE);
+        currentlySelectedLayout = null;
+    }
+
     // Grid 항목 선택 상태 설정
-    private void setSelectedLayout(int layoutId) {
+    private void setSelectedLayout(int layoutId, int drawableId, String description) {
         LinearLayout layout = getView().findViewById(layoutId);
         if (layout != null) {
-            setupToggleBackground(layout, "", 0); // 임시 데이터로 호출
-            layout.performClick(); // 클릭 이벤트 트리거
+            ImageView imageView = (ImageView) layout.getChildAt(0);
+            TextView textView = (TextView) layout.getChildAt(1);
+
+            // 이미지와 텍스트 숨김 처리
+            if (imageView != null) imageView.setVisibility(View.INVISIBLE);
+            if (textView != null) textView.setVisibility(View.INVISIBLE);
+
+            layout.setBackgroundResource(drawableId); // 선택된 배경 설정
+            layout.setTag(true); // 선택 상태 설정
+
+            // 설명 텍스트 업데이트
+            parkingDiscountDescription.setText(description);
+            parkingDiscountDescription.setVisibility(View.VISIBLE);
+
+            // 현재 선택된 항목 업데이트
+            currentlySelectedLayout = layout;
         }
     }
 

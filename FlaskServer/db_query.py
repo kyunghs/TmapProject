@@ -231,26 +231,28 @@ def update_user_selection(user_id, selected_column, valid_columns):
         conn = dbConnection()
         cursor = conn.cursor()
 
-        # 모든 항목 초기화
+        # 모든 항목 초기화 쿼리
         reset_query = f"""
         UPDATE user_info
         SET {", ".join([f"{col} = 'N'" for col in valid_columns])}
         WHERE id = %s
         """
+        print(f"Reset Query: {reset_query}, Params: {user_id}")  # 디버깅 로그
         cursor.execute(reset_query, (user_id,))
 
-        # 선택된 항목 업데이트
+        # 선택된 항목 업데이트 쿼리
         update_query = f"""
         UPDATE user_info
         SET {selected_column} = 'Y'
         WHERE id = %s
         """
+        print(f"Update Query: {update_query}, Params: {user_id}")  # 디버깅 로그
         cursor.execute(update_query, (user_id,))
 
         conn.commit()
         return True
     except Exception as e:
-        print(f"Error in update_user_selection: {e}")
+        print(f"DB 업데이트 오류: {e}")  # 디버깅 로그
         conn.rollback()
         return False
     finally:

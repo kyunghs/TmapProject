@@ -517,33 +517,40 @@ def update_user_info():
 
 @app.route('/updateUserSelection', methods=['POST'])
 def update_user_selection():
+    """
+    사용자 선택 항목 업데이트 API
+    """
     try:
-        # 요청 데이터 가져오기
+        # 요청 데이터 파싱
         data = request.get_json()
-        selected_column = data.get("selected_column")
+        print(f"요청받은 데이터: {data}")  # 디버깅 로그
+
+        # 요청 데이터 검증
+        user_id = 'ky'  # 테스트용 사용자 ID (하드코딩으로 확인)
+        selected_column = data.get("selected_column")  # 선택된 항목 (DB 컬럼명)
+        print(f"사용자 ID: {user_id}, 선택된 컬럼: {selected_column}")  # 디버깅 로그
         
+        if not user_id or not selected_column:
+            return jsonify({"success": False, "message": "사용자 ID 또는 선택 항목이 없습니다."}), 400
+
         # 유효한 컬럼인지 확인
-        valid_columns = [
-            "disabled_human", "multiple_child", "electric_car",
-            "person_merit", "tax_payment", "alone_family"
-        ]
+        valid_columns = ["disabled_human", "multiple_child", "electric_car", "person_merit", "tax_payment", "alone_family"]
         if selected_column not in valid_columns:
-            return jsonify({"success": False, "message": f"'{selected_column}'은 유효하지 않은 선택 항목입니다."}), 400
-        
-        # 데이터베이스 업데이트
-        query = f"""
-        UPDATE user_info
-        SET {selected_column} = 'Y', 
-            {", ".join([f"{col} = 'N'" for col in valid_columns if col != selected_column])}
-        WHERE user_code = %s
-        """
-        cursor.execute(query, (user_code,))
-        conn.commit()
-        
-        return jsonify({"success": True, "message": "선택 항목 업데이트 성공"}), 200
+            print(f"유효하지 않은 컬럼: {selected_column}")  # 디버깅 로그
+            return jsonify({"success": False, "message": f"'{selected_column}'는 유효하지 않은 컬럼입니다."}), 400
+
+        # DB 업데이트 시도
+        success = db_query.update_user_selection(user_id, selected_column, valid_columns)
+        print(f"DB 업데이트 성공 여부: {success}")  # 디버깅 로그
+
+        if success:
+            return jsonify({"success": True, "message": "사용자 선택이 업데이트되었습니다."}), 200
+        else:
+            return jsonify({"success": False, "message": "DB 업데이트에 실패했습니다."}), 500
     except Exception as e:
-        logging.error(f"Error in update_user_selection: {e}")
+        print(f"서버 오류: {e}")  # 디버깅 로그
         return jsonify({"success": False, "message": "서버 오류가 발생했습니다."}), 500
+
 
 
 
