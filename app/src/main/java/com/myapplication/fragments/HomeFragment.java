@@ -215,8 +215,6 @@ public class HomeFragment extends Fragment {
                                     areaAlias2Address.setText(de_area2Address);
                                     distance_ce.setText(displayText);
                                     distance_ye.setText(displayText2);
-                                    Log.e("!@#!@#!@",dest);
-                                    Log.e("!@#!@#!@",address);
                                     if(!"".equals(dest)){
                                         dest1.setText(dest);
                                     }
