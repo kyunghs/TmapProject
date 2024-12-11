@@ -66,10 +66,9 @@
                 android:layout_width="0dp"
                 android:layout_height="41dp"
                 android:layout_weight="1.5"
-                android:overlapAnchor="false"
-                android:dropDownHeight="200dp"
                 android:background="@drawable/filter_background"
                 android:textAlignment="center" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

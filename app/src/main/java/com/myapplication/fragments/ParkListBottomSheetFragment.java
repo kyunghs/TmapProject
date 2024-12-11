@@ -44,6 +44,7 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
 
     private String token;
 
+
     private static final String ARG_PARK_DATA = "park_data";
     private List<Parking> parkingList = new ArrayList<>();
 
@@ -59,9 +60,14 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
         return fragment;
     }
 
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.park_list, container, false);
+
+
+
+
 
 
         // SharedPreferences에서 인증 토큰 가져오기
@@ -75,7 +81,7 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
             return view;
         }
 
-        // 스피너 초기화 (혜택)
+        // Spinner 초기화
         Spinner benefitSpinner = view.findViewById(R.id.benefitSpinner);
         ArrayAdapter<CharSequence> benefitAdapter = ArrayAdapter.createFromResource(
                 requireContext(), R.array.benefit_options, android.R.layout.simple_spinner_item);
@@ -100,6 +106,7 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
 
         initializeTimeSpinners(view);
         initializeRecyclerView(view);
+
 
         // 시간 및 분 스피너 초기화
         Spinner hourSpinner = view.findViewById(R.id.hourSpinner);
@@ -184,7 +191,130 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
         return view;
     }
 
-    // 서버에서 사용자 데이터를 가져와 Spinner 기본값 설정
+    private void fetchUserInfoAndSetupSpinner(Spinner benefitSpinner, ArrayAdapter<CharSequence> benefitAdapter) {
+        HttpUtils.sendGetRequestWithAuth("/getUserInfo", "Bearer " + token, new HttpUtils.HttpResponseCallback() {
+            @Override
+            public void onSuccess(JSONObject responseData) {
+                requireActivity().runOnUiThread(() -> {
+                    try {
+                        if (responseData.getBoolean("success")) {
+                            JSONObject userData = responseData.getJSONObject("data");
+
+                            // 사용자 데이터와 혜택 매핑
+                            String userBenefit = mapUserBenefit(userData);
+
+                            // Spinner 기본값 설정
+                            int position = benefitAdapter.getPosition(userBenefit);
+                            if (position >= 0) {
+                                benefitSpinner.setSelection(position);
+                            }
+                        } else {
+                            Log.e("FetchUserInfo", "데이터 가져오기 실패: " + responseData.optString("message"));
+                        }
+                    } catch (JSONException e) {
+                        Log.e("FetchUserInfo", "JSON 파싱 오류: " + e.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Log.e("FetchUserInfo", "서버 요청 실패: " + errorMessage);
+            }
+        });
+    }
+    private String mapUserBenefit(JSONObject userData) {
+        Map<String, String> dbToSpinnerMapping = new HashMap<>();
+        dbToSpinnerMapping.put("disabled_human", "장애인");
+        dbToSpinnerMapping.put("multiple_child", "다자녀");
+        dbToSpinnerMapping.put("electric_car", "저공해차량");
+        dbToSpinnerMapping.put("person_merit", "국가유공자");
+        dbToSpinnerMapping.put("tax_payment", "모범납세자");
+        dbToSpinnerMapping.put("alone_family", "한부모가정");
+
+        for (String key : dbToSpinnerMapping.keySet()) {
+            if (userData.optString(key, "N").equals("Y")) {
+                return dbToSpinnerMapping.get(key);
+            }
+        }
+        return "선택사항 없음";
+    }
+
+    private void initializeRecyclerView(View view) {
+        RecyclerView parkingRecyclerView = view.findViewById(R.id.parkingRecyclerView);
+        parkingRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        if (getArguments() != null) {
+            String parkData = getArguments().getString(ARG_PARK_DATA);
+            parseParkData(parkData);
+        }
+
+        ParkingAdapter adapter = new ParkingAdapter(parkingList, (name, lat, lot) -> {
+            Intent intent = new Intent(requireContext(), DriveActivity.class);
+            intent.putExtra("name", name);
+            intent.putExtra("lat", lat);
+            intent.putExtra("lot", lot);
+            startActivity(intent);
+        });
+        parkingRecyclerView.setAdapter(adapter);
+    }
+
+    // 거리순 정렬 메서드
+    private void sortParkingListByDistance() {
+        parkingList.sort((p1, p2) -> {
+            int distance1 = extractNumber(p1.getDistance());
+            int distance2 = extractNumber(p2.getDistance());
+            return Integer.compare(distance1, distance2);
+        });
+    }
+
+    // 요금순 정렬 메서드
+    private void sortParkingListByFee() {
+        parkingList.sort((p1, p2) -> {
+            double fee1 = Double.parseDouble(p1.getTotalFee().replaceAll("[^\\d.]", ""));
+            double fee2 = Double.parseDouble(p2.getTotalFee().replaceAll("[^\\d.]", ""));
+            return Double.compare(fee1, fee2);
+        });
+    }
+
+    // 거리 텍스트에서 숫자를 추출하는 메서드
+    private int extractNumber(String text) {
+        String number = text.replaceAll("[^\\d]", "");
+        return number.isEmpty() ? 0 : Integer.parseInt(number);
+    }
+
+    // 시간 및 분을 분으로 변환하여 totalMinutes에 저장
+    private void updateTotalMinutes(Spinner hourSpinner, Spinner minuteSpinner) {
+        int hour = Integer.parseInt(hourSpinner.getSelectedItem().toString());
+        int minute = Integer.parseInt(minuteSpinner.getSelectedItem().toString());
+
+        // 총 분 계산
+        totalMinutes = (hour * 60) + minute;
+
+        // 로그로 확인
+        Log.e("Time Conversion", "선택된 시간: " + hour + "시간 " + minute + "분 -> 총 " + totalMinutes + "분");
+
+        // 주차 요금 갱신
+        updateParkingFees();
+    }
+
+    // 주차 요금 갱신 메서드
+    private void updateParkingFees() {
+        // 주차 요금 계산 후 리스트 갱신
+        for (Parking parking : parkingList) {
+            double bscPrkCrg = Double.parseDouble(parking.getBaseFee());
+            double addPrkCrg = Double.parseDouble(parking.getAddFee());
+            double dayMaxCrg = Double.parseDouble(parking.getDayMaxFee());
+
+            // Utils.calculateParkingFee에 totalMinutes를 전달
+            String totalFee = Utils.calculateParkingFee(bscPrkCrg, addPrkCrg, dayMaxCrg, totalMinutes);
+            parking.setTotalFee(totalFee); // 요금 업데이트
+        }
+
+        // RecyclerView 갱신
+        ((ParkingAdapter) ((RecyclerView) getView().findViewById(R.id.parkingRecyclerView)).getAdapter()).notifyDataSetChanged();
+    }
+
     // 서버에서 사용자 데이터를 가져와 Spinner 기본값 설정
     private void fetchUserDataAndSetupSpinner(Spinner benefitSpinner) {
         // 모든 옵션 정의 (전체 리스트)
@@ -265,23 +395,48 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
         });
     }
 
-    private void initializeRecyclerView(View view) {
-        RecyclerView parkingRecyclerView = view.findViewById(R.id.parkingRecyclerView);
-        parkingRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        if (getArguments() != null) {
-            String parkData = getArguments().getString(ARG_PARK_DATA);
-            parseParkData(parkData);
+
+    // 유저 데이터에서 Y 값인 항목만 추출
+    private List<String> extractUserBenefits(JSONObject userData) {
+        Map<String, String> dbToSpinnerMapping = new HashMap<>();
+        dbToSpinnerMapping.put("disabled_human", "장애인");
+        dbToSpinnerMapping.put("multiple_child", "다자녀");
+        dbToSpinnerMapping.put("electric_car", "저공해차량");
+        dbToSpinnerMapping.put("person_merit", "국가유공자");
+        dbToSpinnerMapping.put("tax_payment", "모범납세자");
+        dbToSpinnerMapping.put("alone_family", "한부모가정");
+
+        List<String> benefits = new ArrayList<>();
+        benefits.add("선택사항 없음"); // 기본값
+
+        for (String key : dbToSpinnerMapping.keySet()) {
+            if (userData.optString(key, "N").equals("Y")) {
+                benefits.add(dbToSpinnerMapping.get(key));
+            }
         }
 
-        ParkingAdapter adapter = new ParkingAdapter(parkingList, (name, lat, lot) -> {
-            Intent intent = new Intent(requireContext(), DriveActivity.class);
-            intent.putExtra("name", name);
-            intent.putExtra("lat", lat);
-            intent.putExtra("lot", lot);
-            startActivity(intent);
-        });
-        parkingRecyclerView.setAdapter(adapter);
+        return benefits;
+    }
+
+    // 유저 데이터에서 Y 값에 해당하는 항목 가져오기
+    private String getUserBenefit(JSONObject userData) {
+        Map<String, String> dbToSpinnerMapping = new HashMap<>();
+        dbToSpinnerMapping.put("disabled_human", "장애인");
+        dbToSpinnerMapping.put("multiple_child", "다자녀");
+        dbToSpinnerMapping.put("electric_car", "저공해차량");
+        dbToSpinnerMapping.put("person_merit", "국가유공자");
+        dbToSpinnerMapping.put("tax_payment", "모범납세자");
+        dbToSpinnerMapping.put("alone_family", "한부모가정");
+
+        for (String key : dbToSpinnerMapping.keySet()) {
+            if (userData.optString(key, "N").equals("Y")) {
+                return dbToSpinnerMapping.get(key); // 매핑된 혜택 반환
+            }
+        }
+
+        // 기본값 반환
+        return "선택사항 없음";
     }
 
     private void initializeTimeSpinners(View view) {
@@ -322,166 +477,7 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
         });
     }
 
-    // 유저 데이터에서 Y 값인 항목만 추출
-    private List<String> extractUserBenefits(JSONObject userData) {
-        Map<String, String> dbToSpinnerMapping = new HashMap<>();
-        dbToSpinnerMapping.put("disabled_human", "장애인");
-        dbToSpinnerMapping.put("multiple_child", "다자녀");
-        dbToSpinnerMapping.put("electric_car", "저공해차량");
-        dbToSpinnerMapping.put("person_merit", "국가유공자");
-        dbToSpinnerMapping.put("tax_payment", "모범납세자");
-        dbToSpinnerMapping.put("alone_family", "한부모가정");
 
-        List<String> benefits = new ArrayList<>();
-        benefits.add("선택사항 없음"); // 기본값
-
-        for (String key : dbToSpinnerMapping.keySet()) {
-            if (userData.optString(key, "N").equals("Y")) {
-                benefits.add(dbToSpinnerMapping.get(key));
-            }
-        }
-
-        return benefits;
-    }
-
-    private void fetchUserInfoAndSetupSpinner(Spinner benefitSpinner, ArrayAdapter<CharSequence> benefitAdapter) {
-        HttpUtils.sendGetRequestWithAuth("/getUserInfo", "Bearer " + token, new HttpUtils.HttpResponseCallback() {
-            @Override
-            public void onSuccess(JSONObject responseData) {
-                requireActivity().runOnUiThread(() -> {
-                    try {
-                        if (responseData.getBoolean("success")) {
-                            JSONObject userData = responseData.getJSONObject("data");
-
-                            // 사용자 데이터와 혜택 매핑
-                            String userBenefit = mapUserBenefit(userData);
-
-                            // Spinner 기본값 설정
-                            int position = benefitAdapter.getPosition(userBenefit);
-                            if (position >= 0) {
-                                benefitSpinner.setSelection(position);
-                            }
-                        } else {
-                            Log.e("FetchUserInfo", "데이터 가져오기 실패: " + responseData.optString("message"));
-                        }
-                    } catch (JSONException e) {
-                        Log.e("FetchUserInfo", "JSON 파싱 오류: " + e.getMessage());
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-                Log.e("FetchUserInfo", "서버 요청 실패: " + errorMessage);
-            }
-        });
-    }
-
-    private String getUserBenefit(Map<String, String> dbToSpinnerMapping, JSONObject userData) {
-        // DB 필드에서 "Y"로 설정된 항목에 해당하는 Spinner 값 반환
-        for (String key : dbToSpinnerMapping.keySet()) {
-            if (userData.optString(key, "N").equals("Y")) {
-                return dbToSpinnerMapping.get(key); // 매핑된 혜택 반환
-            }
-        }
-        return "선택사항 없음"; // 기본값 반환
-    }
-
-
-    private String mapUserBenefit(JSONObject userData) {
-        Map<String, String> dbToSpinnerMapping = new HashMap<>();
-        dbToSpinnerMapping.put("disabled_human", "장애인");
-        dbToSpinnerMapping.put("multiple_child", "다자녀");
-        dbToSpinnerMapping.put("electric_car", "저공해차량");
-        dbToSpinnerMapping.put("person_merit", "국가유공자");
-        dbToSpinnerMapping.put("tax_payment", "모범납세자");
-        dbToSpinnerMapping.put("alone_family", "한부모가정");
-
-        for (String key : dbToSpinnerMapping.keySet()) {
-            if (userData.optString(key, "N").equals("Y")) {
-                return dbToSpinnerMapping.get(key);
-            }
-        }
-        return "선택사항 없음";
-    }
-
-
-
-    // 유저 데이터에서 Y 값에 해당하는 항목 가져오기
-    private String getUserBenefit(JSONObject userData) {
-        Map<String, String> dbToSpinnerMapping = new HashMap<>();
-        dbToSpinnerMapping.put("disabled_human", "장애인");
-        dbToSpinnerMapping.put("multiple_child", "다자녀");
-        dbToSpinnerMapping.put("electric_car", "저공해차량");
-        dbToSpinnerMapping.put("person_merit", "국가유공자");
-        dbToSpinnerMapping.put("tax_payment", "모범납세자");
-        dbToSpinnerMapping.put("alone_family", "한부모가정");
-
-        for (String key : dbToSpinnerMapping.keySet()) {
-            if (userData.optString(key, "N").equals("Y")) {
-                return dbToSpinnerMapping.get(key); // 매핑된 혜택 반환
-            }
-        }
-
-        // 기본값 반환
-        return "선택사항 없음";
-    }
-
-    // 거리순 정렬 메서드
-    private void sortParkingListByDistance() {
-        parkingList.sort((p1, p2) -> {
-            int distance1 = extractNumber(p1.getDistance());
-            int distance2 = extractNumber(p2.getDistance());
-            return Integer.compare(distance1, distance2);
-        });
-    }
-
-    // 요금순 정렬 메서드
-    private void sortParkingListByFee() {
-        parkingList.sort((p1, p2) -> {
-            double fee1 = Double.parseDouble(p1.getTotalFee().replaceAll("[^\\d.]", ""));
-            double fee2 = Double.parseDouble(p2.getTotalFee().replaceAll("[^\\d.]", ""));
-            return Double.compare(fee1, fee2);
-        });
-    }
-
-    // 거리 텍스트에서 숫자를 추출하는 메서드
-    private int extractNumber(String text) {
-        String number = text.replaceAll("[^\\d]", "");
-        return number.isEmpty() ? 0 : Integer.parseInt(number);
-    }
-
-    // 시간 및 분을 분으로 변환하여 totalMinutes에 저장
-    private void updateTotalMinutes(Spinner hourSpinner, Spinner minuteSpinner) {
-        int hour = Integer.parseInt(hourSpinner.getSelectedItem().toString());
-        int minute = Integer.parseInt(minuteSpinner.getSelectedItem().toString());
-
-        // 총 분 계산
-        totalMinutes = (hour * 60) + minute;
-
-        // 로그로 확인
-        Log.e("Time Conversion", "선택된 시간: " + hour + "시간 " + minute + "분 -> 총 " + totalMinutes + "분");
-
-        // 주차 요금 갱신
-        updateParkingFees();
-    }
-
-    // 주차 요금 갱신 메서드
-    private void updateParkingFees() {
-        // 주차 요금 계산 후 리스트 갱신
-        for (Parking parking : parkingList) {
-            double bscPrkCrg = Double.parseDouble(parking.getBaseFee());
-            double addPrkCrg = Double.parseDouble(parking.getAddFee());
-            double dayMaxCrg = Double.parseDouble(parking.getDayMaxFee());
-
-            // Utils.calculateParkingFee에 totalMinutes를 전달
-            String totalFee = Utils.calculateParkingFee(bscPrkCrg, addPrkCrg, dayMaxCrg, totalMinutes);
-            parking.setTotalFee(totalFee); // 요금 업데이트
-        }
-
-        // RecyclerView 갱신
-        ((ParkingAdapter) ((RecyclerView) getView().findViewById(R.id.parkingRecyclerView)).getAdapter()).notifyDataSetChanged();
-    }
 
     private void parseParkData(String parkData) {
         try {
@@ -571,28 +567,6 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    // 유저 데이터에서 Y 값인 항목만 추출
-    private List<String> getUserBenefits(JSONObject userData) {
-        Map<String, String> dbToSpinnerMapping = new HashMap<>();
-        dbToSpinnerMapping.put("disabled_human", "장애인");
-        dbToSpinnerMapping.put("multiple_child", "다자녀");
-        dbToSpinnerMapping.put("electric_car", "저공해차량");
-        dbToSpinnerMapping.put("person_merit", "국가유공자");
-        dbToSpinnerMapping.put("tax_payment", "모범납세자");
-        dbToSpinnerMapping.put("alone_family", "한부모가정");
-
-        List<String> benefits = new ArrayList<>();
-        benefits.add("선택사항 없음"); // 기본값
-
-        for (String key : dbToSpinnerMapping.keySet()) {
-            if (userData.optString(key, "N").equals("Y")) {
-                benefits.add(dbToSpinnerMapping.get(key));
-            }
-        }
-
-        return benefits;
     }
 
 }
