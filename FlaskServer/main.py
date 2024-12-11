@@ -676,6 +676,28 @@ def selectPark():
     except Exception as e:
         return jsonify({"success": False, "message": "서버 오류: " + str(e)}), 500
 
+
+@app.route('/insertHistory', methods=['POST'])
+def insertHistory():
+    try:
+        data = request.get_json()
+        name = data.get('name')
+        departure = data.get('departure')
+        destination = data.get('destination')
+        destination_address = data.get('destination_address')
+        kilometers = data.get('kilometers')
+
+        # 데이터 삽입 쿼리 실행
+        success = db_query.insertHistory(name, departure, destination, destination_address, kilometers)
+
+        if success:
+            return jsonify({"success": True}), 200
+        else:
+            return jsonify({"success": False, "message": "데이터 삽입 실패"}), 500
+    except Exception as e:
+        return jsonify({"success": False, "message": "서버 오류: " + str(e)}), 500
+
+
 # 이전 예측 소스
 
 

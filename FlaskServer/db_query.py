@@ -506,3 +506,34 @@ def selectPark():
         for row in result
     ]
     return parking_list
+
+def insertHistory(name, departure, destination, destination_address, kilometers):
+    try:
+        conn = dbConnection()
+        cursor = conn.cursor()
+
+        # 사용자 ID 조회
+        select_query = "SELECT user_code FROM USER_INFO WHERE name = %s"
+        cursor.execute(select_query, (name,))
+        result = cursor.fetchone()
+
+        if result is None:
+            raise Exception("사용자 정보를 찾을 수 없습니다.")
+
+        user_code = result[0]
+
+        # user_history 테이블에 데이터 삽입
+        insert_query = """
+            INSERT INTO user_history (user_code, departure, destination, kilometers, date, destination_address)
+            VALUES (%s, %s, %s, %s, NOW(), %s)
+        """
+        cursor.execute(insert_query, (user_code, departure, destination, kilometers, destination_address))
+        conn.commit()
+
+        return True
+    except Exception as e:
+        print(f"DB 오류: {e}")
+        return False
+    finally:
+        cursor.close()
+        conn.close()

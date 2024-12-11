@@ -16,6 +16,7 @@ import android.os.Looper;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -36,6 +37,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.myapplication.fragments.HomeFragment;
 import com.myapplication.fragments.MapBottomFragment;
 import com.myapplication.utils.HttpSearchUtils;
+import com.myapplication.utils.HttpUtils;
 import com.skt.tmap.engine.navigation.SDKManager;
 import com.skt.tmap.engine.navigation.livedata.ObservableRouteProgressData;
 import com.skt.tmap.engine.navigation.network.ndds.CarOilType;
@@ -57,6 +59,9 @@ import com.tmapmobility.tmap.tmapsdk.ui.fragment.NavigationFragment;
 import com.tmapmobility.tmap.tmapsdk.ui.util.TmapUISDK;
 import com.tmapmobility.tmap.tmapsdk.ui.view.MapConstant;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -77,6 +82,7 @@ public class DriveActivity extends AppCompatActivity {
     private boolean isBackPressedOnce = false; // 뒤로가기 플래그
     private static final int BACK_PRESS_DELAY = 2000; // 2초 (밀리초 단위)
     private Handler backPressHandler = new Handler();
+    private String ADDRESS = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -554,47 +560,6 @@ public class DriveActivity extends AppCompatActivity {
 
             }
 
-            /*@Override
-            public void onArrivedDestination(@NonNull String dest, int drivingTime, int drivingDistance) {
-                // 목적지 도착 시 호출
-                // dest 목적지 명
-                // drivingTime 운전시간
-                // drivingDistance 운전거리
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 거리 포맷팅
-                        String formattedDistance;
-                        if (drivingDistance >= 1000) {
-                            formattedDistance = String.format("%.1fkm", drivingDistance / 1000.0);
-                        } else {
-                            formattedDistance = drivingDistance + "m";
-                        }
-
-                        // 시간 포맷팅
-                        String formattedTime;
-                        int hours = drivingTime / 3600;
-                        int minutes = (drivingTime % 3600) / 60;
-
-                        if (hours > 0) {
-                            formattedTime = String.format("%d시간 %d분", hours, minutes);
-                        } else {
-                            formattedTime = String.format("%d분", minutes);
-                        }
-
-                        // Intent 생성 및 데이터 전달
-                        Intent intent = new Intent(DriveActivity.this, HomeFragment.class);
-                        intent.putExtra("dest", dest);
-                        intent.putExtra("dist", formattedDistance);
-                        intent.putExtra("time", formattedTime);
-
-                        // Fragment로 데이터 전달
-                        startActivity(intent);
-                        finish(); // DriveActivity 종료
-                    }
-                });
-            }*/
-
             @Override
             public void onArrivedDestination(@NonNull String dest, int drivingTime, int drivingDistance) {
                 // 목적지 도착 시 호출
@@ -618,7 +583,46 @@ public class DriveActivity extends AppCompatActivity {
                         formattedTime = String.format("%d분", minutes);
                     }
 
-                    // 데이터 전달 및 Fragment 전환
+                    JSONObject jsonData = new JSONObject();
+                    try {
+                        jsonData.put("name", "공학이"); // 이름
+                        jsonData.put("departure", "출발지 테스트"); // 서버가 요구하는 ID 필드
+                        jsonData.put("destination", dest);
+                        jsonData.put("destination_address", "서울 마포구 양화로 160");
+                        jsonData.put("kilometers", drivingDistance);
+                    } catch (JSONException e) {
+                        Log.e(TAG, "JSON 생성 오류: " + e.getMessage());
+                        return;
+                    }
+
+                    // API 호출
+                    HttpUtils.sendJsonToServer(jsonData, "/insertHistory", new HttpUtils.HttpResponseCallback() {
+                        @Override
+                        public void onSuccess(JSONObject response) {
+                            runOnUiThread(() -> {
+                                try {
+                                    boolean success = response.getBoolean("success");
+                                    if (success) {
+                                        Toast.makeText(DriveActivity.this, "기록이 성공적으로 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(DriveActivity.this, "기록 저장 실패", Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (JSONException e) {
+                                    Toast.makeText(DriveActivity.this, "응답 처리 오류", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(String errorMessage) {
+                            runOnUiThread(() -> Toast.makeText(DriveActivity.this, "요청 실패: " + errorMessage, Toast.LENGTH_SHORT).show());
+                        }
+                    });
+
+                    // Dialog를 띄우기
+                    showDriveEndDialog(dest, formattedDistance, formattedTime);
+
+                    /*// 데이터 전달 및 Fragment 전환
                     HomeFragment homeFragment = new HomeFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("dest", dest);
@@ -629,7 +633,7 @@ public class DriveActivity extends AppCompatActivity {
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.tmapUILayout, homeFragment); // 'R.id.fragment_container'는 FrameLayout ID
                     transaction.addToBackStack(null);
-                    transaction.commit();
+                    transaction.commit();*/
                 });
             }
 
@@ -713,6 +717,36 @@ public class DriveActivity extends AppCompatActivity {
             }
         }, planTypeList);
 
+    }
+
+    // 목적지 도착 Dialog 표시
+    private void showDriveEndDialog(String dest, String distance, String time) {
+        // Dialog 생성
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.drive_end_popup);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        // Dialog 크기 설정
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+
+        // XML View와 데이터 연결
+        TextView destTextView = dialog.findViewById(R.id.destTextView);
+        TextView distanceTextView = dialog.findViewById(R.id.distanceTextView);
+        TextView timeTextView = dialog.findViewById(R.id.timeTextView);
+        Button closeButton = dialog.findViewById(R.id.closeButton);
+
+        destTextView.setText(dest);
+        distanceTextView.setText(distance);
+        timeTextView.setText(time);
+
+        // 닫기 버튼 동작 설정
+        closeButton.setOnClickListener(v -> dialog.dismiss());
+
+        // Dialog 표시
+        dialog.show();
     }
 
     @Override
