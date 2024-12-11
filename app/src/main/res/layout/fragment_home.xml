@@ -276,19 +276,21 @@
                             android:src="@drawable/main_company" />
 
                         <TextView
+                            android:id="@+id/dest1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="테슬라 시스템"
+                            android:text="최근 목적지"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/address1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:gravity="center"
-                            android:text="대전광역시 유성구\n유성대로 1184번길 29 1층"
+                            android:text="최근 방문 주소"
                             android:textSize="14sp" />
 
                     </LinearLayout>
@@ -313,7 +315,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="테슬라 시스템"
+                            android:text="최근 목적지"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -322,7 +324,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:gravity="center"
-                            android:text="대전광역시 유성구\n유성대로 1184번길 29 1층"
+                            android:text="최근 방문 주소"
                             android:textSize="14sp" />
                     </LinearLayout>
 
@@ -345,7 +347,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="테슬라 시스템"
+                            android:text="최근 목적지"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -354,7 +356,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:gravity="center"
-                            android:text="대전광역시 유성구\n유성대로 1184번길 29 1층"
+                            android:text="최근 방문 주소"
                             android:textSize="14sp" />
                     </LinearLayout>
 
@@ -377,7 +379,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="테슬라 시스템"
+                            android:text="최근 목적지"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -386,7 +388,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:gravity="center"
-                            android:text="대전광역시 유성구\n유성대로 1184번길 29 1층"
+                            android:text="최근 방문 주소"
                             android:textSize="14sp" />
 
                     </LinearLayout>
@@ -410,7 +412,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="테슬라 시스템"
+                            android:text="최근 목적지"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -419,7 +421,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:gravity="center"
-                            android:text="대전광역시 유성구\n유성대로 1184번길 29 1층"
+                            android:text="최근 방문 주소"
                             android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>

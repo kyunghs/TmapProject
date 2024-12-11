@@ -27,6 +27,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.myapplication.utils.HttpUtils;
 import com.tmapmobility.tmap.tmapsdk.ui.util.TmapUISDK;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 public class HomeFragment extends Fragment {
@@ -41,6 +42,8 @@ public class HomeFragment extends Fragment {
     private TextView areaAlias2Address;
     private TextView distance_ce;
     private TextView distance_ye;
+    private TextView dest1;
+    private TextView address1;
 
     @Nullable
     @Override
@@ -58,6 +61,8 @@ public class HomeFragment extends Fragment {
         areaAlias2Address = view.findViewById(R.id.area_alias2_address);
         distance_ce = view.findViewById(R.id.distance_ce);
         distance_ye = view.findViewById(R.id.distance_ye);
+        dest1 = view.findViewById(R.id.dest1);
+        address1 = view.findViewById(R.id.address1);
 
 
         fetchMainInfo();
@@ -147,6 +152,7 @@ public class HomeFragment extends Fragment {
                             JSONObject userData = responseData.optJSONObject("data");
                             if (userData != null) {
                                 JSONObject userCustomData = userData.optJSONObject("user_custom_data");
+                                JSONArray get_user_history_data = userData.optJSONArray("get_user_history_data");
                                 JSONObject get_user_ki_history_data = userData.optJSONObject("get_user_ki_history_data");
 
                                 // 초기 세팅 값
@@ -156,6 +162,8 @@ public class HomeFragment extends Fragment {
                                 String de_area2Address = "장소를\n등록 해주세요";
                                 String de_todayKi = "아직 운행기록이 없어요.";
                                 String de_yesterdayKiValue = " ";
+                                String dest = "";
+                                String address = "";
 
 
                                 if (userCustomData != null) {
@@ -175,13 +183,29 @@ public class HomeFragment extends Fragment {
                                             ? "장소를\n등록 해주세요"
                                             : userCustomData.optString("area_2_address");
 
-                                if (get_user_ki_history_data != null) {
-                                    de_todayKi = get_user_ki_history_data.optString("today_ki", "db확인필요");
-                                    de_yesterdayKiValue = get_user_ki_history_data.optString("ki", "db확인필요");
-                                }
+                                    if (get_user_history_data != null && get_user_history_data.length() > 0) {
+                                        // 첫 번째 배열 항목 가져오기
+                                        JSONArray firstEntry = get_user_history_data.optJSONArray(0);
+                                        if (firstEntry != null) {
+                                            // 두 번째 인덱스 값 ('서울역')
+                                            dest = firstEntry.optString(2, "db확인필요");
 
-                                String displayText = String.format("자동차로\n약 %s km 이동", de_todayKi);
-                                String displayText2 = String.format("전일 대비 +%s km 이동", de_yesterdayKiValue);
+                                            // 마지막 인덱스 값 ('서울 마포구 양화로 160')
+                                            address = firstEntry.optString(firstEntry.length() - 1, "db확인필요");
+
+                                            // 로그 출력
+                                            Log.d("FirstEntryData", "Destination: " + dest + ", Address: " + address);
+                                        }
+                                    } else {
+                                        Log.e("get_user_history_data", "No data found or data is invalid.");
+                                    }
+
+                                    if (get_user_ki_history_data != null) {
+                                        de_todayKi = get_user_ki_history_data.optString("today_ki", "db확인필요");
+                                        de_yesterdayKiValue = get_user_ki_history_data.optString("ki", "db확인필요");
+                                    }
+                                    String displayText = String.format("자동차로\n약 %s km 이동", de_todayKi);
+                                    String displayText2 = String.format("전일 대비 +%s km 이동", de_yesterdayKiValue);
 
                                 if (de_todayKi == "아직 운행기록이 없어요.") {
                                   distance_ce.setText(de_todayKi);
@@ -196,20 +220,19 @@ public class HomeFragment extends Fragment {
                                 }
 
 
-                                // UI 업데이트
-                                areaAlias1Text.setText(de_area1);
-                                areaAlias1Address.setText(de_area1Address);
-                                areaAlias2Text.setText(de_area2);
-                                areaAlias2Address.setText(de_area2Address);
-//                                distance_ce.setText(displayText);
-//                                distance_ye.setText(displayText2);
-
-
-                                } else {
+                                    // UI 업데이트
                                     areaAlias1Text.setText(de_area1);
                                     areaAlias1Address.setText(de_area1Address);
                                     areaAlias2Text.setText(de_area2);
                                     areaAlias2Address.setText(de_area2Address);
+                                    distance_ce.setText(displayText);
+                                    distance_ye.setText(displayText2);
+                                    if(!"".equals(dest)){
+                                        dest1.setText(dest);
+                                    }
+                                    if(!"".equals(address)){
+                                        address1.setText(address);
+                                    }
 
                                 }
 
@@ -277,7 +300,7 @@ public class HomeFragment extends Fragment {
         // "아니요" 버튼 클릭 이벤트
         dialog.findViewById(R.id.noBtn).setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), DriveActivity.class);
-            intent.putExtra("name", "서울역");
+            intent.putExtra("name", "홍대입구역");
             intent.putExtra("lat", "37.6225571786308 ");
             intent.putExtra("lot", "127.078754902898");
             startActivity(intent);
