@@ -206,39 +206,41 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
             for (int i = 0; i < parkArray.length(); i++) {
                 JSONObject parkObject = parkArray.getJSONObject(i);
                 String name = parkObject.optString("name", "Unknown");
-                String remain = parkObject.optString("now_prk_vhcl_cnt");
-                if (remain == null || remain.trim().isEmpty()) {
-                    remain = "";
+                String remain = parkObject.optString("now_prk_vhcl_cnt", "0").trim();
+                remain = remain.isEmpty() ? "0" : remain;
+
+                String baseFee = parkObject.optString("bsc_prk_crg", "0");
+                String addFee = parkObject.optString("add_prk_crg", "0");
+                String dayMaxFee = parkObject.optString("day_max_crg", "0");
+                String lat = parkObject.optString("lat", "0");
+                String lot = parkObject.optString("lot", "0");
+
+                double bscPrkCrg = 0.0, addPrkCrg = 0.0, dayMaxCrg = 0.0, targetLat = 0.0, targetLot = 0.0;
+                try {
+                    bscPrkCrg = Double.parseDouble(baseFee);
+                    addPrkCrg = Double.parseDouble(addFee);
+                    dayMaxCrg = Double.parseDouble(dayMaxFee);
+                    targetLat = Double.parseDouble(lat);
+                    targetLot = Double.parseDouble(lot);
+                } catch (NumberFormatException e) {
+                    Log.e("parseParkData", "Invalid number format: baseFee=" + baseFee +
+                            ", addFee=" + addFee + ", dayMaxFee=" + dayMaxFee +
+                            ", lat=" + lat + ", lot=" + lot);
                 }
-                String baseFee = parkObject.optString("bsc_prk_crg");
-                String addFee = parkObject.optString("add_prk_crg");
-                String dayMaxFee = parkObject.optString("day_max_crg");
-                String lat = parkObject.optString("lat");
-                String lot = parkObject.optString("lot");
-                double targetLat = Double.parseDouble(lat);
-                double targetLot = Double.parseDouble(lot);
+
                 Location currentLocation = SDKManager.getInstance().getCurrentPosition();
                 double currentLong = currentLocation.getLongitude();
                 double currentLat = currentLocation.getLatitude();
 
-                // 주차 요금 계산
-                double bscPrkCrg = Double.parseDouble(baseFee);
-                double addPrkCrg = Double.parseDouble(addFee);
-                double dayMaxCrg = Double.parseDouble(dayMaxFee);
-                int parkingTime = 120; // 하드코딩된 주차 시간
-                String totalFee = Utils.calculateParkingFee(bscPrkCrg, addPrkCrg, dayMaxCrg, parkingTime);
+                String totalFee = Utils.calculateParkingFee(bscPrkCrg, addPrkCrg, dayMaxCrg, 120);
 
-                // 거리 계산
-                String distance = parkObject.optString("distance", "0m");
-                distance = distance.replaceAll("[^\\d]", "").isEmpty() ? "0" : distance.replaceAll("[^\\d]", "");
+                String distance = parkObject.optString("distance", "0m").replaceAll("[^\\d]", "");
+                distance = distance.isEmpty() ? "0" : distance;
                 distance = Integer.parseInt(distance) >= 1000
                         ? String.format("%.1fkm", Integer.parseInt(distance) / 1000.0)
                         : NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(distance)) + "m";
 
-                // 초기 totalTime 값을 0으로 설정
                 int[] totalTime = {0};
-
-                // 비동기 요청
                 HttpSearchUtils.performRouteRequest(requireContext(), 0, currentLong, currentLat, targetLot, targetLat, new HttpSearchUtils.RouteRequestCallback() {
                     @Override
                     public void onSuccess(JSONObject rootObject) {
@@ -268,13 +270,12 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
                     }
                 });
 
-                // Parking 객체 생성 및 추가
                 parkingList.add(new Parking(name, remain, distance, totalFee, lat, lot, totalTime[0]));
                 Log.e("ParkingList", "Added: " + name + ", remain: " + remain);
-                Log.e("ParkingList", "Added: " + name + ", Total Time: " + totalTime[0]);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
 }
