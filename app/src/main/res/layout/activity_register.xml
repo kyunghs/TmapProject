@@ -65,7 +65,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="아이디(이메일)"
+                    android:text="아이디"
                     android:textColor="#000000"
                     android:textStyle="bold"
                     android:textSize="14dp" />
@@ -76,7 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:hint="이메일 입력"
+                android:hint="아이디 입력"
                 android:textColor="#B7B7B7"
                 android:textSize="14dp"
                 android:background="@drawable/input_background"
@@ -105,7 +105,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:hint="비밀번호 입력 (문자, 숫자, 특수문자 포함(6~20자))"
+                android:hint="비밀번호 입력 (특수문자 포함 6~20자)"
                 android:textColor="#B7B7B7"
                 android:textSize="14dp"
                 android:background="@drawable/input_background"
@@ -260,7 +260,7 @@
                     android:background="@drawable/signup_rounded_button_filled"
                     android:backgroundTint="#4CAF50"
                     android:padding="16dp"
-                    android:text="프리패스 시작"
+                    android:text="게스트모드 시작"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"/>
             </LinearLayout>

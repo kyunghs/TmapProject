@@ -31,16 +31,6 @@
                 android:textColor="#FFFFFF"
                 android:textSize="36sp"
                 android:textStyle="bold" />
-
-            <Switch
-                android:layout_width="68dp"
-                android:layout_height="48dp"
-                android:padding="8dp"
-                android:scaleX="1.2"
-                android:scaleY="1.2"
-                android:textColor="#FFFFFF"
-                android:thumb="@drawable/switch_thumb"
-                android:track="@drawable/switch_track" />
         </LinearLayout>
 
         <!-- 검색 바 -->

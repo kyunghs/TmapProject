@@ -14,39 +14,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <!-- 이미지뷰 -->
             <LinearLayout
                 android:id="@+id/white_layout"
                 android:layout_width="match_parent"
                 android:layout_height="680dp"
-                android:orientation="vertical"
                 android:layout_gravity="bottom"
-                android:background="@drawable/rounded_bottom_sheet">
+                android:background="@drawable/rounded_bottom_sheet"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/name_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="80dp"
                     android:text="카리나"
                     android:textColor="#000000"
                     android:textSize="20dp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="80dp"
-                    android:layout_gravity="center" />
+                    android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="katarinabluu@gmail.com"
-                    android:layout_gravity="center"
-                    android:textColor="#B7B7B7"
-                    android:layout_marginTop="10dp" />
 
                 <Button
                     android:id="@+id/edit_profile_button"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:layout_marginTop="20dp"
                     android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/profile_edit_button"
                     android:paddingHorizontal="36dp"
@@ -56,10 +50,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="주차 요금 감면 해당 사항"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="10dp"
+                    android:text="주차 요금 감면 해당 사항"
                     android:textColor="#000000"
                     android:textSize="24dp"
                     android:textStyle="bold" />
@@ -69,20 +63,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:padding="8dp"
                     android:background="@drawable/border"
+                    android:gravity="center"
+                    android:padding="8dp"
                     android:text="클릭한 항목의 설명이 여기에 표시됩니다."
                     android:textColor="#000000"
-                    android:visibility="gone"
-                    android:gravity="center"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
                 <GridLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
-                    android:layout_gravity="center"
                     android:alignmentMode="alignMargins"
                     android:columnCount="4">
 
@@ -107,10 +101,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
                             android:gravity="center"
                             android:text="장애인"
                             android:textColor="#000000"
-                            android:layout_marginTop="2dp"
                             android:textSize="9sp" />
                     </LinearLayout>
 
@@ -135,10 +129,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
                             android:gravity="center"
                             android:text="다자녀"
                             android:textColor="#000000"
-                            android:layout_marginTop="2dp"
                             android:textSize="9sp" />
                     </LinearLayout>
 
@@ -163,10 +157,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
                             android:gravity="center"
                             android:text="저공해 차량"
                             android:textColor="#000000"
-                            android:layout_marginTop="2dp"
                             android:textSize="9sp" />
                     </LinearLayout>
 
@@ -191,10 +185,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
                             android:gravity="center"
                             android:text="국가유공자"
                             android:textColor="#000000"
-                            android:layout_marginTop="2dp"
                             android:textSize="9sp" />
                     </LinearLayout>
 
@@ -219,10 +213,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
                             android:gravity="center"
                             android:text="모범 납세자"
                             android:textColor="#000000"
-                            android:layout_marginTop="2dp"
                             android:textSize="9sp" />
                     </LinearLayout>
 
@@ -247,15 +241,15 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
                             android:gravity="center"
                             android:text="한부모 가정"
                             android:textColor="#000000"
-                            android:layout_marginTop="2dp"
                             android:textSize="9sp" />
                     </LinearLayout>
                 </GridLayout>
             </LinearLayout>
-            <!-- 이미지뷰 -->
+
             <ImageView
                 android:id="@+id/profile_image"
                 android:layout_width="120dp"
