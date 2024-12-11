@@ -17,7 +17,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="14dp"
         android:text="압구정고가2 노상 공영 주차장"
         android:textStyle="bold"
         android:textSize="16sp"

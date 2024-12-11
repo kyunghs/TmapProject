@@ -232,6 +232,7 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
                 double currentLong = currentLocation.getLongitude();
                 double currentLat = currentLocation.getLatitude();
 
+                // 주차 시간에 따른 요금 변화
                 String totalFee = Utils.calculateParkingFee(bscPrkCrg, addPrkCrg, dayMaxCrg, 120);
 
                 String distance = parkObject.optString("distance", "0m").replaceAll("[^\\d]", "");
