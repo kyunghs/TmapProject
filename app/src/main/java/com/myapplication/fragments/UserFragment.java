@@ -33,6 +33,7 @@ import java.io.InputStream;
 
 public class UserFragment extends Fragment {
 
+    private String token; // 토큰을 멤버 변수로 선언
     private TextView nameText;
     private ImageView profileImageView;
 
@@ -74,8 +75,6 @@ public class UserFragment extends Fragment {
         // 프로필 이미지 클릭 이벤트
         profileImageView.setOnClickListener(v -> openGallery());
 
-        // Grid 아이템 클릭 이벤트 설정
-        setupGridItemListeners(view);
 
         return view;
     }
@@ -128,6 +127,9 @@ public class UserFragment extends Fragment {
 
                 // 현재 선택된 항목 초기화
                 currentlySelectedLayout = null;
+
+                // API 호출로 선택 해제 상태 업데이트
+                sendSelectionToServer(null);
             } else {
                 // 새로운 상태로 변경
                 imageView.setVisibility(View.INVISIBLE);
@@ -141,9 +143,64 @@ public class UserFragment extends Fragment {
 
                 // 현재 선택된 항목 업데이트
                 currentlySelectedLayout = layout;
+
+                // API 호출로 선택 상태 업데이트
+                sendSelectionToServer(layout.getId());
             }
         });
     }
+
+    // 서버로 선택 상태 전송
+    private void sendSelectionToServer(Integer selectedLayoutId) {
+        String selectedColumn = null;
+
+        // 선택된 항목에 따라 DB 컬럼 지정
+        if (selectedLayoutId != null) {
+            switch (selectedLayoutId) {
+                case R.id.disabled_persons:
+                    selectedColumn = "disabled_human";
+                    break;
+                case R.id.multiple_children:
+                    selectedColumn = "multiple_child";
+                    break;
+                case R.id.low_emission_vehicles:
+                    selectedColumn = "electric_car";
+                    break;
+                case R.id.person_of_national_merit:
+                    selectedColumn = "person_merit";
+                    break;
+                case R.id.model_taxpayer:
+                    selectedColumn = "tax_payment";
+                    break;
+                case R.id.single_parent_family:
+                    selectedColumn = "alone_family";
+                    break;
+            }
+        }
+
+        JSONObject requestData = new JSONObject();
+        try {
+            requestData.put("selected_column", selectedColumn);
+
+            // 요청 전송 (토큰 없이)
+            HttpUtils.sendJsonToServer(requestData, "/updateUserSelection", new HttpUtils.HttpResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Log.d("UserFragment", "선택 상태 업데이트 성공: " + response.toString());
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+                    Log.e("UserFragment", "선택 상태 업데이트 실패: " + errorMessage);
+                }
+            });
+        } catch (JSONException e) {
+            Log.e("UserFragment", "JSON 생성 오류: " + e.getMessage());
+        }
+    }
+
+
+
 
     // 레이아웃 초기화 메서드
     private void resetLayout(LinearLayout layout) {
@@ -158,43 +215,24 @@ public class UserFragment extends Fragment {
 
     // 유저 정보 가져오기
     private void fetchUserInfo() {
-        String token = "Bearer " + getActivity()
-                .getSharedPreferences("AuthPrefs", Context.MODE_PRIVATE)
-                .getString("auth_token", "");
-
-        if (token.isEmpty()) {
-            Log.e("UserFragment", "토큰이 없습니다. 로그인을 확인하세요.");
-            Toast.makeText(getActivity(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // GET 요청으로 사용자 정보 가져오기
-        HttpUtils.sendGetRequestWithAuth("/getUserInfo", token, new HttpUtils.HttpResponseCallback() {
+        HttpUtils.sendGetRequestWithAuth("/getUserInfo", null, new HttpUtils.HttpResponseCallback() {
             @Override
             public void onSuccess(JSONObject responseData) {
                 getActivity().runOnUiThread(() -> {
                     try {
-                        Log.d("UserFragment", "서버 응답: " + responseData.toString());
-
                         if (responseData.getBoolean("success")) {
-                            JSONObject userData = responseData.optJSONObject("data");
-                            if (userData != null) {
-                                String name = userData.optString("name", "알 수 없음");
+                            JSONObject data = responseData.getJSONObject("data");
 
-                                // UI 업데이트
-                                nameText.setText(name);
+                            // 사용자 이름 업데이트
+                            nameText.setText(data.optString("name", "알 수 없음"));
 
-                                Log.d("UserFragment", "UI 업데이트 완료 - 이름: " + name);
-                            } else {
-                                Toast.makeText(getActivity(), "유효한 사용자 데이터를 받을 수 없습니다.", Toast.LENGTH_SHORT).show();
-                            }
+                            // 초기 선택 상태 업데이트
+                            updateGridSelectionFromData(data);
                         } else {
-                            String message = responseData.optString("message", "오류 발생");
-                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), responseData.optString("message", "오류 발생"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         Toast.makeText(getActivity(), "데이터 처리 오류: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        Log.e("UserFragment", "JSONException", e);
                     }
                 });
             }
@@ -203,11 +241,43 @@ public class UserFragment extends Fragment {
             public void onFailure(String errorMessage) {
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getActivity(), "서버 요청 실패: " + errorMessage, Toast.LENGTH_SHORT).show();
-                    Log.e("UserFragment", "요청 실패: " + errorMessage);
                 });
             }
         });
     }
+
+
+    // 선택 상태 초기화
+    private void updateGridSelectionFromData(JSONObject userData) {
+        if (userData.optString("disabled_human", "N").equals("Y")) {
+            setSelectedLayout(R.id.disabled_persons);
+        }
+        if (userData.optString("multiple_child", "N").equals("Y")) {
+            setSelectedLayout(R.id.multiple_children);
+        }
+        if (userData.optString("electric_car", "N").equals("Y")) {
+            setSelectedLayout(R.id.low_emission_vehicles);
+        }
+        if (userData.optString("person_merit", "N").equals("Y")) {
+            setSelectedLayout(R.id.person_of_national_merit);
+        }
+        if (userData.optString("tax_payment", "N").equals("Y")) {
+            setSelectedLayout(R.id.model_taxpayer);
+        }
+        if (userData.optString("alone_family", "N").equals("Y")) {
+            setSelectedLayout(R.id.single_parent_family);
+        }
+    }
+
+    // Grid 항목 선택 상태 설정
+    private void setSelectedLayout(int layoutId) {
+        LinearLayout layout = getView().findViewById(layoutId);
+        if (layout != null) {
+            setupToggleBackground(layout, "", 0); // 임시 데이터로 호출
+            layout.performClick(); // 클릭 이벤트 트리거
+        }
+    }
+
 
     // 갤러리 열기
     private void openGallery() {

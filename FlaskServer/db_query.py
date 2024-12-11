@@ -97,11 +97,11 @@ def checkLogin(id, password):
 # 사용자 정보를 ID를 기반으로 가져오는 함수
 def get_user_info_by_id(user_id):
     try:
-        conn = dbConnection()  # 데이터베이스 연결
+        conn = dbConnection()  # DB 연결
         cursor = conn.cursor()
 
         query = """
-        SELECT id, name, user_tel
+        SELECT name, id, disabled_human, multiple_child, electric_car, person_merit, tax_payment, alone_family
         FROM user_info
         WHERE id = %s
         """
@@ -110,21 +110,23 @@ def get_user_info_by_id(user_id):
 
         if result:
             return {
-                "id": result[0],
-                "name": result[1],
-                "user_tel": result[2],
+                "name": result[0],
+                "id": result[1],
+                "disabled_human": result[2],
+                "multiple_child": result[3],
+                "electric_car": result[4],
+                "person_merit": result[5],
+                "tax_payment": result[6],
+                "alone_family": result[7]
             }
         else:
             return None
-    except psycopg2.Error as db_err:
-        print(f"Database error: {db_err}")
-        return None
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        print(f"DB 오류: {e}")
         return None
     finally:
-        if conn:
-            conn.close()
+        conn.close()
+
 
 # 회원정보 수정
 def update_user_info(user_id, data):
@@ -218,6 +220,39 @@ def get_user_custom_info(user_id):
     except Exception as e:
         print(f"Unexpected error: {e}")
         return None
+    finally:
+        conn.close()
+
+def update_user_selection(user_id, selected_column, valid_columns):
+    """
+    사용자의 선택 항목을 업데이트하는 함수.
+    """
+    try:
+        conn = dbConnection()
+        cursor = conn.cursor()
+
+        # 모든 항목 초기화
+        reset_query = f"""
+        UPDATE user_info
+        SET {", ".join([f"{col} = 'N'" for col in valid_columns])}
+        WHERE id = %s
+        """
+        cursor.execute(reset_query, (user_id,))
+
+        # 선택된 항목 업데이트
+        update_query = f"""
+        UPDATE user_info
+        SET {selected_column} = 'Y'
+        WHERE id = %s
+        """
+        cursor.execute(update_query, (user_id,))
+
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error in update_user_selection: {e}")
+        conn.rollback()
+        return False
     finally:
         conn.close()
 
