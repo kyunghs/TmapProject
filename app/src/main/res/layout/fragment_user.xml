@@ -9,11 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-            <!-- 흰색 레이아웃 -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        <!-- 흰색 레이아웃 -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
             <LinearLayout
                 android:id="@+id/white_layout"
                 android:layout_width="match_parent"
@@ -47,46 +47,58 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="20dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="32dp"
+                    android:layout_marginBottom="16dp"
                     android:background="@drawable/profile_edit_button"
                     android:paddingHorizontal="36dp"
                     android:text="프로필 편집"
                     android:textColor="#FFFFFF" />
 
-
-
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="주차 요금 감면 해당 사항"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
                     android:textColor="#000000"
                     android:textSize="24dp"
                     android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/parking_discount_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:padding="8dp"
+                    android:background="@drawable/border"
+                    android:text="클릭한 항목의 설명이 여기에 표시됩니다."
+                    android:textColor="#000000"
+                    android:visibility="gone"
+                    android:gravity="center"
+                    android:textSize="12sp" />
+
                 <GridLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginBottom="32dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
                     android:layout_gravity="center"
                     android:alignmentMode="alignMargins"
                     android:columnCount="4">
 
                     <!-- 항목 장애인 -->
                     <LinearLayout
+                        android:id="@+id/disabled_persons"
                         android:layout_width="65dp"
                         android:layout_height="65dp"
-                        android:layout_margin="8dp"
+                        android:layout_margin="6dp"
                         android:background="@drawable/border"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="8dp">
+                        android:padding="6dp">
 
                         <ImageView
+                            android:id="@+id/image_disabled_persons"
                             android:layout_width="25dp"
                             android:layout_height="30dp"
                             android:contentDescription="장애인"
@@ -98,21 +110,23 @@
                             android:gravity="center"
                             android:text="장애인"
                             android:textColor="#000000"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:textSize="9sp" />
                     </LinearLayout>
 
                     <!-- 항목 다자녀 -->
                     <LinearLayout
+                        android:id="@+id/multiple_children"
                         android:layout_width="65dp"
                         android:layout_height="65dp"
-                        android:layout_margin="8dp"
+                        android:layout_margin="6dp"
                         android:background="@drawable/border"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="8dp">
+                        android:padding="6dp">
 
                         <ImageView
+                            android:id="@+id/image_multiple_children"
                             android:layout_width="25dp"
                             android:layout_height="30dp"
                             android:contentDescription="다자녀"
@@ -124,23 +138,25 @@
                             android:gravity="center"
                             android:text="다자녀"
                             android:textColor="#000000"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:textSize="9sp" />
                     </LinearLayout>
 
                     <!-- 항목 저공해 차량 -->
                     <LinearLayout
+                        android:id="@+id/low_emission_vehicles"
                         android:layout_width="65dp"
                         android:layout_height="65dp"
-                        android:layout_margin="8dp"
+                        android:layout_margin="6dp"
                         android:background="@drawable/border"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="8dp">
+                        android:padding="6dp">
 
                         <ImageView
+                            android:id="@+id/image_low_emission_vehicles"
                             android:layout_width="35dp"
-                            android:layout_height="32dp"
+                            android:layout_height="wrap_content"
                             android:contentDescription="저공해 차량"
                             android:src="@drawable/user_3" />
 
@@ -150,21 +166,23 @@
                             android:gravity="center"
                             android:text="저공해 차량"
                             android:textColor="#000000"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:textSize="9sp" />
                     </LinearLayout>
 
                     <!-- 항목 국가 유공자 -->
                     <LinearLayout
+                        android:id="@+id/person_of_national_merit"
                         android:layout_width="65dp"
                         android:layout_height="65dp"
-                        android:layout_margin="8dp"
+                        android:layout_margin="6dp"
                         android:background="@drawable/border"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="8dp">
+                        android:padding="6dp">
 
                         <ImageView
+                            android:id="@+id/image_person_of_national_merit"
                             android:layout_width="25dp"
                             android:layout_height="30dp"
                             android:contentDescription="국가유공자"
@@ -176,21 +194,23 @@
                             android:gravity="center"
                             android:text="국가유공자"
                             android:textColor="#000000"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:textSize="9sp" />
                     </LinearLayout>
 
                     <!-- 항목 모범 납세자 -->
                     <LinearLayout
+                        android:id="@+id/model_taxpayer"
                         android:layout_width="65dp"
                         android:layout_height="65dp"
-                        android:layout_margin="8dp"
+                        android:layout_margin="6dp"
                         android:background="@drawable/border"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="8dp">
+                        android:padding="6dp">
 
                         <ImageView
+                            android:id="@+id/image_model_taxpayer"
                             android:layout_width="25dp"
                             android:layout_height="30dp"
                             android:contentDescription="모범 납세자"
@@ -202,21 +222,23 @@
                             android:gravity="center"
                             android:text="모범 납세자"
                             android:textColor="#000000"
-                            android:layout_marginTop="4dp"
-                            android:textSize="9sp"  />
+                            android:layout_marginTop="2dp"
+                            android:textSize="9sp" />
                     </LinearLayout>
 
                     <!-- 항목 한부모 가정 -->
                     <LinearLayout
+                        android:id="@+id/single_parent_family"
                         android:layout_width="65dp"
                         android:layout_height="65dp"
-                        android:layout_margin="8dp"
+                        android:layout_margin="6dp"
                         android:background="@drawable/border"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="8dp">
+                        android:padding="6dp">
 
                         <ImageView
+                            android:id="@+id/image_single_parent_family"
                             android:layout_width="25dp"
                             android:layout_height="30dp"
                             android:contentDescription="한부모 가정"
@@ -228,29 +250,24 @@
                             android:gravity="center"
                             android:text="한부모 가정"
                             android:textColor="#000000"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:textSize="9sp" />
                     </LinearLayout>
-            </GridLayout>
-
-
-
-        </LinearLayout>
-
-        <!-- 이미지뷰 -->
-        <ImageView
-            android:id="@+id/profile_image"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="66dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="620dp"
-            android:contentDescription="프로필 이미지"
-            android:background="@drawable/circle_background_profile"
-            android:clipToOutline="true"
-            android:elevation="4dp"
-            android:src="@drawable/karina" />
-    </FrameLayout>
+                </GridLayout>
+            </LinearLayout>
+            <!-- 이미지뷰 -->
+            <ImageView
+                android:id="@+id/profile_image"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="66dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="620dp"
+                android:contentDescription="프로필 이미지"
+                android:background="@drawable/circle_background_profile"
+                android:clipToOutline="true"
+                android:elevation="4dp"
+                android:src="@drawable/user_profile_standard" />
+        </FrameLayout>
     </ScrollView>
-
 </LinearLayout>
