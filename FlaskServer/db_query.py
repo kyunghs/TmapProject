@@ -221,7 +221,7 @@ def update_user_selection(user_id, selected_column, valid_columns):
         conn = dbConnection()
         cursor = conn.cursor()
 
-        # 모든 항목을 'N'으로 초기화한 후 선택된 항목만 'Y'로 설정
+        # 모든 항목 초기화
         reset_query = f"""
         UPDATE user_info
         SET {", ".join([f"{col} = 'N'" for col in valid_columns])}
@@ -229,6 +229,7 @@ def update_user_selection(user_id, selected_column, valid_columns):
         """
         cursor.execute(reset_query, (user_id,))
 
+        # 선택된 항목 업데이트
         update_query = f"""
         UPDATE user_info
         SET {selected_column} = 'Y'
@@ -244,6 +245,7 @@ def update_user_selection(user_id, selected_column, valid_columns):
         return False
     finally:
         conn.close()
+
 
 
 def get_user_history(user_id):
