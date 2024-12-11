@@ -511,41 +511,33 @@ def update_user_info():
 @app.route('/updateUserSelection', methods=['POST'])
 def update_user_selection():
     try:
+        # 요청 데이터 가져오기
         data = request.get_json()
-        user_id = data.get("id")
         selected_column = data.get("selected_column")
-
-        if not user_id or not selected_column:
-            return jsonify({
-                "success": False,
-                "message": "id 또는 selected_column이 없습니다."
-            }), 400
-
-        valid_columns = ["disabled_human", "multiple_child", "electric_car", "person_merit", "tax_payment", "alone_family"]
+        
+        # 유효한 컬럼인지 확인
+        valid_columns = [
+            "disabled_human", "multiple_child", "electric_car",
+            "person_merit", "tax_payment", "alone_family"
+        ]
         if selected_column not in valid_columns:
-            return jsonify({
-                "success": False,
-                "message": f"'{selected_column}'은 유효하지 않은 컬럼입니다."
-            }), 400
-
-        success = db_query.update_user_selection(user_id, selected_column, valid_columns)
-        if success:
-            return jsonify({
-                "success": True,
-                "message": "선택 항목이 업데이트되었습니다."
-            }), 200
-        else:
-            return jsonify({
-                "success": False,
-                "message": "DB 업데이트 실패"
-            }), 500
-
+            return jsonify({"success": False, "message": f"'{selected_column}'은 유효하지 않은 선택 항목입니다."}), 400
+        
+        # 데이터베이스 업데이트
+        query = f"""
+        UPDATE user_info
+        SET {selected_column} = 'Y', 
+            {", ".join([f"{col} = 'N'" for col in valid_columns if col != selected_column])}
+        WHERE user_code = %s
+        """
+        cursor.execute(query, (user_code,))
+        conn.commit()
+        
+        return jsonify({"success": True, "message": "선택 항목 업데이트 성공"}), 200
     except Exception as e:
         logging.error(f"Error in update_user_selection: {e}")
-        return jsonify({
-            "success": False,
-            "message": "서버 오류 발생"
-        }), 500
+        return jsonify({"success": False, "message": "서버 오류가 발생했습니다."}), 500
+
 
 
 
