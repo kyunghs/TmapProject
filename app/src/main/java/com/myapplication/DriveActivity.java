@@ -15,10 +15,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -83,6 +85,11 @@ public class DriveActivity extends AppCompatActivity {
     private static final int BACK_PRESS_DELAY = 2000; // 2초 (밀리초 단위)
     private Handler backPressHandler = new Handler();
     private String ADDRESS = "";
+    private String formattedTime = "";
+    private TextView locationText;
+    private TextView currentSeatsText;
+    private TextView expectedSeatsText;
+    private TextView arrivalTimeText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,9 +131,17 @@ public class DriveActivity extends AppCompatActivity {
             more2Layout.setVisibility(View.VISIBLE);
         });
 
+
+
         stopBtn.setOnClickListener(v -> {
             // navigationFragment의 stopDrive 메서드 호출
             navigationFragment.stopDrive();
+            Toast.makeText(this, "경로 안내를 종료합니다.", Toast.LENGTH_SHORT).show();
+            // MainActivity로 이동
+            Intent intentHome = new Intent(DriveActivity.this, MainActivity.class);
+            intentHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // 이전 액티비티 스택 제거
+            startActivity(intentHome);
+            finish(); // 현재 Activity 종료
         });
 
         more2Layout.setOnTouchListener((v, event) -> {
@@ -151,7 +166,6 @@ public class DriveActivity extends AppCompatActivity {
             }
 
             // 시간 포맷팅
-            String formattedTime;
             int hours = time / 3600;
             int minutes = (time % 3600) / 60;
 
@@ -164,6 +178,21 @@ public class DriveActivity extends AppCompatActivity {
             // TextView 업데이트
             remainDistTextView.setText(formattedDistance); // 남은 거리 설정
             remainTimeTextView.setText(formattedTime); // 남은 시간 설정
+
+            // 팝업 뷰 가져오기
+            View popupView = findViewById(R.id.popup_container);
+
+            // XML View 연결
+            locationText = popupView.findViewById(R.id.location_text);
+            currentSeatsText = popupView.findViewById(R.id.current_seats_text);
+            expectedSeatsText = popupView.findViewById(R.id.expected_seats_text);
+            arrivalTimeText = popupView.findViewById(R.id.arrival_time_text);
+
+            // 데이터 설정 (예시 데이터)
+            locationText.setText(destinationName); // 실제 데이터를 여기에 연결
+            currentSeatsText.setText("9"); // 잔여석 데이터
+            expectedSeatsText.setText("7"); // 예상 잔여석 데이터
+            arrivalTimeText.setText("소요 시간 : " + formattedTime); // 도착 예상 시간
         }
     };
 
@@ -329,6 +358,50 @@ public class DriveActivity extends AppCompatActivity {
                 remainDistTextView.setText(formattedDistance); // 남은 거리 설정
                 remainTimeTextView.setText(formattedTime); // 남은 시간 설정
 
+                // 상단 팝업 레이아웃을 동적으로 추가
+                runOnUiThread(() -> {
+                    // 팝업이 이미 추가되어 있지 않다면 추가
+                    if (findViewById(R.id.popup_container) == null) {
+                        // 메인 레이아웃 가져오기
+                        ViewGroup mainLayout = findViewById(android.R.id.content);
+
+                        // 팝업 레이아웃 인플레이트
+                        View popupView = getLayoutInflater().inflate(R.layout.drive_popup, mainLayout, false);
+
+                        // 팝업 뷰 ID 설정
+                        popupView.setId(R.id.popup_container);
+
+                        // 레이아웃 파라미터 생성 (우측 하단 정렬)
+                        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                                FrameLayout.LayoutParams.WRAP_CONTENT, // 폭 크기
+                                FrameLayout.LayoutParams.WRAP_CONTENT  // 높이 크기
+                        );
+                        params.gravity = Gravity.BOTTOM | Gravity.END; // 화면의 하단 우측 정렬
+                        params.setMargins(20, 20, 20, 250); // 여백 설정 (좌, 상, 우, 하)
+
+                        // 레이아웃 파라미터 적용
+                        popupView.setLayoutParams(params);
+
+                        // 레이아웃에 팝업 추가
+                        mainLayout.addView(popupView);
+                    }
+
+                    // 팝업 뷰 가져오기
+                    View popupView = findViewById(R.id.popup_container);
+
+                    // XML View 연결
+                    locationText = popupView.findViewById(R.id.location_text);
+                    currentSeatsText = popupView.findViewById(R.id.current_seats_text);
+                    expectedSeatsText = popupView.findViewById(R.id.expected_seats_text);
+                    arrivalTimeText = popupView.findViewById(R.id.arrival_time_text);
+
+                    // 데이터 설정 (예시 데이터)
+                    locationText.setText(destinationName); // 실제 데이터를 여기에 연결
+                    currentSeatsText.setText("9"); // 잔여석 데이터
+                    expectedSeatsText.setText("7"); // 예상 잔여석 데이터
+                    arrivalTimeText.setText("소요 시간 : " + formattedTime); // 도착 예상 시간
+                });
+
                 subscribeRouteData();
             }
 
@@ -339,7 +412,6 @@ public class DriveActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(DriveActivity.this, "onUserRerouteComplete", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -352,7 +424,6 @@ public class DriveActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(DriveActivity.this, "onStopNavigation", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -360,14 +431,12 @@ public class DriveActivity extends AppCompatActivity {
 
             @Override
             public void onStartNavigation() {
-
                 // 네비게이션 시작 시 호출
                 Log.e(TAG, "onStartNavigation");
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(DriveActivity.this, "onStartNavigation", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -408,7 +477,6 @@ public class DriveActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(DriveActivity.this, "onPeriodicRerouteComplete", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -422,7 +490,6 @@ public class DriveActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(DriveActivity.this, "onPeriodicReroute", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -436,7 +503,6 @@ public class DriveActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(DriveActivity.this, "onPassedViaPoint", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -452,7 +518,6 @@ public class DriveActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(DriveActivity.this, "onPassedTollgate", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -466,7 +531,6 @@ public class DriveActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(DriveActivity.this, "onPassedAlternativeRouteJunction", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -476,9 +540,6 @@ public class DriveActivity extends AppCompatActivity {
             public void onNoLocationSignal(boolean b) {
                 // GPS 상태 변화 시점에 호출
                 Log.e(TAG, "onPassedAlternativeRouteJunction :: " + b);
-
-
-
             }
 
             @Override
@@ -602,11 +663,6 @@ public class DriveActivity extends AppCompatActivity {
                             runOnUiThread(() -> {
                                 try {
                                     boolean success = response.getBoolean("success");
-                                    if (success) {
-                                        Toast.makeText(DriveActivity.this, "기록이 성공적으로 저장되었습니다.", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(DriveActivity.this, "기록 저장 실패", Toast.LENGTH_SHORT).show();
-                                    }
                                 } catch (JSONException e) {
                                     Toast.makeText(DriveActivity.this, "응답 처리 오류", Toast.LENGTH_SHORT).show();
                                 }
@@ -690,7 +746,6 @@ public class DriveActivity extends AppCompatActivity {
         //현재 위치
         Location currentLocation = SDKManager.getInstance().getCurrentPosition();
         String currentName = VSMCoordinates.getAddressOffline(currentLocation.getLongitude(), currentLocation.getLatitude());
-        Toast.makeText(DriveActivity.this, lat + lot, Toast.LENGTH_SHORT).show();
 
         WayPoint startPoint = new WayPoint(currentName, new MapPoint(currentLocation.getLongitude(), currentLocation.getLatitude()));
 
@@ -707,7 +762,6 @@ public class DriveActivity extends AppCompatActivity {
         navigationFragment.requestRoute(startPoint, null, endPoint, false, new TmapUISDK.RouteRequestListener() {
             @Override
             public void onSuccess() {
-                Log.e(TAG, "requestRoute Success");
             }
 
             @Override
@@ -738,12 +792,25 @@ public class DriveActivity extends AppCompatActivity {
         TextView timeTextView = dialog.findViewById(R.id.timeTextView);
         Button closeButton = dialog.findViewById(R.id.closeButton);
 
-        destTextView.setText(dest);
-        distanceTextView.setText(distance);
-        timeTextView.setText(time);
+        destTextView.setText("도착지 : " + dest);
+        distanceTextView.setText("주행거리 : " + distance);
+        timeTextView.setText("소요시간 : " + time);
+
+        LinearLayout more2Layout = findViewById(R.id.more2);
+        LinearLayout bottom_info_bar = findViewById(R.id.bottom_info_bar);
+        more2Layout.setVisibility(View.GONE);
+        bottom_info_bar.setVisibility(View.GONE);
 
         // 닫기 버튼 동작 설정
-        closeButton.setOnClickListener(v -> dialog.dismiss());
+        closeButton.setOnClickListener(v -> {
+            dialog.dismiss(); // 다이얼로그 닫기
+
+            // MainActivity로 이동
+            Intent intent = new Intent(DriveActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // 이전 액티비티 스택 제거
+            startActivity(intent);
+            finish(); // 현재 Activity 종료
+        });
 
         // Dialog 표시
         dialog.show();
