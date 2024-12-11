@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -35,13 +36,23 @@ public class UserFragment extends Fragment {
     private TextView nameText;
     private ImageView profileImageView;
 
+    private TextView parkingDiscountDescription;
+    private LinearLayout currentlySelectedLayout = null;
+
     private static final int REQUEST_CODE_PICK_IMAGE = 1001;
     private static final String PROFILE_IMAGE_NAME = "profile_image.png";
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user, container, false);
+
+        // 설명 텍스트 초기화
+        parkingDiscountDescription = view.findViewById(R.id.parking_discount_description);
+
+        // 항목 클릭 이벤트 설정
+        setupGridItemListeners(view);
 
         // UI 요소 초기화
         nameText = view.findViewById(R.id.name_text);
@@ -63,7 +74,86 @@ public class UserFragment extends Fragment {
         // 프로필 이미지 클릭 이벤트
         profileImageView.setOnClickListener(v -> openGallery());
 
+        // Grid 아이템 클릭 이벤트 설정
+        setupGridItemListeners(view);
+
         return view;
+    }
+
+    // Grid 아이템 클릭 리스너 설정
+    private void setupGridItemListeners(View view) {
+        LinearLayout disabledPerson = view.findViewById(R.id.disabled_persons);
+        LinearLayout multipleChildren = view.findViewById(R.id.multiple_children);
+        LinearLayout lowEmissionVehicles = view.findViewById(R.id.low_emission_vehicles);
+        LinearLayout personOfNationalMerit = view.findViewById(R.id.person_of_national_merit);
+        LinearLayout modelTaxpayer = view.findViewById(R.id.model_taxpayer);
+        LinearLayout singleParentFamily = view.findViewById(R.id.single_parent_family);
+
+        // 각 항목 클릭 이벤트 등록
+        setupToggleBackground(disabledPerson, "장애인: 80% 감면 (지하철 환승주차장에 한하여 최초 3시간 주차요금 면제 후 80% 감면)", R.drawable.disabled_persons);
+        setupToggleBackground(multipleChildren, "다자녀(2자녀 이상): 50% 감면", R.drawable.multiple_children);
+        setupToggleBackground(lowEmissionVehicles, "저공해 차량: 50% 감면 + 전기차 충전 시 1시간 면제 후 50% 감면", R.drawable.low_emission_vehicles);
+        setupToggleBackground(personOfNationalMerit, "국가유공자: 80% 감면", R.drawable.person_of_national_merit);
+        setupToggleBackground(modelTaxpayer, "모범납세자: 1년간 주차요금 면제", R.drawable.model_taxpayer);
+        setupToggleBackground(singleParentFamily, "한부모 가정: 50% 감면", R.drawable.single_parent_family);
+    }
+
+    // 배경 토글 로직 (한 번에 하나의 항목만 활성화 + 설명 표시)
+    private void setupToggleBackground(LinearLayout layout, String description, int drawableId) {
+        ImageView imageView = (ImageView) layout.getChildAt(0); // 첫 번째 자식이 ImageView
+        TextView textView = (TextView) layout.getChildAt(1);    // 두 번째 자식이 TextView
+
+        layout.setOnClickListener(v -> {
+            if (imageView == null || textView == null) {
+                Log.e("UserFragment", "ImageView 또는 TextView를 찾을 수 없습니다!");
+                return;
+            }
+
+            // 이전 선택된 항목 초기화
+            if (currentlySelectedLayout != null && currentlySelectedLayout != layout) {
+                resetLayout(currentlySelectedLayout);
+            }
+
+            // 현재 항목 활성화 또는 비활성화
+            Object tag = layout.getTag();
+            if (tag != null && (boolean) tag) {
+                // 기존 상태로 복구
+                imageView.setVisibility(View.VISIBLE);
+                textView.setVisibility(View.VISIBLE);
+                layout.setBackgroundResource(R.drawable.border);
+                layout.setTag(false);
+
+                // 설명 숨김
+                parkingDiscountDescription.setVisibility(View.GONE);
+
+                // 현재 선택된 항목 초기화
+                currentlySelectedLayout = null;
+            } else {
+                // 새로운 상태로 변경
+                imageView.setVisibility(View.INVISIBLE);
+                textView.setVisibility(View.INVISIBLE);
+                layout.setBackgroundResource(drawableId);
+                layout.setTag(true);
+
+                // 설명 업데이트
+                parkingDiscountDescription.setText(description);
+                parkingDiscountDescription.setVisibility(View.VISIBLE);
+
+                // 현재 선택된 항목 업데이트
+                currentlySelectedLayout = layout;
+            }
+        });
+    }
+
+    // 레이아웃 초기화 메서드
+    private void resetLayout(LinearLayout layout) {
+        ImageView imageView = (ImageView) layout.getChildAt(0); // 첫 번째 자식이 ImageView
+        TextView textView = (TextView) layout.getChildAt(1);    // 두 번째 자식이 TextView
+
+        if (imageView != null) imageView.setVisibility(View.VISIBLE);
+        if (textView != null) textView.setVisibility(View.VISIBLE);
+        layout.setBackgroundResource(R.drawable.border); // 기본 배경으로 복구
+        layout.setTag(false);
     }
 
     // 유저 정보 가져오기
