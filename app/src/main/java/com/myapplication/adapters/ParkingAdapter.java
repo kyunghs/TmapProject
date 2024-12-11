@@ -43,6 +43,7 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ParkingV
         holder.remainTextView.setText("남은 자리 : " + parking.getRemain());
         holder.distanceTextView.setText(parking.getDistance());
         holder.priceTextView.setText("예상 요금 : " + Utils.NumberFormat(parking.getTotalFee()) + "원");
+        holder.predictValue.setText("예상 자리 : " + parking.getPredictedValue());
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -61,6 +62,7 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ParkingV
         TextView remainTextView;
         TextView distanceTextView;
         TextView priceTextView;
+        TextView predictValue;
 
         public ParkingViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,6 +70,7 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ParkingV
             distanceTextView = itemView.findViewById(R.id.parkingDistance);
             priceTextView = itemView.findViewById(R.id.parkingPrice);
             remainTextView = itemView.findViewById(R.id.remain);
+            predictValue = itemView.findViewById(R.id.parkingExpectedAvailability);
         }
     }
 }

@@ -24,6 +24,7 @@ import com.myapplication.R;
 import com.myapplication.adapters.ParkingAdapter;
 import com.myapplication.models.Parking;
 import com.myapplication.utils.HttpSearchUtils;
+import com.myapplication.utils.HttpUtils;
 import com.myapplication.utils.Utils;
 import com.skt.tmap.engine.navigation.SDKManager;
 
@@ -219,6 +220,7 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
         try {
             JSONObject rootObject = new JSONObject(parkData);
             JSONArray parkArray = rootObject.getJSONArray("parks");
+
             for (int i = 0; i < parkArray.length(); i++) {
                 JSONObject parkObject = parkArray.getJSONObject(i);
                 String name = parkObject.optString("name", "Unknown");
@@ -254,53 +256,54 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
                         ? String.format("%.1fkm", Integer.parseInt(distance) / 1000.0)
                         : NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(distance)) + "m";
 
-                int[] totalTime = {0};
-                HttpSearchUtils.performRouteRequest(requireContext(), 0, currentLong, currentLat, targetLot, targetLat, new HttpSearchUtils.RouteRequestCallback() {
-                    @Override
-                    public void onSuccess(JSONObject rootObject) {
-                        try {
-                            if (rootObject.has("features")) {
-                                JSONArray features = rootObject.getJSONArray("features");
-                                if (features.length() > 0) {
-                                    JSONObject firstFeature = features.getJSONObject(0);
-                                    if (firstFeature.has("properties")) {
-                                        JSONObject properties = firstFeature.getJSONObject("properties");
-                                        if (properties.has("totalTime")) {
-                                            totalTime[0] = properties.getInt("totalTime");
-                                        }
-                                    }
+                // 주차 데이터 객체 생성
+                Parking parking = new Parking(
+                        name, remain, distance, "0", lat, lot, 0, baseFee, addFee, dayMaxFee
+                );
+
+                // /predict API 호출
+                try {
+                    // JSON 객체 생성
+                    JSONObject jsonData = new JSONObject();
+                    jsonData.put("pklt_cd", name);
+
+                    // 서버에 JSON 데이터 전송
+                    HttpUtils.sendJsonToServer(jsonData, "/predict", new HttpUtils.HttpResponseCallback() {
+                        @Override
+                        public void onSuccess(JSONObject responseData) {
+                            requireActivity().runOnUiThread(() -> {
+                                try {
+                                    Log.d("parseParkData", "서버 응답: " + responseData.toString());
+                                    String predictedValue = responseData.optString("predicted_value", "0");
+                                    parkObject.put("predicted_value", predictedValue); // 응답 데이터를 JSON에 추가
+
+                                    parking.setPredictedValue(predictedValue);
+                                    parkingList.add(parking); // Parking 객체를 리스트에 추가
+
+                                    Log.e("ParkingList", "Updated Parking Data: " + parkObject.toString());
+                                } catch (JSONException e) {
+                                    Toast.makeText(requireContext(), "데이터 처리 오류: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Log.e("parseParkData", "JSONException", e);
                                 }
-                            }
-                            Log.e("RouteRequest", "Total Time for " + name + ": " + totalTime[0]);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getActivity(), "JSON 파싱 오류: totalTime", Toast.LENGTH_SHORT).show();
+                            });
                         }
-                    }
 
-                    @Override
-                    public void onError(String errorMessage) {
-                        Toast.makeText(getActivity(), "오류: " + errorMessage, Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                // 여기에서 parking 객체를 생성할 때 필요한 모든 인자를 제공해야 합니다.
-                parkingList.add(new Parking(
-                        name,
-                        remain,
-                        distance,
-                        "0", // 기본 요금으로 초기화. 실제로는 totalFee로 설정할 수 있습니다.
-                        lat,
-                        lot,
-                        totalTime[0],
-                        baseFee,
-                        addFee,
-                        dayMaxFee
-                ));
-                Log.e("ParkingList", "Added: " + name + ", remain: " + remain);
+                        @Override
+                        public void onFailure(String errorMessage) {
+                            requireActivity().runOnUiThread(() -> {
+                                Log.e("parseParkData", "API 호출 실패: " + errorMessage);
+                                Toast.makeText(requireContext(), "API 호출 실패: " + errorMessage, Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(requireContext(), "JSON 생성 오류", Toast.LENGTH_SHORT).show();
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
 }
