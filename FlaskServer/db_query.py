@@ -97,26 +97,36 @@ def checkLogin(id, password):
 # 사용자 정보를 ID를 기반으로 가져오는 함수
 def get_user_info_by_id(user_id):
     try:
-        with dbConnection() as conn:
-            with conn.cursor() as cursor:
-                query = """
-                SELECT id, name, user_tel
-                FROM user_info
-                WHERE id = %s
-                """
-                cursor.execute(query, (user_id,))
-                result = cursor.fetchone()
+        conn = dbConnection()  # DB 연결
+        cursor = conn.cursor()
+
+        query = """
+        SELECT name, id, disabled_human, multiple_child, electric_car, person_merit, tax_payment, alone_family
+        FROM user_info
+        WHERE id = %s
+        """
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchone()
 
         if result:
             return {
-                "id": result[0],
-                "name": result[1],
-                "user_tel": result[2],
+                "name": result[0],
+                "id": result[1],
+                "disabled_human": result[2],
+                "multiple_child": result[3],
+                "electric_car": result[4],
+                "person_merit": result[5],
+                "tax_payment": result[6],
+                "alone_family": result[7]
             }
-        return None
+        else:
+            return None
     except Exception as e:
-        print(f"Error in get_user_info_by_id: {e}")
+        print(f"DB 오류: {e}")
         return None
+    finally:
+        conn.close()
+
 
 # 회원정보 수정
 def update_user_info(user_id, data):

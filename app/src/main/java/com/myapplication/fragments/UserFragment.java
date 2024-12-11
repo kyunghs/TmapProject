@@ -215,32 +215,19 @@ public class UserFragment extends Fragment {
 
     // 유저 정보 가져오기
     private void fetchUserInfo() {
-        token = "Bearer " + getActivity()
-                .getSharedPreferences("AuthPrefs", Context.MODE_PRIVATE)
-                .getString("auth_token", "");
-
-        if (token.isEmpty()) {
-            Log.e("UserFragment", "토큰이 없습니다. 로그인을 확인하세요.");
-            Toast.makeText(getActivity(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        HttpUtils.sendGetRequestWithAuth("/getUserInfo", token, new HttpUtils.HttpResponseCallback() {
+        HttpUtils.sendGetRequestWithAuth("/getUserInfo", null, new HttpUtils.HttpResponseCallback() {
             @Override
             public void onSuccess(JSONObject responseData) {
                 getActivity().runOnUiThread(() -> {
                     try {
                         if (responseData.getBoolean("success")) {
-                            JSONObject userData = responseData.optJSONObject("data");
-                            if (userData != null) {
-                                String name = userData.optString("name", "알 수 없음");
-                                nameText.setText(name);
+                            JSONObject data = responseData.getJSONObject("data");
 
-                                // 초기 선택 상태 설정
-                                updateGridSelectionFromData(userData);
-                            } else {
-                                Toast.makeText(getActivity(), "유효한 사용자 데이터를 받을 수 없습니다.", Toast.LENGTH_SHORT).show();
-                            }
+                            // 사용자 이름 업데이트
+                            nameText.setText(data.optString("name", "알 수 없음"));
+
+                            // 초기 선택 상태 업데이트
+                            updateGridSelectionFromData(data);
                         } else {
                             Toast.makeText(getActivity(), responseData.optString("message", "오류 발생"), Toast.LENGTH_SHORT).show();
                         }
@@ -260,19 +247,24 @@ public class UserFragment extends Fragment {
     }
 
 
-    // 서버 데이터 기반으로 Grid 초기화
+    // 선택 상태 초기화
     private void updateGridSelectionFromData(JSONObject userData) {
         if (userData.optString("disabled_human", "N").equals("Y")) {
             setSelectedLayout(R.id.disabled_persons);
-        } else if (userData.optString("multiple_child", "N").equals("Y")) {
+        }
+        if (userData.optString("multiple_child", "N").equals("Y")) {
             setSelectedLayout(R.id.multiple_children);
-        } else if (userData.optString("electric_car", "N").equals("Y")) {
+        }
+        if (userData.optString("electric_car", "N").equals("Y")) {
             setSelectedLayout(R.id.low_emission_vehicles);
-        } else if (userData.optString("person_merit", "N").equals("Y")) {
+        }
+        if (userData.optString("person_merit", "N").equals("Y")) {
             setSelectedLayout(R.id.person_of_national_merit);
-        } else if (userData.optString("tax_payment", "N").equals("Y")) {
+        }
+        if (userData.optString("tax_payment", "N").equals("Y")) {
             setSelectedLayout(R.id.model_taxpayer);
-        } else if (userData.optString("alone_family", "N").equals("Y")) {
+        }
+        if (userData.optString("alone_family", "N").equals("Y")) {
             setSelectedLayout(R.id.single_parent_family);
         }
     }

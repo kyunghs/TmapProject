@@ -365,18 +365,25 @@ def get_user_info(user=None):  # JWT 데코레이터로부터 전달된 사용�
         print(f"DB 조회 결과: {user_data}")  # 디버깅 로그 추가
 
         if user_data:
+            # 선택 상태 포함 데이터 반환
             return jsonify({
                 "success": True,
                 "data": {
-                    "name": user_data['name'],
-                    "user_tel": user_data['user_tel'],  # 'phone' 대신 'user_tel'로 수정
+                    "name": user_data["name"],
+                    "id": user_data["id"],
+                    "disabled_human": user_data["disabled_human"],
+                    "multiple_child": user_data["multiple_child"],
+                    "electric_car": user_data["electric_car"],
+                    "person_merit": user_data["person_merit"],
+                    "tax_payment": user_data["tax_payment"],
+                    "alone_family": user_data["alone_family"]
                 }
             }), 200
         else:
-            return jsonify({"success": False, "message": "사용자를 찾을 수 없습니다."}), 404
+            return jsonify({"success": False, "message": "사용자 데이터를 찾을 수 없습니다."}), 404
     except Exception as e:
-        print(f"Error in get_user_info: {e}")
-        return jsonify({"success": False, "message": f"서버 오류: {str(e)}"}), 500
+        print(f"서버 오류: {e}")
+        return jsonify({"success": False, "message": "서버 오류가 발생했습니다."}), 500
 
 # 수정할 회원정보 가져오기 
 @app.route('/getEditUserInfo', methods=['GET'])
