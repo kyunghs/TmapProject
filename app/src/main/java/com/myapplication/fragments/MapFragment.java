@@ -1,6 +1,8 @@
 package com.myapplication.fragments;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -322,7 +325,7 @@ public class MapFragment extends Fragment {
                 try {
                     // 최상위 JSONObject에서 parkList 배열 가져오기
                     JSONArray locations = responseData.getJSONArray("parkList");
-
+                    Log.e("parkList!!", String.valueOf(locations));
                     List<VSMMapPoint> positions = new ArrayList<>();
                     for (int i = 0; i < locations.length(); i++) {
                         JSONObject location = locations.getJSONObject(i);
@@ -332,7 +335,7 @@ public class MapFragment extends Fragment {
                     }
 
                     // UI 스레드에서 pin() 호출
-                    requireActivity().runOnUiThread(() -> pin(positions));
+                    requireActivity().runOnUiThread(() -> pin(positions, locations));
                 } catch (JSONException e) {
                     Log.e("selectPark", "JSON 파싱 실패", e);
                     requireActivity().runOnUiThread(() ->
@@ -350,7 +353,7 @@ public class MapFragment extends Fragment {
         });
     }
 
-    private void pin(List<VSMMapPoint> positions) {
+    private void pin(List<VSMMapPoint> positions, JSONArray locations) {
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.parking);
 
         VSMMarkerManager markerManager = navigationFragment.getMapView().getMarkerManager();
@@ -361,6 +364,7 @@ public class MapFragment extends Fragment {
 
         // 각 위치에 대해 마커 생성 및 추가
         for (int i = 0; i < positions.size(); i++) {
+            Log.e("!@!@!#!@#", positions.toString());
             String markerID = "Marker" + i; // 마커 ID 생성
             VSMMarkerPoint marker = new VSMMarkerPoint(markerID);
 
@@ -382,7 +386,30 @@ public class MapFragment extends Fragment {
 
             @Override
             public boolean OnHitObjectMarker(VSMMarkerBase vsmMarkerBase, Bundle bundle) {
-                Toast.makeText(getActivity(), vsmMarkerBase.getId(), Toast.LENGTH_SHORT).show();
+                String markerID = vsmMarkerBase.getId();
+                Log.e("Marker Hit", "Marker ID: " + markerID);
+
+                try {
+                    // Marker ID에서 인덱스 추출 ("Marker" 뒤의 숫자)
+                    int index = Integer.parseInt(markerID.replace("Marker", ""));
+
+                    // 인덱스에 해당하는 주차장 정보 가져오기
+                    JSONObject location = locations.getJSONObject(index);
+                    String pkltName = location.optString("pklt_nm", "정보 없음");
+                    String address = location.optString("addr", "주소 없음");
+                    String baseCrg = location.optString("bsc_prk_crg", "기본 요금 정보 없음");
+                    String addCrg = location.optString("add_prk_crg", "추가 요금 정보 없음");
+                    String dayCrg = location.optString("day_max_crg", "일일 최대 요금 정보 없음");
+                    String totalCnt = location.optString("tpkct", "총 주차면수 없음");
+                    String nowCnt = location.optString("now_prk_vhcl_cnt", "현재 주차면수 없음");
+                    String openTime = location.optString("wd_oper_bgng_tm", "시작 정보 없음");
+                    String closeTime = location.optString("wd_oper_end_tm", "종료 정보 없음");
+
+                    // 팝업 띄우기
+                    showParkingInfoPopup(pkltName, address, baseCrg, addCrg, dayCrg, totalCnt, nowCnt, openTime, closeTime);
+                } catch (JSONException e) {
+                    Log.e("OnHitObjectMarker", "JSON 파싱 오류", e);
+                }
                 return false;
             }
 
@@ -443,150 +470,42 @@ public class MapFragment extends Fragment {
         });
     }
 
-    private void clickButton6() {
+    private void showParkingInfoPopup(String name, String address, String baseCrg, String addCrg,
+                                      String dayCrg, String totalCnt, String nowCnt, String openTime, String closeTime) {
+        Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.park_info_popup);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
+        // TextView 설정
+        TextView nameTextView = dialog.findViewById(R.id.nameTextView);
+        TextView addressTextView = dialog.findViewById(R.id.addressTextView);
+        TextView baseCrgTextView = dialog.findViewById(R.id.baseCrgTextView);
+        TextView addCrgTextView = dialog.findViewById(R.id.addCrgTextView);
+        TextView dayCrgTextView = dialog.findViewById(R.id.dayCrgTextView);
+        TextView totalCntTextView = dialog.findViewById(R.id.totalCntTextView);
+        TextView nowCntTextView = dialog.findViewById(R.id.nowCntTextView);
+        TextView openTimeTextView = dialog.findViewById(R.id.openTimeTextView);
+        TextView closeTimeTextView = dialog.findViewById(R.id.closeTimeTextView);
 
-        navigationFragment.setHitEventListener(new MapEngine.OnHitObjectListener() {
-            @Override
-            public boolean OnHitObjectPOI(String s, int i, VSMMapPoint vsmMapPoint, Bundle bundle) {
-                return false;
-            }
+        // 데이터를 텍스트 뷰에 바인딩
+        nameTextView.setText(name);
+        addressTextView.setText(address);
+        baseCrgTextView.setText("기본 요금: " + baseCrg + "원");
+        addCrgTextView.setText("추가 요금: " + addCrg + "원");
+        dayCrgTextView.setText("일일 최대 요금: " + dayCrg + "원");
+        totalCntTextView.setText("총 주차면수: " + totalCnt + "석");
+        nowCntTextView.setText("현재 남은 자리: " + nowCnt + "석");
+        openTimeTextView.setText("운영 시작: " + formatTime(openTime));
+        closeTimeTextView.setText("운영 종료: " + formatTime(closeTime));
 
-            @Override
-            public boolean OnHitObjectMarker(VSMMarkerBase vsmMarkerBase, Bundle bundle) {
-                return false;
-            }
-
-            @Override
-            public boolean OnHitObjectOilInfo(String s, int i, VSMMapPoint vsmMapPoint) {
-                return false;
-            }
-
-            @Override
-            public boolean OnHitObjectTraffic(String s, int i, String s1, String s2, String s3, VSMMapPoint vsmMapPoint) {
-                return false;
-            }
-
-            @Override
-            public boolean OnHitObjectCctv(String s, int i, VSMMapPoint vsmMapPoint, Bundle bundle) {
-                return false;
-            }
-
-            @Override
-            public boolean OnHitObjectAlternativeRoute(String s, VSMMapPoint vsmMapPoint) {
-                return false;
-            }
-
-            @Override
-            public boolean OnHitObjectRouteFlag(String s, int i, VSMMapPoint vsmMapPoint) {
-                return false;
-            }
-
-            @Override
-            public boolean OnHitObjectRouteLine(String s, int i, VSMMapPoint vsmMapPoint) {
-                return false;
-            }
-
-            @Override
-            public boolean OnHitObjectNone(VSMMapPoint vsmMapPoint) {
-                return false;
-            }
-        }, new MapEngine.OnHitCalloutPopupListener() {
-            @Override
-            public void OnHitCalloutPopupPOI(String s, int i, VSMMapPoint vsmMapPoint, Bundle bundle) {
-            }
-
-            @Override
-            public void OnHitCalloutPopupMarker(VSMMarkerBase vsmMarkerBase) {
-            }
-
-            @Override
-            public void OnHitCalloutPopupTraffic(String s, int i, String s1, String s2, String s3, VSMMapPoint vsmMapPoint) {
-            }
-
-            @Override
-            public void OnHitCalloutPopupCctv(String s, int i, VSMMapPoint vsmMapPoint, Bundle bundle) {
-            }
-
-            @Override
-            public void OnHitCalloutPopupUserDefine(String s, int i, VSMMapPoint vsmMapPoint) {
-            }
-        });
+        dialog.show();
     }
-
-    private void clickButton7() {
-        subscribeEDCData();
-    }
-
-    private Observer<Bundle> edcListener = new Observer<Bundle>() {
-        @Override
-        public void onChanged(Bundle bundle) {
-            if (bundle != null) {
-                Log.e(TAG, bundle.toString());
-            }
+    // 시간 형식을 변환하는 함수
+    private String formatTime(String time) {
+        if (time.length() == 4) {
+            return time.substring(0, 2) + ":" + time.substring(2, 4);
         }
-    };
-
-    private void subscribeEDCData() {
-        if (isEDC) {
-            isEDC = false;
-            TmapUISDK.observableEDCData.removeObserver(edcListener);
-/*
-            button7.setText("EDC 수신 등록");
-*/
-        } else {
-            isEDC = true;
-            TmapUISDK.observableEDCData.observe(this, edcListener);
-/*
-            button7.setText("EDC 수신 해제");
-*/
-        }
-    }
-
-    private void clickButton8() {
-        subscribeRouteData();
-    }
-
-    private void clickButtonTest() {
-/*
-        buttonLayout.setVisibility(View.GONE);
-*/
-
-        CarOption carOption = new CarOption();
-        carOption.setCarType(TollCarType.Car);
-        carOption.setOilType(CarOilType.PremiumGasoline);
-        carOption.setHipassOn(true);
-
-        // 현재 위치
-        Location currentLocation = SDKManager.getInstance().getCurrentPosition();
-        String currentName = VSMCoordinates.getAddressOffline(currentLocation.getLongitude(), currentLocation.getLatitude());
-
-        WayPoint startPoint = new WayPoint(currentName, new MapPoint(currentLocation.getLongitude(), currentLocation.getLatitude()));
-
-        // 목적지
-        WayPoint endPoint = new WayPoint("한국공학대학교", new MapPoint(126.73402132406565, 37.3396700356916));
-
-        navigationFragment.setCarOption(carOption);
-
-        ArrayList<RoutePlanType> planTypeList = new ArrayList<>();
-        planTypeList.add(RoutePlanType.Traffic_Recommend);
-        planTypeList.add(RoutePlanType.Traffic_Free);
-
-        navigationFragment.requestRoute(startPoint, null, endPoint, false, new TmapUISDK.RouteRequestListener() {
-            @Override
-            public void onSuccess() {
-                Log.e(TAG, "requestRoute Success");
-/*
-                stopButton.setVisibility(View.VISIBLE);
-*/
-            }
-
-            @Override
-            public void onFail(int i, @Nullable String s) {
-                Toast.makeText(getActivity(), i + "::" + s, Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "onFail " + i + " :: " + s);
-            }
-        }, planTypeList);
+        return time; // 변환 실패 시 원래 값 반환
     }
 
     private Observer<ObservableRouteData> routeDataListener = new Observer<ObservableRouteData>() {
@@ -610,75 +529,4 @@ public class MapFragment extends Fragment {
             ObservableRouteProgressData.TrafficStatus status = trafficInfoList.get(0).getTrafficStatus(); // 혼잡도
         }
     };
-
-    private void subscribeRouteData() {
-        if (isRoute) {
-            isRoute = false;
-            TmapUISDK.observableRouteData.removeObserver(routeDataListener);
-/*
-            button8.setText("Route Data 수신 등록");
-*/
-        } else {
-            isRoute = true;
-            TmapUISDK.observableRouteData.observe(this, routeDataListener);
-/*
-            button8.setText("Route Data 수신 해제");
-*/
-        }
-    }
-
-    /*private void initUISDK() {
-        TmapUISDK.Companion.initialize(getActivity(), CLIENT_ID, API_KEY, USER_KEY, DEVICE_KEY, new TmapUISDK.InitializeListener() {
-            @Override
-            public void onSuccess() {
-                Log.e(TAG, "success initialize");
-            }
-
-            @Override
-            public void onFail(int i, @Nullable String s) {
-                Toast.makeText(getActivity(), i + "::" + s, Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "onFail " + i + " :: " + s);
-            }
-
-            @Override
-            public void savedRouteInfoExists(@Nullable String dest) {
-                Log.e(TAG, "목적지 : " + dest);
-                if (dest != null) {
-                    showDialogContinueRoute(dest);
-                }
-            }
-        });
-    }*/
-
-    /*private void showDialogContinueRoute(String dest) {
-        String message = dest + "(으)로 경로 안내를 이어서 안내 받으시겠습니까?";
-        new AlertDialog.Builder(getActivity())
-                .setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton("네", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        navigationFragment.continueDrive(true, new TmapUISDK.RouteRequestListener() {
-                            @Override
-                            public void onSuccess() {
-                                Log.e("MapFragment", "경로 계속 운행 성공");
-*//*                                buttonLayout.setVisibility(View.GONE);
-                                stopButton.setVisibility(View.VISIBLE);*//*
-                            }
-
-                            @Override
-                            public void onFail(int i, @Nullable String s) {
-                                Log.e("MapFragment", "경로 계속 운행 실패 " + s);
-                            }
-                        });
-                    }
-                })
-                .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        navigationFragment.clearContinueDriveInfo();
-                    }
-                })
-                .show();
-    }*/
 }
