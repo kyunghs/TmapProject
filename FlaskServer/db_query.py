@@ -221,6 +221,37 @@ def get_user_custom_info(user_id):
     finally:
         conn.close()
 
+def update_user_selection(user_id, selected_column, valid_columns):
+    """
+    사용자의 선택 항목을 업데이트하는 함수.
+    """
+    try:
+        conn = dbConnection()
+        cursor = conn.cursor()
+
+        # 모든 항목을 'N'으로 초기화한 후 선택된 항목만 'Y'로 설정
+        reset_query = f"""
+        UPDATE user_info
+        SET {", ".join([f"{col} = 'N'" for col in valid_columns])}
+        WHERE id = %s
+        """
+        cursor.execute(reset_query, (user_id,))
+
+        update_query = f"""
+        UPDATE user_info
+        SET {selected_column} = 'Y'
+        WHERE id = %s
+        """
+        cursor.execute(update_query, (user_id,))
+
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error in update_user_selection: {e}")
+        conn.rollback()
+        return False
+    finally:
+        conn.close()
 
 
 def get_user_history(user_id):
