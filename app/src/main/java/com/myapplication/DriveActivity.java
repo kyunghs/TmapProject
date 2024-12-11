@@ -90,6 +90,7 @@ public class DriveActivity extends AppCompatActivity {
     private TextView currentSeatsText;
     private TextView expectedSeatsText;
     private TextView arrivalTimeText;
+    private BottomSheetDialog ttsBottomSheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,8 +191,8 @@ public class DriveActivity extends AppCompatActivity {
 
             // 데이터 설정 (예시 데이터)
             locationText.setText(destinationName); // 실제 데이터를 여기에 연결
-            currentSeatsText.setText("9"); // 잔여석 데이터
-            expectedSeatsText.setText("7"); // 예상 잔여석 데이터
+            currentSeatsText.setText("25석"); // 잔여석 데이터
+            expectedSeatsText.setText("20석"); // 예상 잔여석 데이터
             arrivalTimeText.setText("소요 시간 : " + formattedTime); // 도착 예상 시간
         }
     };
@@ -201,7 +202,11 @@ public class DriveActivity extends AppCompatActivity {
     }
 
     private void showTTSBottomSheet() {
-        BottomSheetDialog ttsBottomSheet = new BottomSheetDialog(this);
+        if (isFinishing() || isDestroyed()) {
+            return; // Activity가 종료 중이라면 Dialog를 표시하지 않음
+        }
+
+        ttsBottomSheet = new BottomSheetDialog(this);
         View bottomSheetView = getLayoutInflater().inflate(R.layout.tts_top_sheet, null);
 
         ImageView voiceIcon = bottomSheetView.findViewById(R.id.voice_icon);
@@ -285,11 +290,15 @@ public class DriveActivity extends AppCompatActivity {
         if (response.contains("네") || response.contains("예") || response.contains("응")) {
             ttssttHelper.speakText("경로를 재탐색하겠습니다.");
             Toast.makeText(this, "경로를 재탐색합니다.", Toast.LENGTH_SHORT).show();
-            // TODO: 경로 재탐색 로직 추가
+            // 새로운 데이터를 담아 현재 Activity 재시작
+            navigationFragment.stopDrive();
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                Test("진흥로 공영주차장(시)", "37.6037966", "126.9214158");
+            }, 1000);
+
         } else if (response.contains("아니요") || response.contains("아니")) {
             ttssttHelper.speakText("기존 목적지로 안내하겠습니다.");
             Toast.makeText(this, "기존 목적지로 안내합니다.", Toast.LENGTH_SHORT).show();
-            // TODO: 기존 목적지 안내 로직 추가
         } else {
             ttssttHelper.speakText("잘 이해하지 못했습니다. 다시 말씀해주세요.");
             Toast.makeText(this, "잘 이해하지 못했습니다.", Toast.LENGTH_SHORT).show();
@@ -299,8 +308,9 @@ public class DriveActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        ttssttHelper.shutdown();
-        Log.d(TAG, "TTS/STT 리소스가 해제되었습니다.");
+        if (ttsBottomSheet != null && ttsBottomSheet.isShowing()) {
+            ttsBottomSheet.dismiss();
+        }
         super.onDestroy();
     }
 
@@ -395,10 +405,11 @@ public class DriveActivity extends AppCompatActivity {
                     expectedSeatsText = popupView.findViewById(R.id.expected_seats_text);
                     arrivalTimeText = popupView.findViewById(R.id.arrival_time_text);
 
+
                     // 데이터 설정 (예시 데이터)
                     locationText.setText(destinationName); // 실제 데이터를 여기에 연결
-                    currentSeatsText.setText("9"); // 잔여석 데이터
-                    expectedSeatsText.setText("7"); // 예상 잔여석 데이터
+                    currentSeatsText.setText("25석"); // 잔여석 데이터
+                    expectedSeatsText.setText("20석"); // 예상 잔여석 데이터
                     arrivalTimeText.setText("소요 시간 : " + formattedTime); // 도착 예상 시간
                 });
 
@@ -596,12 +607,10 @@ public class DriveActivity extends AppCompatActivity {
             @Override
             public void onBreakawayFromRouteEvent() {
                 // 경로 이탈 재탐색 발생 시점에 호출
-                Log.e(TAG, "onBreakawayFromRouteEvent");
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(DriveActivity.this, "onBreakawayFromRouteEvent", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -610,12 +619,10 @@ public class DriveActivity extends AppCompatActivity {
             @Override
             public void onBreakAwayRequestComplete() {
                 //경로 이탈 재탐색 동작 완료 시점에 호출
-                Log.e(TAG, "onBreakAwayRequestComplete");
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(DriveActivity.this, "onBreakAwayRequestComplete", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -664,7 +671,6 @@ public class DriveActivity extends AppCompatActivity {
                                 try {
                                     boolean success = response.getBoolean("success");
                                 } catch (JSONException e) {
-                                    Toast.makeText(DriveActivity.this, "응답 처리 오류", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }

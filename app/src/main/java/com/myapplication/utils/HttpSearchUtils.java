@@ -1,6 +1,7 @@
 package com.myapplication.utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.concurrent.CountDownLatch;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -227,4 +229,75 @@ public class HttpSearchUtils {
         PlacesBottomSheetFragment placesBottomSheet = PlacesBottomSheetFragment.newInstance(poiData, true);
         placesBottomSheet.show(fragmentManager, "PlacesBottomSheetFragment");
     }
+
+
+    public static String predictRemain() {
+        // OkHttpClient 초기화
+        OkHttpClient client = new OkHttpClient();
+
+        // 하드코딩된 JSON 데이터
+        JSONArray requestBodyJson = new JSONArray();
+        JSONObject dataObject = new JSONObject();
+        try {
+            dataObject.put("pklt_cd", "b");
+            dataObject.put("target_time", "e");
+            requestBodyJson.put(dataObject);
+        } catch (JSONException e) {
+            Log.e("!@#!@#", "JSON 생성 오류: " + e.getMessage());
+            return null;
+        }
+
+        // URL 설정
+        String url = "http://220.116.209.226:8241/predict";
+
+        // RequestBody 생성
+        RequestBody body = RequestBody.create(
+                requestBodyJson.toString(),
+                MediaType.parse("application/json")
+        );
+
+        // Request 생성
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        // 동기화를 위한 CountDownLatch 생성
+        final String[] predictedValue = {null};
+        CountDownLatch latch = new CountDownLatch(1);
+
+        // 별도 스레드에서 요청 실행
+        new Thread(() -> {
+            try {
+                Response response = client.newCall(request).execute();
+                if (!response.isSuccessful() || response.body() == null) {
+                    Log.e("!@#!@#", "서버 요청 실패: " + response.code());
+                    latch.countDown(); // 실패 시 동기화 해제
+                    return;
+                }
+
+                String responseBody = response.body().string();
+                JSONArray jsonResponse = new JSONArray(responseBody);
+                JSONObject firstObject = jsonResponse.getJSONObject(0);
+                predictedValue[0] = firstObject.getString("predicted_value");
+
+            } catch (IOException | JSONException e) {
+                Log.e("!@#!@#", "네트워크 오류 또는 JSON 파싱 오류: " + e.getMessage());
+            } finally {
+                latch.countDown(); // 동기화 해제
+            }
+        }).start();
+
+        // 요청 완료를 대기
+        try {
+            latch.await(); // 스레드가 작업을 끝낼 때까지 대기
+        } catch (InterruptedException e) {
+            Log.e("!@#!@#", "스레드 대기 중단: " + e.getMessage());
+        }
+
+        return predictedValue[0];
+    }
+
+
 }

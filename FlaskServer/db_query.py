@@ -537,17 +537,3 @@ def insertHistory(name, departure, destination, destination_address, kilometers)
     finally:
         cursor.close()
         conn.close()
-
-def realRemain():
-    conn = dbConnection()
-    cursor = conn.cursor()
-
-    # 쿼리 수정: pklt_nm 값을 하드코딩하거나 동적으로 전달받도록 설정
-    query = "SELECT now_prk_vhcl_cnt FROM parking_info WHERE pklt_nm = '1425816'"
-
-    cursor.execute(query)  # 매개변수가 없는 경우
-    result = cursor.fetchone()  # 첫 번째 결과만 가져옴
-    conn.close()
-
-    # 결과가 None이 아닌 경우 문자열로 반환
-    return str(result[0]) if result else "결과 없음"
