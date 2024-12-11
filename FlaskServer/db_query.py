@@ -538,9 +538,6 @@ def insertHistory(name, departure, destination, destination_address, kilometers)
         cursor.close()
         conn.close()
 
-def realRemain(u_lat, u_lot):
-
-
 def realRemain():
     conn = dbConnection()
     cursor = conn.cursor()
