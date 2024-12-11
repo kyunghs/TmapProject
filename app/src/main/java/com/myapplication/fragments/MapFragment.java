@@ -90,8 +90,6 @@ public class MapFragment extends Fragment {
 
         // "안심주행 시작/종료" 버튼
         Button testbtn = view.findViewById(R.id.testbtn);
-        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_navigation_view); // 하단 내비게이션 뷰
-        FrameLayout mapBottomContainer = requireActivity().findViewById(R.id.mapBottomContainer); // map_bottom.xml 및 path_select_sheet.xml을 표시할 컨테이너
 
         // "안심주행 시작/종료" 버튼 클릭 이벤트 설정
         testbtn.setOnClickListener(v -> {
@@ -149,6 +147,173 @@ public class MapFragment extends Fragment {
         transaction.add(R.id.tmapUILayout, navigationFragment);
         transaction.commitAllowingStateLoss();
 
+
+        isEDC = false;
+
+        // 네비게이션 상태 변경 시 callback
+        navigationFragment.setDrivingStatusCallback(new TmapUISDK.DrivingStatusCallback() {
+
+            @Override
+            public void onStartNavigationInfo(int totalDistanceInMeter, int totalTimeInSec, int tollFree) {
+                // 경로 시작 정보
+            }
+
+            @Override
+            public void onUserRerouteComplete() {
+                // 사용자 재탐색 동작 완료 시 호출
+                Log.e(TAG, "onUserRerouteComplete");
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onUserRerouteComplete", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onStopNavigation() {
+                // 네비게이션 종료 시 호출
+                /*buttonLayout.setVisibility(View.VISIBLE);
+                stopButton.setVisibility(View.GONE);*/
+                Log.e(TAG, "onStopNavigation");
+            }
+
+            @Override
+            public void onStartNavigation() {
+                // 네비게이션 시작 시 호출
+                Log.e(TAG, "onStartNavigation");
+            }
+
+            @Override
+            public void onRouteChanged(int i) {
+                // 경로 변경 완료 시 호출
+                Log.e(TAG, "onRouteChanged " + i);
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onRouteChanged", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onPermissionDenied(int i, @Nullable String s) {
+                // 권한 에러 발생 시 호출
+                Log.e(TAG, "onPermissionDenied " + i + "::" + s);
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onPermissionDenied", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onPeriodicRerouteComplete() {
+                // 정주기 재탐색 동작 완료 시 호출
+                Log.e(TAG, "onPeriodicRerouteComplete");
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onPeriodicRerouteComplete", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onPeriodicReroute() {
+                // 정주기 재탐색 발생 시점에 호출
+                Log.e(TAG, "onPeriodicReroute");
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onPeriodicReroute", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onPassedViaPoint() {
+                // 경유지 통과 시 호출
+                Log.e(TAG, "onPassedViaPoint");
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onPassedViaPoint", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onPassedTollgate(int i) {
+                // 톨게이트 통과 시 호출
+                // i 요금
+                Log.e(TAG, "onPassedTollgate " + i);
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onPassedTollgate", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onPassedAlternativeRouteJunction() {
+                // 대안 경로 통과 시 호출
+                Log.e(TAG, "onPassedAlternativeRouteJunction");
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onPassedAlternativeRouteJunction", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onNoLocationSignal(boolean b) {
+                // GPS 상태 변화 시점에 호출
+                Log.e(TAG, "onPassedAlternativeRouteJunction :: " + b);
+            }
+
+            @Override
+            public void onLocationChanged() {
+                // 위치 갱신 때마다 호출
+                // Log.e(TAG, "onLocationChanged");
+            }
+
+            @Override
+            public void onFailRouteRequest(@NonNull String errorCode, @NonNull String errorMsg) {
+                // 경로 탐색 실패 시 호출
+                Log.e(TAG, "onFailRouteRequest " + errorCode + "::" + errorMsg);
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onFailRouteRequest", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onDoNotRerouteToDestinationComplete() {
+                // 미리 종료 안내 동작 탐색 완료 시점에 호출
+                Log.e(TAG, "onDoNotRerouteToDestinationComplete");
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onDoNotRerouteToDestinationComplete", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onDestinationDirResearchComplete() {
+                // 건너편 안내 동작 탐색 완료 시점에 호출
+                Log.e(TAG, "onDestinationDirResearchComplete");
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onDestinationDirResearchComplete", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onChangeRouteOptionComplete(@NonNull RoutePlanType routePlanType) {
+                // 경로 옵션 변경 완료 시 호출
+                Log.e(TAG, "onChangeRouteOptionComplete");
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onChangeRouteOptionComplete", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onBreakawayFromRouteEvent() {
+                // 경로 이탈 재탐색 발생 시점에 호출
+                Log.e(TAG, "onBreakawayFromRouteEvent");
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onBreakawayFromRouteEvent", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onBreakAwayRequestComplete() {
+                // 경로 이탈 재탐색 동작 완료 시점에 호출
+                Log.e(TAG, "onBreakAwayRequestComplete");
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onBreakAwayRequestComplete", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onArrivedDestination(@NonNull String dest, int drivingTime, int drivingDistance) {
+                // 목적지 도착 시 호출
+                // dest 목적지 명
+                // drivingTime 운전시간
+                // drivingDistance 운전거리
+                Log.e(TAG, "onArrivedDestination");
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onArrivedDestination", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onApproachingViaPoint() {
+                // 경유지 접근 시점에 호출 (1km 이내)
+                Log.e(TAG, "onApproachingViaPoint");
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onApproachingViaPoint", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onApproachingAlternativeRoute() {
+                // 대안 경로 접근 시 호출
+                Log.e(TAG, "onApproachingAlternativeRoute");
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onApproachingAlternativeRoute", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onForceReroute(@NonNull com.skt.tmap.engine.navigation.network.ndds.NddsDataType.DestSearchFlag destSearchFlag) {
+                // 경로 재탐색 발생 시점에 호출
+                Log.e(TAG, "onForceReroute");
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "onForceReroute", Toast.LENGTH_SHORT).show());
+            }
+        });
     }
 
     private void selectPark() {
@@ -340,26 +505,4 @@ public class MapFragment extends Fragment {
         }
         return time; // 변환 실패 시 원래 값 반환
     }
-
-    private Observer<ObservableRouteData> routeDataListener = new Observer<ObservableRouteData>() {
-        @Override
-        public void onChanged(ObservableRouteData data) {
-            Log.e(TAG, data.toString());
-            int distance = data.getNTotalDist(); // 목적지까지 총 남은거리(m)
-            int time = data.getNTotalTime(); // 목적지까지 총 남은 시간(초)
-            int toll = data.getTollFare(); // 톨게이트 요금
-            int taxi = data.getTaxiFare(); // 택시 요금
-            List<RouteDataCoord> coordList = data.getRouteCoordinates(); // 경로 좌표 데이터(위도, 경도)
-            List<RouteDataTraffic> trafficInfoList = data.getRouteTrafficInfos(); // 경로 복잡도 정보
-
-            double lat = coordList.get(0).getLatitude();
-            double lon = coordList.get(0).getLongitude();
-
-            // 혼잡도 정보의 index , RouteDataCoord List의 index
-            int endIndex = trafficInfoList.get(0).getEndIndexInCoordinate();
-            int startIndex = trafficInfoList.get(0).getStartIndexInCoordinate();
-
-            ObservableRouteProgressData.TrafficStatus status = trafficInfoList.get(0).getTrafficStatus(); // 혼잡도
-        }
-    };
 }
