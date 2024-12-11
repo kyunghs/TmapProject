@@ -1,6 +1,7 @@
 package com.myapplication.fragments;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.myapplication.DriveActivity;
 import com.myapplication.R;
 import com.myapplication.adapters.PlaceAdapter;
 import com.myapplication.models.Place;
@@ -154,7 +156,14 @@ public class PlacesBottomSheetFragment extends BottomSheetDialogFragment {
 
         // "아니요" 버튼 클릭 이벤트
         dialog.findViewById(R.id.noBtn).setOnClickListener(v -> {
-
+            // 선택한 장소의 위도와 경도 가져오기
+            String latitude = place.getLatitude();
+            String longitude = place.getLongitude();
+            Intent intent = new Intent(requireContext(), DriveActivity.class);
+            intent.putExtra("name", "광화문");
+            intent.putExtra("lat", latitude);
+            intent.putExtra("lot", longitude);
+            startActivity(intent);
             dialog.dismiss(); // 현재 다이얼로그 닫기
         });
 
