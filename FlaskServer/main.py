@@ -580,24 +580,47 @@ def load_model(model_path):
 @app.route('/predict', methods=['POST'])
 def predict_endpoint():
     try:
+        # JSON 데이터 파싱
         data = request.get_json()
 
-        # 파라미터 추출
-        parking_code = data.get('pklt_cd')
+        # 요청 데이터가 배열인지 확인
+        if isinstance(data, list):
+            # 요청이 배열일 경우
+            results = []
+            for item in data:
+                parking_code = item.get('pklt_cd')
+                if not parking_code:
+                    return jsonify({"error": "parking_code parameter is required for one of the items"}), 400
 
-        if not parking_code:
-            return jsonify({"error": "parking_code parameter is required"}), 400
+                # 랜덤 예측 값 생성
+                prediction = str(random.randint(8, 40))
 
-        prediction = str(random.randint(8, 60))
+                # 결과 추가
+                results.append({
+                    "pklt_cd": parking_code,
+                    "predicted_value": prediction
+                })
+            
+            # 배열로 응답
+            return jsonify(results), 200
+        else:
+            # 요청이 단일 객체일 경우
+            parking_code = data.get('pklt_cd')
+            if not parking_code:
+                return jsonify({"error": "parking_code parameter is required"}), 400
 
-        return jsonify({
-            "pklt_cd": parking_code,
-            "predicted_value": prediction
-        }), 200
+            # 랜덤 예측 값 생성
+            prediction = str(random.randint(8, 40))
+
+            return jsonify({
+                "pklt_cd": parking_code,
+                "predicted_value": prediction
+            }), 200
 
     except Exception as e:
         logging.error(f"Error during prediction: {e}")
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/selectPark', methods=['POST'])
 def selectPark():
