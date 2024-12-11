@@ -267,7 +267,7 @@ def get_user_history(user_id):
 
         # 사용자 정보 가져오는 쿼리
         query  = """
-        SELECT user_code, departure, destination, date
+        SELECT user_code, departure, destination, date, destination_address
         FROM user_history
         WHERE user_code = %s
         ORDER BY date desc
