@@ -167,19 +167,19 @@ public class HomeFragment extends Fragment {
 
 
                                 if (userCustomData != null) {
-                                    de_area1 = userCustomData.optString("area_1", "즐겨찾기").isEmpty()
+                                    de_area1 = userCustomData.optString("area_1", "").isEmpty() || userCustomData.isNull("area_1")
                                             ? "즐겨찾기"
-                                            : userCustomData.optString("area_1_aliase");
+                                            : userCustomData.optString("area_1_aliase", "즐겨찾기");
 
-                                    de_area1Address = userCustomData.optString("area_1_address", "장소를\n등록 해주세요").isEmpty()
+                                    de_area1Address = userCustomData.optString("area_1_address", "").isEmpty() || userCustomData.isNull("area_1_address")
                                             ? "장소를\n등록 해주세요"
                                             : userCustomData.optString("area_1_address");
 
-                                    de_area2 = userCustomData.optString("area_2", "즐겨찾기").isEmpty()
+                                    de_area2 = userCustomData.optString("area_2", "").isEmpty() || userCustomData.isNull("area_2")
                                             ? "즐겨찾기"
-                                            : userCustomData.optString("area_2");
+                                            : userCustomData.optString("area_2_aliase", "즐겨찾기");
 
-                                    de_area2Address = userCustomData.optString("area_2_address", "장소를\n등록 해주세요").isEmpty()
+                                    de_area2Address = userCustomData.optString("area_2_address", "").isEmpty() || userCustomData.isNull("area_2_address")
                                             ? "장소를\n등록 해주세요"
                                             : userCustomData.optString("area_2_address");
 
@@ -206,6 +206,18 @@ public class HomeFragment extends Fragment {
                                     }
                                     String displayText = String.format("자동차로\n약 %s km 이동", de_todayKi);
                                     String displayText2 = String.format("전일 대비 +%s km 이동", de_yesterdayKiValue);
+
+                                if (de_todayKi == "아직 운행기록이 없어요.") {
+                                  distance_ce.setText(de_todayKi);
+                                } else {
+                                  distance_ce.setText(displayText);
+                                }
+
+                                if (de_yesterdayKiValue == " ") {
+                                    distance_ye.setText(de_yesterdayKiValue);
+                                } else {
+                                    distance_ye.setText(displayText2);
+                                }
 
 
                                     // UI 업데이트

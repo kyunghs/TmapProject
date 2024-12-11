@@ -14,6 +14,7 @@ public class Parking {
     private String baseFee;
     private String addFee;
     private String dayMaxFee;
+    private String predictedValue;
 
     public Parking(String name, String remain, String distance, String price, String lat, String lot, int time, String baseFee, String addFee, String dayMaxFee) {
         this.name = name;
@@ -27,6 +28,7 @@ public class Parking {
         this.baseFee = baseFee;
         this.addFee = addFee;
         this.dayMaxFee = dayMaxFee;
+        this.predictedValue = predictedValue;
     }
 
     // Getter 메서드
@@ -75,9 +77,17 @@ public class Parking {
         return dayMaxFee;
     }
 
+    public String getPredictedValue() {
+        return predictedValue;
+    }
+
     // Setter 메서드 (totalFee 업데이트용)
     public void setTotalFee(String totalFee) {
         this.totalFee = totalFee;
+    }
+
+    public void setPredictedValue(String predictedValue) {
+        this.predictedValue = predictedValue;
     }
 
     // 거리 값을 숫자로 변환 (단위: 미터)
