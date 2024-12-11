@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.speech.RecognitionListener;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -73,7 +74,6 @@ public class ParkingTTSSTTActivity extends AppCompatActivity {
             if (isListening && !hasReceivedResult) {
                 // 5초가 지나도 결과를 받지 못한 경우
                 ttssttHelper.speakText("음성을 다시 말씀해주세요.");
-                Toast.makeText(this, "음성을 다시 말씀해주세요.", Toast.LENGTH_SHORT).show();
                 isListening = false; // 음성 인식 종료로 설정
             }
         }, LISTENING_TIMEOUT);
@@ -82,7 +82,6 @@ public class ParkingTTSSTTActivity extends AppCompatActivity {
     private class SpeechRecognitionListener implements RecognitionListener {
         @Override
         public void onReadyForSpeech(Bundle params) {
-            Toast.makeText(ParkingTTSSTTActivity.this, "음성을 말씀해주세요.", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -108,32 +107,42 @@ public class ParkingTTSSTTActivity extends AppCompatActivity {
         @Override
         public void onError(int error) {
             Log.e(TAG, "음성 인식 오류 발생: " + error);
-            Toast.makeText(ParkingTTSSTTActivity.this, "음성 인식 에러가 발생했습니다.", Toast.LENGTH_SHORT).show();
             isListening = false; // 음성 인식 종료로 설정
         }
 
         @Override
         public void onResults(Bundle results) {
-            ArrayList<String> resultList = results.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION);
+            ArrayList<String> resultList = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             if (resultList != null && !resultList.isEmpty()) {
-                String recognizedText = resultList.get(0).toLowerCase(Locale.ROOT);
-                hasReceivedResult = true; // 결과를 받은 것으로 설정
-                isListening = false; // 음성 인식 종료로 설정
-                timeoutHandler.removeCallbacksAndMessages(null); // 타이머 해제
-                updateRecognizedText(recognizedText);
-                handleUserResponse(recognizedText);
+                String recognizedText = resultList.get(0); // 첫 번째 결과 가져오기
+                recognizedTextView.setVisibility(View.VISIBLE); // TextView 보이도록 설정
+                recognizedTextView.setText(recognizedText); // 결과 텍스트 설정
+                recognizedTextView.invalidate(); // 화면 갱신
+                Log.d("TTSSTT", "Recognized Text: " + recognizedText); // 디버깅 로그
+
+                // 사용자가 말한 텍스트가 화면에 표시되었으니 화면 닫기
+                new Handler().postDelayed(ParkingTTSSTTActivity.this::finish, 2000);
+
+            } else {
+                Log.d("TTSSTT", "No recognized text found");
+                ttssttHelper.speakText("인식된 음성이 없습니다. 다시 시도해주세요.");
             }
         }
 
+
+
+
+
         @Override
         public void onPartialResults(Bundle partialResults) {
-            // 음성 인식 중간 결과 처리
-            ArrayList<String> partialResultsList = partialResults.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION);
+            ArrayList<String> partialResultsList = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             if (partialResultsList != null && !partialResultsList.isEmpty()) {
-                String partialText = partialResultsList.get(0);
-                updateRecognizedText(partialText);
+                String partialText = partialResultsList.get(0); // 첫 번째 중간 결과 가져오기
+                Log.d("TTSSTT", "Partial Recognized Text: " + partialText); // 중간 결과 로그 출력
+                updateRecognizedText(partialText); // 화면에 업데이트
             }
         }
+
 
         @Override
         public void onEvent(int eventType, Bundle params) {
@@ -142,11 +151,17 @@ public class ParkingTTSSTTActivity extends AppCompatActivity {
     }
 
     private void updateRecognizedText(String text) {
+        Log.d("TTSSTT", "Updating TextView with: " + text); // 디버깅 로그
         runOnUiThread(() -> {
-            recognizedTextView.setVisibility(View.VISIBLE);
-            recognizedTextView.setText(text);
+            recognizedTextView.setVisibility(View.VISIBLE); // 보이도록 설정
+            recognizedTextView.setText(text); // 텍스트 업데이트
+            recognizedTextView.invalidate(); // 화면 갱신
         });
     }
+
+
+
+
 
     private void handleUserResponse(String response) {
         if (response.contains("네") || response.contains("예") || response.contains("응")) {
