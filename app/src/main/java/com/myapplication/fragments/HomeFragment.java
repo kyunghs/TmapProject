@@ -127,6 +127,7 @@ public class HomeFragment extends Fragment {
         String token =  getActivity()
                 .getSharedPreferences("AuthPrefs", Context.MODE_PRIVATE)
                 .getString("auth_token", "");
+        Log.d("@@@@ 토큰 : ", token);
 
         if (token.isEmpty()) {
             Log.e("UserFragment", "토큰이 없습니다. 로그인을 확인하세요.");
@@ -160,7 +161,7 @@ public class HomeFragment extends Fragment {
                                 if (userCustomData != null) {
                                     de_area1 = userCustomData.optString("area_1", "즐겨찾기").isEmpty()
                                             ? "즐겨찾기"
-                                            : userCustomData.optString("area_1");
+                                            : userCustomData.optString("area_1_aliase");
 
                                     de_area1Address = userCustomData.optString("area_1_address", "장소를\n등록 해주세요").isEmpty()
                                             ? "장소를\n등록 해주세요"

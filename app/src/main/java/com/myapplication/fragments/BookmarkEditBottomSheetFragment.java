@@ -28,17 +28,16 @@ public class BookmarkEditBottomSheetFragment extends BottomSheetDialogFragment {
         editTextNickname.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 // 확인 버튼 눌렀을 때 동작
-                Toast.makeText(getActivity(), "확인 버튼 눌림: " + editTextNickname.getText().toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "확인 버튼 눌림@@: " + editTextNickname.getText().toString(), Toast.LENGTH_SHORT).show();
 
-                // 필요한 추가 로직 (예: 서버로 데이터 전송 등)
+                // 필요한 추가 로직 (예: 서버로 데이터 전송 등)ㅣ
 
                 return true; // 이벤트 처리 완료
             }
             return false;
         });
 
-        
-        /*// EditorActionListener 설정
+        // EditorActionListener 설정
         editTextNickname.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 String inputText = editTextNickname.getText().toString();
@@ -46,7 +45,7 @@ public class BookmarkEditBottomSheetFragment extends BottomSheetDialogFragment {
                 return true;
             }
             return false;
-        });*/
+        });
 
         return view;
     }
