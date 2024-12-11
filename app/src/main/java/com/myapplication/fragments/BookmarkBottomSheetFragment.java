@@ -168,6 +168,7 @@ public class BookmarkBottomSheetFragment extends BottomSheetDialogFragment {
                             JSONObject userData = responseData.optJSONObject("data");
                             if (userData != null) {
                                 JSONObject userCustomData = userData.optJSONObject("user_custom_data");
+                                Log.d("@@@ : ", String.valueOf(userCustomData));
 
                                 // 초기 세팅 값
                                 String de_area1_alias = "별명을 설정 해주세요.";
@@ -175,25 +176,33 @@ public class BookmarkBottomSheetFragment extends BottomSheetDialogFragment {
                                 String de_area1Address = "목적지 주소";
 
                                 if (userCustomData != null) {
-                                    de_area1_alias = userCustomData.optString("area_1_aliase", "즐겨찾기").isEmpty()
-                                            ? "즐겨찾기"
-                                            : userCustomData.optString("area_1_aliase");
+                                    // area_1_aliase 처리
+                                    if (userCustomData.isNull("area_1_aliase") || userCustomData.optString("area_1_aliase").isEmpty()) {
+                                        de_area1_alias = "별명을 설정 해주세요.";
+                                    } else {
+                                        de_area1_alias = userCustomData.optString("area_1_aliase");
+                                    }
 
-                                    de_area1_name = userCustomData.optString("area_1", "즐겨찾기").isEmpty()
-                                            ? "즐겨찾기"
-                                            : userCustomData.optString("area_1");
+                                    // area_1 처리
+                                    if (userCustomData.isNull("area_1") || userCustomData.optString("area_1").isEmpty()) {
+                                        de_area1_name = "목적지 이름";
+                                    } else {
+                                        de_area1_name = userCustomData.optString("area_1");
+                                    }
 
-                                    de_area1Address = userCustomData.optString("area_1_address", "장소를\n등록 해주세요").isEmpty()
-                                            ? "장소를\n등록 해주세요"
-                                            : userCustomData.optString("area_1_address");
-
-
-                                    // UI 업데이트
-                                    area1_alias.setText(de_area1_alias);
-                                    area1_name.setText(de_area1_name);
-                                    area1_address.setText((de_area1Address));
-
+                                    // area_1_address 처리
+                                    if (userCustomData.isNull("area_1_address") || userCustomData.optString("area_1_address").isEmpty()) {
+                                        de_area1Address = "목적지 주소";
+                                    } else {
+                                        de_area1Address = userCustomData.optString("area_1_address");
+                                    }
                                 }
+
+                                // UI 업데이트
+                                area1_alias.setText(de_area1_alias);
+                                area1_name.setText(de_area1_name);
+                                area1_address.setText(de_area1Address);
+
 
 
                             } else {

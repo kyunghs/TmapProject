@@ -203,20 +203,24 @@ public class HomeFragment extends Fragment {
                                     if (get_user_ki_history_data != null) {
                                         de_todayKi = get_user_ki_history_data.optString("today_ki", "db확인필요");
                                         de_yesterdayKiValue = get_user_ki_history_data.optString("ki", "db확인필요");
+                                    } else if (get_user_ki_history_data == null ){
+                                        Log.d( "@@ : fuck", String.valueOf(get_user_history_data));
+                                        de_todayKi = "아직 운행기록이 없어요.";
+                                        de_yesterdayKiValue = " ";
                                     }
-                                    String displayText = String.format("자동차로\n약 %s km 이동", de_todayKi);
-                                    String displayText2 = String.format("전일 대비 +%s km 이동", de_yesterdayKiValue);
 
-                                    
+
                                     if (de_todayKi == "아직 운행기록이 없어요.") {
                                       distance_ce.setText(de_todayKi);
                                     } else {
+                                      String displayText = String.format("자동차로\n약 %s km 이동", de_todayKi);
                                       distance_ce.setText(displayText);
                                     }
 
                                     if (de_yesterdayKiValue == " ") {
                                         distance_ye.setText(de_yesterdayKiValue);
                                     } else {
+                                        String displayText2 = String.format("전일 대비 +%s km 이동", de_yesterdayKiValue);
                                         distance_ye.setText(displayText2);
                                     }
 
@@ -226,8 +230,8 @@ public class HomeFragment extends Fragment {
                                     areaAlias1Address.setText(de_area1Address);
                                     areaAlias2Text.setText(de_area2);
                                     areaAlias2Address.setText(de_area2Address);
-                                    distance_ce.setText(displayText);
-                                    distance_ye.setText(displayText2);
+//                                    distance_ce.setText(displayText);
+//                                    distance_ye.setText(displayText2);
                                     if(!"".equals(dest)){
                                         dest1.setText(dest);
                                     }
