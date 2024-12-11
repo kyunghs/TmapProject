@@ -4,14 +4,18 @@ public class Parking {
     private String name;
     private String remain;
     private String distance;
-    private String price;
+    private String price; // 기본 가격
     private String lat;
     private String lot;
+    private int time; // 주차 시간 (분 단위)
+    private String totalFee; // 계산된 총 요금
 
-    //목적지까지 걸리는 소요시간 : totalTime = 초단위
-    private int time;
+    // 추가된 필드: 기본 요금, 추가 요금, 일 최대 요금
+    private String baseFee;
+    private String addFee;
+    private String dayMaxFee;
 
-    public Parking(String name, String remain, String distance, String price, String lat, String lot, int time) {
+    public Parking(String name, String remain, String distance, String price, String lat, String lot, int time, String baseFee, String addFee, String dayMaxFee) {
         this.name = name;
         this.remain = remain;
         this.distance = distance;
@@ -19,6 +23,10 @@ public class Parking {
         this.lat = lat;
         this.lot = lot;
         this.time = time;
+        this.totalFee = price; // 기본 요금은 초기화된 price로 설정
+        this.baseFee = baseFee;
+        this.addFee = addFee;
+        this.dayMaxFee = dayMaxFee;
     }
 
     // Getter 메서드
@@ -50,9 +58,26 @@ public class Parking {
         return time;
     }
 
-    // getTotalFee 메서드 추가
     public String getTotalFee() {
-        return price;
+        return totalFee;
+    }
+
+    // 추가된 Getter 메서드
+    public String getBaseFee() {
+        return baseFee;
+    }
+
+    public String getAddFee() {
+        return addFee;
+    }
+
+    public String getDayMaxFee() {
+        return dayMaxFee;
+    }
+
+    // Setter 메서드 (totalFee 업데이트용)
+    public void setTotalFee(String totalFee) {
+        this.totalFee = totalFee;
     }
 
     // 거리 값을 숫자로 변환 (단위: 미터)

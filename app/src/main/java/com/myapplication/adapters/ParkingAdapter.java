@@ -42,7 +42,7 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ParkingV
         holder.nameTextView.setText(parking.getName());
         holder.remainTextView.setText("남은 자리 : " + parking.getRemain());
         holder.distanceTextView.setText(parking.getDistance());
-        holder.priceTextView.setText("예상 요금 : " + Utils.NumberFormat(String.valueOf(parking.getPrice())) + "원");
+        holder.priceTextView.setText("예상 요금 : " + Utils.NumberFormat(parking.getTotalFee()) + "원");
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {

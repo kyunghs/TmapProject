@@ -41,8 +41,7 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
     private List<Parking> parkingList = new ArrayList<>();
 
     // 추가된 변수: 시간과 분을 분으로 변환해서 저장
-    private int totalMinutes = 0;
-
+    private int totalMinutes = 120;  // 주차 시간 (분 단위)
     private String selectedBenefit = "선택사항 없음";
 
     public static ParkListBottomSheetFragment newInstance(String parkData) {
@@ -54,23 +53,17 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.AppBottomSheetDialogBorder20WhiteTheme);
-    }
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.park_list, container, false);
 
-        // 스피너 초기화
+        // 스피너 초기화 (혜택)
         Spinner benefitSpinner = view.findViewById(R.id.benefitSpinner);
         ArrayAdapter<CharSequence> benefitAdapter = ArrayAdapter.createFromResource(
                 requireContext(), R.array.benefit_options, android.R.layout.simple_spinner_item);
         benefitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         benefitSpinner.setAdapter(benefitAdapter);
 
-        // 스피너 항목 선택 리스너 설정
+        // 스피너 항목 선택 리스너 설정 (혜택)
         benefitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -98,6 +91,10 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
                 requireContext(), R.array.minute_options, android.R.layout.simple_spinner_item);
         minuteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         minuteSpinner.setAdapter(minuteAdapter);
+
+        // 기본값 설정 (2시간 0분)
+        hourSpinner.setSelection(2);  // 2시간
+        minuteSpinner.setSelection(0);  // 0분
 
         // 스피너 항목 선택 리스너 설정 (시간 및 분)
         hourSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -141,6 +138,7 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
             startActivity(intent);
         });
         parkingRecyclerView.setAdapter(adapter);
+
         // 정렬 기준 스위칭 추가
         View sortByButton = view.findViewById(R.id.sortBy);
         final String[] currentSortBy = {"distance"}; // 초기 정렬 기준: 거리순
@@ -183,9 +181,7 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
     private int extractNumber(String text) {
         String number = text.replaceAll("[^\\d]", "");
         return number.isEmpty() ? 0 : Integer.parseInt(number);
-
     }
-
 
     // 시간 및 분을 분으로 변환하여 totalMinutes에 저장
     private void updateTotalMinutes(Spinner hourSpinner, Spinner minuteSpinner) {
@@ -197,6 +193,26 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
 
         // 로그로 확인
         Log.e("Time Conversion", "선택된 시간: " + hour + "시간 " + minute + "분 -> 총 " + totalMinutes + "분");
+
+        // 주차 요금 갱신
+        updateParkingFees();
+    }
+
+    // 주차 요금 갱신 메서드
+    private void updateParkingFees() {
+        // 주차 요금 계산 후 리스트 갱신
+        for (Parking parking : parkingList) {
+            double bscPrkCrg = Double.parseDouble(parking.getBaseFee());
+            double addPrkCrg = Double.parseDouble(parking.getAddFee());
+            double dayMaxCrg = Double.parseDouble(parking.getDayMaxFee());
+
+            // Utils.calculateParkingFee에 totalMinutes를 전달
+            String totalFee = Utils.calculateParkingFee(bscPrkCrg, addPrkCrg, dayMaxCrg, totalMinutes);
+            parking.setTotalFee(totalFee); // 요금 업데이트
+        }
+
+        // RecyclerView 갱신
+        ((ParkingAdapter) ((RecyclerView) getView().findViewById(R.id.parkingRecyclerView)).getAdapter()).notifyDataSetChanged();
     }
 
     private void parseParkData(String parkData) {
@@ -231,9 +247,6 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
                 Location currentLocation = SDKManager.getInstance().getCurrentPosition();
                 double currentLong = currentLocation.getLongitude();
                 double currentLat = currentLocation.getLatitude();
-
-                // 주차 시간에 따른 요금 변화
-                String totalFee = Utils.calculateParkingFee(bscPrkCrg, addPrkCrg, dayMaxCrg, 120);
 
                 String distance = parkObject.optString("distance", "0m").replaceAll("[^\\d]", "");
                 distance = distance.isEmpty() ? "0" : distance;
@@ -271,12 +284,23 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
                     }
                 });
 
-                parkingList.add(new Parking(name, remain, distance, totalFee, lat, lot, totalTime[0]));
+                // 여기에서 parking 객체를 생성할 때 필요한 모든 인자를 제공해야 합니다.
+                parkingList.add(new Parking(
+                        name,
+                        remain,
+                        distance,
+                        "0", // 기본 요금으로 초기화. 실제로는 totalFee로 설정할 수 있습니다.
+                        lat,
+                        lot,
+                        totalTime[0],
+                        baseFee,
+                        addFee,
+                        dayMaxFee
+                ));
                 Log.e("ParkingList", "Added: " + name + ", remain: " + remain);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
 }
