@@ -154,6 +154,7 @@ public class UserFragment extends Fragment {
     private void sendSelectionToServer(Integer selectedLayoutId) {
         String selectedColumn = null;
 
+        // 선택된 항목에 따라 DB 컬럼 지정
         if (selectedLayoutId != null) {
             switch (selectedLayoutId) {
                 case R.id.disabled_persons:
@@ -181,8 +182,8 @@ public class UserFragment extends Fragment {
         try {
             requestData.put("selected_column", selectedColumn);
 
-            // 요청 전송
-            HttpUtils.sendJsonToServerWithAuth(requestData, "/updateUserSelection", token, new HttpUtils.HttpResponseCallback() {
+            // 요청 전송 (토큰 없이)
+            HttpUtils.sendJsonToServer(requestData, "/updateUserSelection", new HttpUtils.HttpResponseCallback() {
                 @Override
                 public void onSuccess(JSONObject response) {
                     Log.d("UserFragment", "선택 상태 업데이트 성공: " + response.toString());
@@ -197,6 +198,7 @@ public class UserFragment extends Fragment {
             Log.e("UserFragment", "JSON 생성 오류: " + e.getMessage());
         }
     }
+
 
 
 

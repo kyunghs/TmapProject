@@ -509,35 +509,44 @@ def update_user_info():
 
 
 @app.route('/updateUserSelection', methods=['POST'])
-@jwt_required
-def update_user_selection(user):
-    """
-    사용자 선택 항목 업데이트 API
-    """
+def update_user_selection():
     try:
-        # 요청 데이터와 사용자 ID 가져오기
         data = request.get_json()
-        user_id = user.get("id")
-        selected_column = data.get("selected_column")  # 선택된 항목 (DB 컬럼명)
-        
-        if not user_id or not selected_column:
-            return jsonify({"success": False, "message": "잘못된 요청입니다. 사용자 ID나 선택 항목이 없습니다."}), 400
+        user_id = data.get("id")
+        selected_column = data.get("selected_column")
 
-        # 유효한 컬럼 확인
+        if not user_id or not selected_column:
+            return jsonify({
+                "success": False,
+                "message": "id 또는 selected_column이 없습니다."
+            }), 400
+
         valid_columns = ["disabled_human", "multiple_child", "electric_car", "person_merit", "tax_payment", "alone_family"]
         if selected_column not in valid_columns:
-            return jsonify({"success": False, "message": f"'{selected_column}'는 유효하지 않은 컬럼입니다."}), 400
+            return jsonify({
+                "success": False,
+                "message": f"'{selected_column}'은 유효하지 않은 컬럼입니다."
+            }), 400
 
-        # DB 업데이트
         success = db_query.update_user_selection(user_id, selected_column, valid_columns)
         if success:
-            return jsonify({"success": True, "message": "사용자 선택이 업데이트되었습니다."}), 200
+            return jsonify({
+                "success": True,
+                "message": "선택 항목이 업데이트되었습니다."
+            }), 200
         else:
-            return jsonify({"success": False, "message": "DB 업데이트에 실패했습니다."}), 500
+            return jsonify({
+                "success": False,
+                "message": "DB 업데이트 실패"
+            }), 500
 
     except Exception as e:
         logging.error(f"Error in update_user_selection: {e}")
-        return jsonify({"success": False, "message": "서버 오류가 발생했습니다."}), 500
+        return jsonify({
+            "success": False,
+            "message": "서버 오류 발생"
+        }), 500
+
 
 
 
