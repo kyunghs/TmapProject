@@ -697,14 +697,6 @@ def insertHistory():
     except Exception as e:
         return jsonify({"success": False, "message": "서버 오류: " + str(e)}), 500
 
-@app.route('/realRemain', methods=['POST'])
-def realRemain():
-    try:
-        remain = realRemain()  # getParkInfo 호출
-        return jsonify({"success": True, "remain": remain}), 200
-    except Exception as e:
-        return jsonify({"success": False, "message": "서버 오류: " + str(e)}), 500
-
 # 이전 예측 소스
 
 
