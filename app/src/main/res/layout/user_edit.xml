@@ -71,7 +71,7 @@
                 android:id="@+id/profile_image_select"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/karina"
+                android:src="@drawable/user_profile_standard"
                 android:background="@drawable/circle_background"
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
