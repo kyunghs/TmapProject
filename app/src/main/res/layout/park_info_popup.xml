@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="270dp"
+    android:layout_height="370dp"
+    android:background="@drawable/rounded_popup"
+    android:orientation="vertical"
+    android:padding="15dp"
+    android:layout_gravity="center">
+
+    <ImageView
+        android:id="@+id/parking_dummy_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/parking_dummy" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="압구정고가2 노상 공영 주차장"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="서울 강남구 신사동 668"
+        android:textSize="12sp"
+        android:textColor="#6F6F6F" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal" >
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginRight="3dp"
+                android:src="@drawable/time_icon" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="영업시간 - 08:00 ~ 21:00"
+                android:textSize="8sp"
+                android:textColor="#6F6F6F" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="휴무일 - 연중무휴"
+                android:textSize="8sp" />
+        </LinearLayout>
+        <ImageView
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/price_icon"
+            android:layout_marginRight="3dp"
+            android:layout_marginStart="40dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이용요금 - 5분당 500원"
+            android:textSize="8sp"
+            android:textColor="#6F6F6F" />
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="현재 남은 자리 수   6 / 19"
+        android:textStyle="bold"
+        android:textSize="10sp"
+        android:textColor="#FF8B61"
+        android:layout_marginTop="12dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="편의 시설"
+        android:textSize="10sp"
+        android:textColor="#000000"
+        android:layout_marginTop="12dp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical" >
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center"
+                android:src="@drawable/disabled_icon" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="장애인 전용"
+                android:textSize="8sp"
+                android:textColor="#6F6F6F" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="20dp"
+            android:orientation="vertical" >
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center"
+                android:src="@drawable/street_park_icon" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="노상 주차"
+                android:textSize="8sp"
+                android:textColor="#6F6F6F" />
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="문의 전화"
+        android:textSize="8sp"
+        android:textColor="#6F6F6F" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="수탁 운영 : 02-445-0501"
+        android:textSize="8sp"
+        android:textColor="#B0B0B0" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="관리 감독기관 : 02-3605-4599"
+        android:textSize="8sp"
+        android:textColor="#B0B0B0" />
+
+</LinearLayout>
