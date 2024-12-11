@@ -110,7 +110,8 @@
                 android:textSize="14dp"
                 android:background="@drawable/input_background"
                 android:padding="12dp"
-                android:drawableRight="@drawable/hide_icon" />
+                android:drawableRight="@drawable/hide_icon"
+                android:inputType="textPassword"/>
 
             <!-- 비밀번호 확인 -->
             <LinearLayout
@@ -139,7 +140,8 @@
                 android:textSize="14dp"
                 android:background="@drawable/input_background"
                 android:padding="12dp"
-                android:drawableRight="@drawable/hide_icon" />
+                android:drawableRight="@drawable/hide_icon"
+                android:inputType="textPassword"/>
 
             <!-- 이름 -->
             <LinearLayout

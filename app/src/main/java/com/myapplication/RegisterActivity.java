@@ -20,6 +20,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText inputEmail, inputPassword, inputPasswordConfirm, inputName, inputPhone, inputBirthday;
     private Button registBtn, passStartBtn;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +35,10 @@ public class RegisterActivity extends AppCompatActivity {
         inputBirthday = findViewById(R.id.editTextBirthday);
         registBtn = findViewById(R.id.registBtn);
         passStartBtn = findViewById(R.id.passStartBtn);
+
+        inputPassword.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        inputPasswordConfirm.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
 
         // "내비서 시작하기" 버튼 클릭 이벤트
         registBtn.setOnClickListener(new View.OnClickListener() {

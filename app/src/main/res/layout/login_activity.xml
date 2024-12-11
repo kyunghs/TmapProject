@@ -77,7 +77,8 @@
             android:textSize="16sp"
             android:background="@drawable/input_background"
             android:padding="12dp"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:inputType="textPassword"/>
 
         <!-- 로그인 유지 및 링크 -->
         <LinearLayout

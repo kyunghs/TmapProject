@@ -35,6 +35,8 @@ public class LoginActivity extends AppCompatActivity {
         TextView findIdPw = findViewById(R.id.find_id_pw);
         TextView registerText = findViewById(R.id.register_text); // 회원가입 텍스트 추가
 
+        editTextPassword.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
         // 로그인 버튼 클릭 이벤트
         loginButton.setOnClickListener(v -> {
             // 사용자 입력값 가져오기
