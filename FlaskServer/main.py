@@ -601,6 +601,7 @@ def predict_endpoint():
                     "predicted_value": prediction
                 })
             
+            
             # 배열로 응답
             return jsonify(results), 200
         else:
