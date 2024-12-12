@@ -97,14 +97,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                showPopup("37.5548375992165", "126.971732581232");
+                showPopup("37.5718478584908", "126.976168275947");
             }
         });
 
         recent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 showPopup2("37.5734027", "126.9758843");
             }
         });
@@ -305,9 +304,9 @@ public class HomeFragment extends Fragment {
         // "아니요" 버튼 클릭 이벤트
         dialog.findViewById(R.id.noBtn).setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), DriveActivity.class);
-            intent.putExtra("name", "홍대입구역");
-            intent.putExtra("lat", "37.6225571786308 ");
-            intent.putExtra("lot", "127.078754902898");
+            intent.putExtra("name", "세종문화회관");
+            intent.putExtra("lat", "37.5718478584908");
+            intent.putExtra("lot", "126.976168275947");
             startActivity(intent);
             dialog.dismiss(); // 현재 다이얼로그 닫기
         });
