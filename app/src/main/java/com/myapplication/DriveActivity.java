@@ -293,7 +293,7 @@ public class DriveActivity extends AppCompatActivity {
             // 새로운 데이터를 담아 현재 Activity 재시작
             navigationFragment.stopDrive();
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                Test("진흥로 공영주차장(시)", "37.6037966", "126.9214158");
+                Test("서울글로벌센터 공영주차장", "37.5698340", "126.9815059");
             }, 1000);
 
         } else if (response.contains("아니요") || response.contains("아니")) {

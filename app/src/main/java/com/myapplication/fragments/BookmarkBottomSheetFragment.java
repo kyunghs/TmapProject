@@ -61,8 +61,8 @@ public class BookmarkBottomSheetFragment extends BottomSheetDialogFragment {
         // ImageView 클릭 이벤트 처리
         ImageView editIcon = view.findViewById(R.id.editIcon);
         editIcon.setOnClickListener(v -> {
-            String updatedName = "홍대입구역";
-            String updatedAddress = "서울 마포구 양화로 160";
+            String updatedName = "세종문화회관";
+            String updatedAddress = "서울 종로구 세종대로 175";
 
             // 변경된 값으로 UI 업데이트
             area1_name.setText(updatedName);
