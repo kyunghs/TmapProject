@@ -18,13 +18,60 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ParkingV
     private List<Parking> parkingList;
     private OnParkingClickListener listener;
 
+    private int totalMinutes;
+    private String selectedBenefit;
+
     public interface OnParkingClickListener {
         void onParkingClick(String name, String lat, String lot);
     }
 
-    public ParkingAdapter(List<Parking> parkingList, OnParkingClickListener listener) {
+    public ParkingAdapter(List<Parking> parkingList, OnParkingClickListener listener, int totalMinutes, String selectedBenefit) {
         this.parkingList = parkingList;
         this.listener = listener;
+        this.totalMinutes = totalMinutes;
+        this.selectedBenefit = selectedBenefit;
+    }
+
+    private double calculateDiscountedFee(double baseFee, double addFee, double dayMaxFee, int totalMinutes, String benefit) {
+        double totalFee = baseFee + (addFee * (totalMinutes / 60.0)); // 기본 요금 + 추가 요금 계산
+
+        // 일일 최대 요금 적용
+        if (totalFee > dayMaxFee) {
+            totalFee = dayMaxFee;
+        }
+
+        switch (benefit) {
+            case "장애인":
+                if (totalMinutes <= 180) {
+                    totalFee = 0; // 최초 3시간 무료
+                } else {
+                    totalFee *= 0.2; // 80% 감면
+                }
+                break;
+            case "다자녀":
+                totalFee *= 0.5;
+                break;
+            case "저공해차량":
+                if (totalMinutes <= 60) {
+                    totalFee = 0; // 1시간 무료
+                } else {
+                    totalFee *= 0.5; // 50% 감면
+                }
+                break;
+            case "국가유공자":
+                totalFee *= 0.2;
+                break;
+            case "모범납세자":
+                totalFee = 0;
+                break;
+            case "한부모가정":
+                totalFee *= 0.5;
+                break;
+            default:
+                break;
+        }
+
+        return totalFee;
     }
 
     @NonNull
@@ -35,6 +82,7 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ParkingV
         return new ParkingViewHolder(view);
     }
 
+    // ParkingAdapter 클래스의 onBindViewHolder 메서드
     @Override
     public void onBindViewHolder(@NonNull ParkingViewHolder holder, int position) {
         Parking parking = parkingList.get(position);
@@ -42,7 +90,14 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ParkingV
         holder.nameTextView.setText(parking.getName());
         holder.remainTextView.setText("남은 자리 : " + parking.getRemain());
         holder.distanceTextView.setText(parking.getDistance());
-        holder.priceTextView.setText("예상 요금 : " + Utils.NumberFormat(parking.getTotalFee()) + "원");
+
+        // 할인 조건 적용
+        double baseFee = Double.parseDouble(parking.getBaseFee());
+        double addFee = Double.parseDouble(parking.getAddFee());
+        double dayMaxFee = Double.parseDouble(parking.getDayMaxFee());
+        double discountedFee = calculateDiscountedFee(baseFee, addFee, dayMaxFee, totalMinutes, selectedBenefit);
+        holder.priceTextView.setText("예상 요금 : " + Utils.NumberFormat(String.valueOf(discountedFee)) + "원");
+
         holder.predictValue.setText("예상 자리 : " + parking.getPredictedValue());
 
         holder.itemView.setOnClickListener(v -> {
@@ -55,6 +110,12 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ParkingV
     @Override
     public int getItemCount() {
         return parkingList.size();
+    }
+
+    public void updateParameters(int totalMinutes, String selectedBenefit) {
+        this.totalMinutes = totalMinutes;
+        this.selectedBenefit = selectedBenefit;
+        notifyDataSetChanged(); // 데이터 변경을 알림
     }
 
     public static class ParkingViewHolder extends RecyclerView.ViewHolder {

@@ -81,22 +81,23 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
             return view;
         }
 
-        // Spinner 초기화
+        // 할인 조건 스피너 초기화
         Spinner benefitSpinner = view.findViewById(R.id.benefitSpinner);
         ArrayAdapter<CharSequence> benefitAdapter = ArrayAdapter.createFromResource(
                 requireContext(), R.array.benefit_options, android.R.layout.simple_spinner_item);
         benefitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         benefitSpinner.setAdapter(benefitAdapter);
 
-        // 사용자 데이터를 기반으로 스피너 설정
+// 사용자 데이터를 기반으로 스피너 설정
         fetchUserDataAndSetupSpinner(benefitSpinner);
 
-        // 스피너 항목 선택 리스너 설정 (혜택)
+// 스피너 항목 선택 리스너 설정 (혜택)
         benefitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 selectedBenefit = (String) parentView.getItemAtPosition(position);
                 Log.e("Spinner", "선택된 혜택: " + selectedBenefit);
+                updateParkingFees(); // 혜택 선택 시 주차 요금 갱신
             }
 
             @Override
@@ -168,7 +169,7 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
             intent.putExtra("lat", lat);
             intent.putExtra("lot", lot);
             startActivity(intent);
-        });
+        }, totalMinutes, selectedBenefit);
         parkingRecyclerView.setAdapter(adapter);
 
         // 정렬 기준 스위칭 추가
@@ -255,7 +256,7 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
             intent.putExtra("lat", lat);
             intent.putExtra("lot", lot);
             startActivity(intent);
-        });
+        }, totalMinutes, selectedBenefit);
         parkingRecyclerView.setAdapter(adapter);
     }
 
@@ -300,19 +301,10 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
 
     // 주차 요금 갱신 메서드
     private void updateParkingFees() {
-        // 주차 요금 계산 후 리스트 갱신
-        for (Parking parking : parkingList) {
-            double bscPrkCrg = Double.parseDouble(parking.getBaseFee());
-            double addPrkCrg = Double.parseDouble(parking.getAddFee());
-            double dayMaxCrg = Double.parseDouble(parking.getDayMaxFee());
-
-            // Utils.calculateParkingFee에 totalMinutes를 전달
-            String totalFee = Utils.calculateParkingFee(bscPrkCrg, addPrkCrg, dayMaxCrg, totalMinutes);
-            parking.setTotalFee(totalFee); // 요금 업데이트
+        ParkingAdapter adapter = (ParkingAdapter) ((RecyclerView) getView().findViewById(R.id.parkingRecyclerView)).getAdapter();
+        if (adapter != null) {
+            adapter.updateParameters(totalMinutes, selectedBenefit);
         }
-
-        // RecyclerView 갱신
-        ((ParkingAdapter) ((RecyclerView) getView().findViewById(R.id.parkingRecyclerView)).getAdapter()).notifyDataSetChanged();
     }
 
     // 서버에서 사용자 데이터를 가져와 Spinner 기본값 설정
@@ -365,17 +357,19 @@ public class ParkListBottomSheetFragment extends BottomSheetDialogFragment {
                                 benefitSpinner.setSelection(position);
                             }
 
+
                             // 스피너 항목 선택 리스너 설정
+                            // ParkListBottomSheetFragment 클래스의 benefitSpinner 설정 부분
                             benefitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                 @Override
                                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                                    String selectedItem = (String) parentView.getItemAtPosition(position);
-                                    Log.e("Spinner", "선택된 혜택: " + selectedItem);
+                                    selectedBenefit = (String) parentView.getItemAtPosition(position);
+                                    Log.e("Spinner", "선택된 혜택: " + selectedBenefit);
+                                    updateParkingFees(); // 혜택 선택 시 주차 요금 갱신
                                 }
 
                                 @Override
                                 public void onNothingSelected(AdapterView<?> parentView) {
-                                    // 선택 안된 상태 처리
                                 }
                             });
                         } else {
